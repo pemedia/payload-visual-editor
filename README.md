@@ -17,10 +17,10 @@ Core features:
 
 ## Basic Usage
 
-In the `plugins` array of your [Payload config](https://payloadcms.com/docs/configuration/overview), call the plugin with [options](#options):
+In your collection file, for which you want to use the visual editor simply add:
 
 ```js
-import { VisualEditor } from '../components/visualEditor';
+import { VisualEditor } from '@tbd-plugin-path/visualEditor';
 
 const Collection: CollectionConfig = {
   slug: 'collection',
@@ -34,7 +34,7 @@ const Collection: CollectionConfig = {
       admin: {
         components: {
           Field: VisualEditor({
-            getCollectionConfig: () => Pages,
+            getCollectionConfig: () => Collection,
             previewUrl: "YOUR_FRONTEND_PREVIEW_URL",
           }),
         },
