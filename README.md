@@ -1,4 +1,4 @@
-# Payload Visual Live Preview Plugin
+# Payload Visual Editor Plugin
 This plugin provides a visual live preview, including a nice UI, for [Payload](https://github.com/payloadcms/payload) collections.
 
 Core features:
