@@ -7,6 +7,8 @@ Core features:
   - Creates the visual editor UI in the Admin UIs edit view
   - Handles the live data exchange with your frontend (currently focused on Next.js)
 
+![image](https://github.com/pemedia/payload-visual-live-preview/blob/develop/visual-editor-screenshot.png?raw=true)
+
 ## Installation
 
 ```bash
