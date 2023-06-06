@@ -1,7 +1,10 @@
 # Payload Visual Editor Plugin
 This plugin provides a visual editor, including a nice UI, for [Payload](https://github.com/payloadcms/payload) collections.
 
-Core features:
+> **Note**
+> This plugin is currently under active development and still in alpha stage. Please check back periodically for updates.
+
+## Core features:
 
 - Adds a visual editor component to your collections:
   - Creates the visual editor UI in the Admin UIs edit view
