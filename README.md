@@ -15,9 +15,9 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 ## Installation
 
 ```bash
-  yarn add @tbd
+  yarn add payload-plugin-visualeditor
   # OR
-  npm i @tbd
+  npm i payload-plugin-visualeditor
 ```
 
 ## Basic Usage
