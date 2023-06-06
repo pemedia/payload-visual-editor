@@ -46,13 +46,29 @@ const config = buildConfig({
 
   An string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
   
-  
-### Frontend integration in Next.js 
+## Frontend integration in Next.js 
 
-tdb
+In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
 
 ```js
-tbd
+const [page, setPage] = useState<Page | null>(null);
+
+useEffect(() => {
+    const listener = (event: MessageEvent) => {
+        if (event.data.cmsLivePreviewData) {
+            setPage(event.data.cmsLivePreviewData);
+        }
+    };
+    window.addEventListener("message", listener, false);
+    return () => {
+        window.removeEventListener("message", listener);
+    };
+}, []);
+```
+You can now pass this to your block render function. In this case `page.content`, because `content` is the name of our 'blocks' field in our payload CollectionConfig.
+
+```js
+<RenderBlocks blocks={page.content} />
 ```
 
 ## Development
