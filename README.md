@@ -10,7 +10,7 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
   - Creates the visual editor UI in the Admin UIs edit view
   - Handles the live data exchange with your frontend (currently focused on Next.js)
 
-![image](https://github.com/pemedia/payload-visual-live-preview/blob/develop/visual-editor-screenshot.png?raw=true)
+![image](https://github.com/pemedia/payload-visual-live-preview/blob/main/visual-editor-screenshot.png?raw=true)
 
 > **Warning**
 > In the Admin UI of the collections in which you use the visual editor plugin, you cannot use any elements in the `{admin: {position:'sidebar'}}` because for now we have to hide this area of the sidebar, to make the preview UI work. But we are elaborating on options to solve this in the future.
