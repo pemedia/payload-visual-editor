@@ -12,6 +12,9 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 
 ![image](https://github.com/pemedia/payload-visual-live-preview/blob/develop/visual-editor-screenshot.png?raw=true)
 
+> **Warning**
+> In the Admin UI of the collections in which you use the visual editor plugin, you cannot use any elements in the `{admin: {position:'sidebar'}}` because for now we have to hide this area of the sidebar, to make the preview UI work. But we are elaborating on options to solve this in the future.
+
 ## Installation
 
 ```bash
@@ -49,7 +52,7 @@ const config = buildConfig({
 
   An string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
   
-## Frontend integration in Next.js 
+## Frontend Integration in Next.js 
 
 In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
 
