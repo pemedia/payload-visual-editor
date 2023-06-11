@@ -5,19 +5,36 @@ import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import Edit from "payload/dist/admin/components/icons/Edit";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
 import { Field } from "payload/types";
-import React, { MouseEvent, MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { convert } from "./fieldsConverter";
 import "./styles.scss";
+import { useResizeObserver } from "./useResizeObserver";
+
+const SCREEN_SIZES = {
+    desktop: {
+        width: "100%",
+        height: "100%",
+    },
+    tablet: {
+        width: "768px",
+        height: "1024px",
+    },
+    mobile: {
+        width: "375px",
+        height: "668px",
+    },
+};
+
 
 interface Config {
     previewUrl: string;
 }
 
-const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframeRef: MutableRefObject<HTMLIFrameElement>) => {
+const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTMLIFrameElement) => {
     try {
         const doc = await convert(fieldConfigs, fields);
 
-        iframeRef.current.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
+        iframe.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
     } catch (e) {
         console.error(e);
     }
@@ -30,19 +47,24 @@ const getFieldConfigs = (documentInfo: ContextType) => {
 export const VisualEditor = (config: Config) => () => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
+    const [fields] = useAllFormFields();
 
+    const editorContainer = document.querySelector(".collection-edit, .global-edit")!;
     const iframe = useRef<HTMLIFrameElement>(null);
     const resizeContainer = useRef<HTMLDivElement>(null);
+
     const debounce = useRef(false);
 
-    const [fields] = useAllFormFields();
-    const [sizeDisplayContent, setSizeDisplayContent] = useState("");
+    const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
 
     useEffect(() => {
-        document.querySelector(".collection-edit, .global-edit").setAttribute("visualeditor", "true");
-        document.querySelector(".collection-edit, .global-edit").setAttribute("showeditor", "true");
-        canvasSizeObserver.observe(resizeContainer.current);
+        editorContainer?.classList.add("visual-editor");
+        editorContainer?.classList.add("show-preview");
     }, []);
+
+    useResizeObserver(resizeContainer, ([entry]) => {
+        setPreviewSizeDisplay(`${entry.contentRect.width} x ${entry.contentRect.height}`);
+    });
 
     useEffect(() => {
         if (debounce.current) {
@@ -52,66 +74,54 @@ export const VisualEditor = (config: Config) => () => {
         debounce.current = true;
 
         setTimeout(() => {
-            updatePreview(fieldConfigs, fields, iframe);
+            updatePreview(fieldConfigs, fields, iframe.current!);
 
             debounce.current = false;
         }, 100);
     }, [fields]);
 
-    const onIframeLoaded = (e: any) => {
+    const onIframeLoaded = () => {
         setTimeout(() => {
-            updatePreview(fieldConfigs, fields, iframe);
+            updatePreview(fieldConfigs, fields, iframe.current!);
         }, 100);
     };
 
-    const toggleEditor = () => (e: MouseEvent) => {
-        const showEditor = document.querySelector(".collection-edit, .global-edit").getAttribute("showeditor");
-        if (showEditor != "true") document.querySelector(".collection-edit, .global-edit").setAttribute("showeditor", "true");
-        else document.querySelector(".collection-edit, .global-edit").setAttribute("showeditor", "false");
-    }
+    const togglePreview = () => {
+        editorContainer.classList.toggle("show-preview");
+    };
 
-    const changeCanvasSize = (type: "desktop" | "tablet" | "mobile") => (e: MouseEvent) => {
-        e.preventDefault();
-        const sizeData = {
-            "desktop": {
-                width: "100%",
-                height: "100%",
-            },
-            "tablet": {
-                width: "768px",
-                height: "1024px",
-            },
-            "mobile": {
-                width: "375px",
-                height: "668px",
-            },
-        }
-        resizeContainer.current.setAttribute("style", `width:${sizeData[type].width}; height:${sizeData[type].height};`);
-    }
-
-    const canvasSizeObserver = new ResizeObserver(entries => {
-        entries.forEach(entry => {
-            setSizeDisplayContent(`${entry.contentRect.width} x ${entry.contentRect.height}`);
-        });
-    });
+    const setPreviewSize = (size: { width: string; height: string; }) => () => {
+        resizeContainer.current!.setAttribute("style", `width:${size.width}; height:${size.height};`);
+    };
 
     return (
-        <React.Fragment>
-            <button className="toggleVisualEditor menu pill pill--has-action" type="button" onClick={toggleEditor()}><Edit /> Visual Editor</button>
+        <>
+            <button className="toggleVisualEditor menu pill pill--has-action" type="button" onClick={togglePreview}>
+                <Edit /> Visual Editor
+            </button>
+
             <div className="ContentEditor">
                 <div className="live-preview-container">
                     <div className="live-preview">
-                        <div
-                            className="live-preview-resize-container"
-                            ref={resizeContainer}
-                        >
+                        <div className="live-preview-resize-container" ref={resizeContainer}>
                             <div className="live-preview-settings">
-                                <button className="pill pill--has-action" type="button" onClick={changeCanvasSize("desktop")}>Desktop</button>
-                                <button className="pill pill--has-action" type="button" onClick={changeCanvasSize("tablet")}>Tablet</button>
-                                <button className="pill pill--has-action" type="button" onClick={changeCanvasSize("mobile")}>Mobile</button>
-                                <div className="pill size-display">{sizeDisplayContent}</div>
-                                <button className="toggleVisualEditor" type="button" onClick={toggleEditor()}><CloseMenu /></button>
+                                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
+                                    Desktop
+                                </button>
+                                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
+                                    Tablet
+                                </button>
+                                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
+                                    Mobile
+                                </button>
+                                <div className="pill size-display">
+                                    {previewSizeDisplay}
+                                </div>
+                                <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
+                                    <CloseMenu />
+                                </button>
                             </div>
+
                             <iframe
                                 id="live-preview-iframe"
                                 ref={iframe}
@@ -122,6 +132,6 @@ export const VisualEditor = (config: Config) => () => {
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 };

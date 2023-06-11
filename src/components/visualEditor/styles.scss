@@ -10,8 +10,8 @@
 }
 
 @media (min-width: calc($breakpoint-m-width + 1px)) {
-  .collection-edit[visualeditor="true"],
-  .global-edit[visualeditor="true"] {
+  .collection-edit.visual-editor,
+  .global-edit.visual-editor {
 
     /* ----------------------------------- */
     /* --- Setup basic live preview UI --- */
@@ -166,8 +166,8 @@
     }
   }
   
-  .collection-edit[visualeditor="true"][showeditor="true"],
-  .global-edit[visualeditor="true"][showeditor="true"] {
+  .collection-edit.visual-editor.show-preview,
+  .global-edit.visual-editor.show-preview {
 
     /* ------------------------- */
     /* --- Live Preview Area --- */
