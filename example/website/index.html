@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <h1>Payload Live Preview Test</h1> 
+        <div id="data"></div>
+
+        <script>
+            window.addEventListener("message", event => {
+                if (event.data.cmsLivePreviewData) {
+                    document.getElementById("data").innerText = JSON.stringify(event.data.cmsLivePreviewData);
+                }
+            });
+        </script>
+    </body>
+</html>

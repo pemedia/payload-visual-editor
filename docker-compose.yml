@@ -6,6 +6,7 @@ services:
     init: true
     ports:
       - "3000:3000"
+      - "8080:8080"
     volumes:
       - ./:/usr/src/app
     depends_on:
