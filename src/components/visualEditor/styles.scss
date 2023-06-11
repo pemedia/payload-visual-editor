@@ -1,0 +1,314 @@
+@import '~payload/dist/admin/scss/vars';
+
+.ContentEditor {
+  > .live-preview-container {
+    display:none;
+  }
+}
+.toggleVisualEditor.menu {
+  display: none;
+}
+
+@media (min-width: calc($breakpoint-m-width + 1px)) {
+  .collection-edit[visualeditor="true"],
+  .global-edit[visualeditor="true"] {
+
+    /* ----------------------------------- */
+    /* --- Setup basic live preview UI --- */
+    /* ----------------------------------- */
+
+    .collection-edit__form,
+    .global-edit__form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .collection-edit__main,
+    .global-edit__main {
+      width:100%;
+
+      .eyebrow {
+        display: none;
+      }
+    }
+
+    .collection-edit__sidebar-wrap,
+    .global-edit__sidebar-wrap {
+      position: sticky;
+      order: -1;
+      width: 100%;
+      height:6rem;
+      overflow: hidden;
+      background: var(--theme-elevation-0);
+      border-left: none;
+      border-bottom: 1px solid var(--theme-elevation-100);
+    }
+
+    .collection-edit__sidebar-sticky-wrap,
+    .global-edit__sidebar-sticky-wrap {
+      flex-direction: row;
+      align-items: center;
+
+      .collection-edit__document-actions,
+      .global-edit__document-actions {
+        margin-left:auto;
+
+        > * {
+          margin:0;
+          align-self: center;
+          &:last-child {
+            margin-left: base(.5);
+          }
+        }
+
+        button {
+          width: auto;
+          margin: 0;
+          align-self: center;
+        }
+      }
+
+      .collection-edit__collection-actions,
+      .global-edit__global-actions {
+        display: flex;
+        padding:0 0 0 base(1);
+        align-items: center;
+      }
+
+      .collection-edit__sidebar-fields,
+      .collection-edit__meta,
+      .collection-edit__api-url,
+      .global-edit__sidebar-fields,
+      .global-edit__meta,
+      .global-edit__api-url {
+        display:none;
+      }
+    }
+
+    // --- Hide Button that opens new Modal inside live preview
+    .field-type.relationship .rs__single-value > button {
+      display:none
+    }
+
+    .collection-edit__main,
+    .global-edit__main {
+      width: 100%;
+
+      .collection-edit__edit,
+      .global-edit__edit {
+        .tabs-field {
+          margin:base(0.5) 0 0 0;
+
+          .tabs-field__tabs:before{
+            width: base(1);
+          }
+
+          .tabs-field__tab-button {
+            padding-bottom: base(0.3);
+          }
+        }
+
+        > .render-fields {
+          position: relative;
+    
+          .toggleVisualEditor.menu {
+            display:block;
+            position: absolute;
+            top:0;
+            right:base(1);
+            background: var(--theme-elevation-100);
+          }
+        }
+      }
+
+      .collection-edit__edit:has(.tabs-field),
+      .global-edit__edit:has(.tabs-field) {
+        padding:0;
+      }
+
+      .collection-edit__edit:not(:has(.tabs-field)),
+      .global-edit__edit:not(:has(.tabs-field)) {
+        > .render-fields .toggleVisualEditor.menu {
+          top: -0.75rem;
+          right:0;
+        }
+      }
+
+      .eyebrow,
+      .collection-edit__header,
+      .global-edit__header {
+        display: none;
+      }
+    }
+
+    /* ------------------------------- */
+    /* --- Finetune field elements --- */
+    /* ------------------------------- */
+
+    /* --- Media Field --- */
+
+    .field-type.upload {
+      .thumbnail--size-medium {
+        max-height: base(5);
+      }
+
+      .file-details__remove {
+        margin: base(0.75);
+        margin-left:auto;
+      }
+  
+      .file-details__main-detail {
+        // display:none;
+        .file-meta {
+          display: none;
+        }
+      }
+    }
+  }
+  
+  .collection-edit[visualeditor="true"][showeditor="true"],
+  .global-edit[visualeditor="true"][showeditor="true"] {
+
+    /* ------------------------- */
+    /* --- Live Preview Area --- */
+    /* ------------------------- */
+
+    .drawer--is-open .drawer__close {
+      width:auto !important;
+    }
+
+    .collection-edit__edit,
+    .global-edit__edit {
+      padding:0;
+
+      > .render-fields {
+        width: 455px;
+        height: calc(100vh - 6rem);
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+
+        &::-webkit-scrollbar {
+          width: 14px;
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: var(--theme-elevation-400);
+          border-radius: 7px;
+          border:3px solid var(--theme-elevation-0);
+        }
+
+        &::-webkit-scrollbar-track-piece {
+           display:none;
+        }
+  
+        .toggleVisualEditor.menu {
+          display:none;
+        }
+  
+        .tabs-field__content-wrap {
+  
+          padding-left:base(1);
+          padding-right:base(1);
+        }
+  
+        > *:not(.tabs-field) {
+          padding:base(1);
+          margin:0;
+        }
+      }
+    } 
+      
+    .ContentEditor {
+      display:flex;
+
+      > .live-preview-container {
+        display: flex;
+        position: fixed;
+        top: 6rem;
+        right: 0;
+        bottom: 0;
+        left: calc(455px + var(--nav-width));
+        background: var(--theme-elevation-50);
+        border-left: 1px solid var(--theme-elevation-100);
+  
+        > .live-preview {
+          display: flex;
+          padding: base(1);
+          align-items: center;
+          justify-content: center;
+          flex-grow: 1;
+          overflow: hidden;
+  
+          .live-preview-resize-container {
+            display: flex;
+            flex-direction: column;
+            resize: both;
+            overflow: auto;
+            width: 100%;
+            max-width: 100%;
+            min-width: 340px;
+            height: 100%;
+            max-height: 100%;
+            min-height: 450px;
+            border: none;
+            border-radius: 4px;
+            overflow: hidden;
+            padding: 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.25);
+
+            > .live-preview-settings {
+              display: flex;
+              gap: base(.25);
+              justify-content: center;
+              padding: base(.25) base(.25);
+              border-bottom: 1px solid var(--theme-elevation-100);
+      
+              .size-display {
+                background: var(--theme-elevation-150);
+                box-shadow: 0 0 0 1px var(--theme-elevation-200);
+                width: 7rem;
+                justify-content: center;
+              }
+
+              .toggleVisualEditor {
+                border:none;
+                background:none;
+                appearance: none;
+                padding:0;
+                cursor: pointer;
+                margin-left:auto;
+              }
+            }
+  
+            iframe {
+              width:100%;
+              height:100%;
+              border:none;
+              background-color: #fff;
+              // border-radius: 0.5rem;
+
+              ::-webkit-scrollbar {
+                width: 10px;
+              }
+
+              ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+              }
+
+              ::-webkit-scrollbar-thumb {
+                background: #888;
+              }
+
+              ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

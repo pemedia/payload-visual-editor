@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  node:
+    build: .
+    init: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/payload
+      PAYLOAD_SECRET: SECRET
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    command:
+      - --storageEngine=wiredTiger
+    volumes:
+      - data:/data/db
+    logging:
+      driver: none
+
+volumes:
+  data:
