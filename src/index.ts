@@ -1,40 +1,40 @@
 import { Config } from "payload/config";
-import { visualEditorField } from "./fields/visualEditorField";
-import { PluginConfig } from "./types";
+import { createVisualEditorField } from "./fields/visualEditorField";
+import { CollectionConfig, GlobalConfig } from "payload/types";
 
-export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Config => {
-    return {
-        ...config,
-        collections:
-            config.collections?.map(collection => {
-                const { slug } = collection
-                const isEnabled = pluginConfig?.collections?.includes(slug)
+type CollectionOrGlobalConfig = CollectionConfig | GlobalConfig;
 
-                if (isEnabled) {
-                    return {
-                        ...collection,
-                        fields: [
-                            ...(collection?.fields || []),
-                            ...visualEditorField(collection),
-                        ],
-                    }
-                }
+interface PluginCollectionOrGlobalConfig {
+    previewUrl?: string;
+}
 
-                return collection
-            }) || [],
-        globals:
-            config.globals?.map(global => {
-                const { slug } = global
-                const isEnabled = pluginConfig?.globals?.includes(slug)
+export interface PluginConfig {
+    previewUrl: string;
+    collections?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
+    globals?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
+}
 
-                if (isEnabled) {
-                    return {
-                        ...global,
-                        fields: [...(global?.fields || []), ...visualEditorField(global)],
-                    }
-                }
+const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
+    cogConfigs?: T[],
+    pluginCogConfigs?: Record<string, PluginCollectionOrGlobalConfig | undefined>,
+) => cogConfigs?.map(cogConfig => {
+    const pluginCogConfig = pluginCogConfigs?.[cogConfig.slug];
 
-                return global
-            }) || [],
+    if (pluginCogConfig) {
+        return {
+            ...cogConfig,
+            fields: [
+                ...cogConfig.fields,
+                createVisualEditorField(cogConfig),
+            ],
+        };
     }
-};
+
+    return cogConfig
+}) ?? [];
+
+export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Config => ({
+    ...config,
+    collections: extendCogConfigs(config.collections, pluginConfig.collections),
+    globals: extendCogConfigs(config.globals, pluginConfig.globals),
+});

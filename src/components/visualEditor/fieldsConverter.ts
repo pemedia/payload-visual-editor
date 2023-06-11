@@ -1,7 +1,7 @@
 import { reduceFieldsToValues } from "payload/components/forms";
 import { Data, Fields } from "payload/dist/admin/components/forms/Form/types";
 import { FieldAffectingData } from "payload/dist/fields/config/types";
-import { Block, CollectionConfig, Field } from "payload/types";
+import { Block, Field } from "payload/types";
 
 const cache = new Map();
 
@@ -126,8 +126,8 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
     return values[field.name];
 };
 
-export const convert = async (collectionConfig: CollectionConfig, fields: Fields) => {
-    const allFields = getAllFields(collectionConfig.fields) as FieldAffectingData[];
+export const convert = async (fieldConfigs: Field[], fields: Fields) => {
+    const allFields = getAllFields(fieldConfigs) as FieldAffectingData[];
     const values = reduceFieldsToValues(fields, true);
 
     // console.log(allFields);

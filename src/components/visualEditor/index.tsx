@@ -1,30 +1,36 @@
 import { useAllFormFields } from "payload/components/forms";
+import { useDocumentInfo } from "payload/components/utilities";
+import { Fields } from "payload/dist/admin/components/forms/Form/types";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import Edit from "payload/dist/admin/components/icons/Edit";
-import { Props } from "payload/dist/admin/components/forms/field-types/Blocks/types";
-import { Fields } from "payload/dist/admin/components/forms/Form/types";
-import { CollectionConfig } from "payload/types";
+import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
+import { Field } from "payload/types";
 import React, { MouseEvent, MutableRefObject, useEffect, useRef, useState } from "react";
 import { convert } from "./fieldsConverter";
-
 import "./styles.scss";
 
 interface Config {
-    getCollectionConfig: () => CollectionConfig
     previewUrl: string;
 }
 
-const updatePreview = async (config: Config, fields: Fields, iframeRef: MutableRefObject<HTMLIFrameElement>) => {
+const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframeRef: MutableRefObject<HTMLIFrameElement>) => {
     try {
-        const collectionConfig = config.getCollectionConfig();
-        const post = await convert(collectionConfig, fields);
-        iframeRef.current.contentWindow.postMessage({ cmsLivePreviewData: post }, "*");
+        const doc = await convert(fieldConfigs, fields);
+
+        iframeRef.current.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
     } catch (e) {
         console.error(e);
     }
 }
 
-export const VisualEditor = (config: Config) => (props: Props) => {
+const getFieldConfigs = (documentInfo: ContextType) => {
+    return documentInfo.collection?.fields ?? documentInfo.global?.fields ?? [];
+};
+
+export const VisualEditor = (config: Config) => () => {
+    const documentInfo = useDocumentInfo();
+    const fieldConfigs = getFieldConfigs(documentInfo);
+
     const iframe = useRef<HTMLIFrameElement>(null);
     const resizeContainer = useRef<HTMLDivElement>(null);
     const debounce = useRef(false);
@@ -46,7 +52,7 @@ export const VisualEditor = (config: Config) => (props: Props) => {
         debounce.current = true;
 
         setTimeout(() => {
-            updatePreview(config, fields, iframe);
+            updatePreview(fieldConfigs, fields, iframe);
 
             debounce.current = false;
         }, 100);
@@ -54,7 +60,7 @@ export const VisualEditor = (config: Config) => (props: Props) => {
 
     const onIframeLoaded = (e: any) => {
         setTimeout(() => {
-            updatePreview(config, fields, iframe);
+            updatePreview(fieldConfigs, fields, iframe);
         }, 100);
     };
 
