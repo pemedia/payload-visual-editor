@@ -8,17 +8,18 @@ export default buildConfig({
     serverURL: "http://localhost:3000",
     admin: {
         user: Users.slug,
-        // webpack: config => ({
-        //     ...config,
-        //     resolve: {
-        //         ...config.resolve,
-        //         alias: {
-        //             ...config.resolve?.alias,
-        //             react: path.resolve("../../node_modules/react"),
-        //             "react-dom": path.resolve("../../node_modules/react-dom")
-        //         },
-        //     },
-        // }),
+        webpack: config => ({
+            ...config,
+            resolve: {
+                ...config.resolve,
+                alias: {
+                    ...config.resolve?.alias,
+                    react: path.join(__dirname, "../../../node_modules/react"),
+                    "react-dom": path.join(__dirname, "../../../node_modules/react-dom"),
+                    payload: path.join(__dirname, "../../../node_modules/payload"),
+                },
+            },
+        }),
     },
     collections: [
         Users,
@@ -32,14 +33,10 @@ export default buildConfig({
     },
     plugins: [
         visualEditor({
-            collections: ['examples'],
-            basePreviewUrl: 'http://localhost:3001/preview',
-            previewUrls: [
-                {
-                    slug: 'examples',
-                    url: 'http://localhost:3001/cases/preview'
-                }
-            ]
+            previewUrl: "http://localhost:3001/preview",
+            collections: {
+                [Examples.slug]: {},
+            },
         }),
     ],
 });

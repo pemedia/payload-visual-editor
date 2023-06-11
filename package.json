@@ -10,12 +10,14 @@
     "example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
     "example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "payload": "^1.9.0",
     "react": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.9",
     "payload": "^1.9.0",
+    "react": "^18.2.0",
     "typescript": "^5.1.3"
   }
 }
