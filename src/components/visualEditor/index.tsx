@@ -6,7 +6,7 @@ import Edit from "payload/dist/admin/components/icons/Edit";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
 import { Field } from "payload/types";
 import React, { useEffect, useRef, useState } from "react";
-import { convert } from "./fieldsConverter";
+import { generateDocument } from "../../utils/generateDocument";
 import "./styles.scss";
 import { useResizeObserver } from "./useResizeObserver";
 
@@ -25,20 +25,19 @@ const SCREEN_SIZES = {
     },
 };
 
-
 interface Config {
     previewUrl: string;
 }
 
 const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTMLIFrameElement) => {
     try {
-        const doc = await convert(fieldConfigs, fields);
+        const doc = await generateDocument(fieldConfigs, fields);
 
         iframe.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
     } catch (e) {
         console.error(e);
     }
-}
+};
 
 const getFieldConfigs = (documentInfo: ContextType) => {
     return documentInfo.collection?.fields ?? documentInfo.global?.fields ?? [];

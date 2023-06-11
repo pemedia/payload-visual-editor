@@ -15,6 +15,7 @@ export interface PluginConfig {
 }
 
 const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
+    previewUrl: string,
     cogConfigs?: T[],
     pluginCogConfigs?: Record<string, PluginCollectionOrGlobalConfig | undefined>,
 ) => cogConfigs?.map(cogConfig => {
@@ -25,7 +26,7 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
             ...cogConfig,
             fields: [
                 ...cogConfig.fields,
-                createVisualEditorField(cogConfig),
+                createVisualEditorField(pluginCogConfig.previewUrl ?? previewUrl),
             ],
         };
     }
@@ -35,6 +36,6 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
 
 export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Config => ({
     ...config,
-    collections: extendCogConfigs(config.collections, pluginConfig.collections),
-    globals: extendCogConfigs(config.globals, pluginConfig.globals),
+    collections: extendCogConfigs(pluginConfig.previewUrl, config.collections, pluginConfig.collections),
+    globals: extendCogConfigs(pluginConfig.previewUrl, config.globals, pluginConfig.globals),
 });

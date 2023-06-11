@@ -126,7 +126,7 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
     return values[field.name];
 };
 
-export const convert = async (fieldConfigs: Field[], fields: Fields) => {
+export const generateDocument = async (fieldConfigs: Field[], fields: Fields) => {
     const allFields = getAllFields(fieldConfigs) as FieldAffectingData[];
     const values = reduceFieldsToValues(fields, true);
 
