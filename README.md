@@ -28,29 +28,39 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 In the `plugins` array of your [Payload config](https://payloadcms.com/docs/configuration/overview), call the plugin with [options](#options):
 
 ```js
-import visualeditor from '@tbd-plugin-path/visualeditor'
+import visualEditor from '@tbd-plugin-path/visualEditor'
 
 const config = buildConfig({
   collections: [...],
   plugins: [
-    visualeditor({
-      collections: ['COLLECTION_SLUG'],
+    visualEditor({
       previewUrl: 'http://localhost:3001/pages/preview',
+      collections: {
+        [COLLECTION_SLUG]: {
+          previewUrl: "..." // optional individual preview url for each collection
+        },
+      },
+      globals: {
+        [GLOBAL_SLUG]: {
+          previewUrl: "..." // optional individual preview url for each global
+        },
+      },
     }),
-  ]
+  ],
 });
-
 ```
 
 ### Options
 
-- `collections` : string[] | mandatory
-
-  An array of collections slugs to definde, where the visual editor will be implemented (e.g. `['pages','posts']`).
-  
 - `previewUrl` : string | mandatory
 
-  An string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
+  A string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
+
+- `collections` / `globals` : Record<string, { previewUrl?: string; }>
+
+  An object with configs for all collections / globals which should enable the live preview.
+  Use the collection / global slug as the key.
+  If you don't want to override the previewUrl, just pass an empty object.
   
 ## Frontend Integration in Next.js 
 
