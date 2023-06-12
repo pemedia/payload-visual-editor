@@ -20,8 +20,9 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 We will provide a npm package in the next days. But till then:
 - Check out or download this repository
 - create a `/visualEditor` folder inside your payload projects `/src` folder
-- Copy the complete content of the plugins `/src` directory into your payload project
-- For that: create a `/visualEditor` folder inside your payload projects `/src` folder
+- Now you have to copy the content of the plugins `/src` folder into your payload project:
+  - Create a `/visualEditor` folder inside your payload projects `/src` folder
+  - Move the plugin files into this folder
 
 ```bash
   yarn add TBD
