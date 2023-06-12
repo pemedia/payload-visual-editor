@@ -67,7 +67,7 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
     }
 
     if (field.type === "array") {
-        // todo: Checken da von Jan
+        // todo: Please check, because Jan coded this
         const arrayFields = getAllFields([field.fields[0]]) as FieldAffectingData[];
         const arrayValues = values[field.name];
 
@@ -110,7 +110,7 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
     }
 
     if (field.type === "group") {
-        // todo: Checken da von Jan
+        // todo: Please check, because Jan coded this
         const allGroupFields = getAllFields(field.fields) as FieldAffectingData[];
         const groupValues = values[field.name];
 
