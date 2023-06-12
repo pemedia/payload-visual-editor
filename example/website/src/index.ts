@@ -1,5 +1,7 @@
 import { Post, Tag } from "./payload-types";
 
+new EventSource("/esbuild").addEventListener("change", () => location.reload())
+
 const subtitleContainer = document.getElementById("subtitle")!;
 const tagsContainer = document.getElementById("tags")!;
 
