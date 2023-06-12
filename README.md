@@ -88,10 +88,21 @@ useEffect(() => {
     };
 }, []);
 ```
-You can now pass this to your block render function. In this case `page.content`, because `content` is the name of our 'blocks' field in our payload CollectionConfig.
+You can now pass this to your render function and you can use all your payload collection data in there. For example like this:
 
 ```js
-<RenderBlocks blocks={page.content} />
+return (
+  <div>
+      <header>
+        <h1>{page.title}</h1>
+      </header>
+      <main>
+        <div>
+          <RenderBlocks blocks={page.content} />
+        </div>
+      </main>
+  </div>
+)
 ```
 
 ## Development
