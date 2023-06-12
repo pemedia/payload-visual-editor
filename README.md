@@ -79,4 +79,44 @@ You can now pass this to your block render function. In this case `page.content`
 
 ## Development
 
-tbd
+This repo includes a demo project with payload as the backend and a simple website written in plain TypeScript.
+To start the demo, follow these steps:
+
+1. Start docker and wait until the containers are up:
+
+```sh
+docker-compose up
+```
+
+2. Open another terminal and install root dependencies:
+
+```sh
+yarn plugin:yarn
+```
+
+3. Install dependencies of the payload example:
+
+```sh
+yarn example:cms:yarn
+```
+
+4. Run the payload dev server:
+
+```sh
+yarn example:cms:dev
+```
+
+5. Open another terminal and install dependencies of the frontend example:
+
+```sh
+yarn example:website:yarn
+```
+
+6. Start the dev server for the frontend:
+
+```sh
+yarn example:website:dev
+```
+
+- After changing collections, fields, etc., you can use `yarn example:cms:generate-types` to create an updated interface file.
+- To connect with the node container, run `yarn shell`.

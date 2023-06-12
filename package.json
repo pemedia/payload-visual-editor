@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "shell": "docker exec -i -t payload-visual-editor-node-1 /bin/sh",
-    "plugin:build": "tsc",
+    "local:build-watch": "tsc -w",
+    "plugin:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'yarn'",
+    "plugin:build-watch": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'yarn tsc -w'",
     "example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
     "example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
     "example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
