@@ -17,10 +17,16 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 
 ## Installation
 
+We will provide a npm package in the next days. But till then:
+- Check out or download this repository
+- create a `/visualEditor` folder inside your payload projects `/src` folder
+- Copy the complete content of the plugins `/src` directory into your payload project
+- For that: create a `/visualEditor` folder inside your payload projects `/src` folder
+
 ```bash
-  yarn add payload-plugin-visualeditor
+  yarn add TBD
   # OR
-  npm i payload-plugin-visualeditor
+  npm i TBD
 ```
 
 ## Basic Usage
@@ -28,7 +34,7 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 In the `plugins` array of your [Payload config](https://payloadcms.com/docs/configuration/overview), call the plugin with [options](#options):
 
 ```js
-import visualEditor from '@tbd-plugin-path/visualEditor'
+import visualEditor from '[/path-to-plugin]/visualEditor'
 
 const config = buildConfig({
   collections: [...],
