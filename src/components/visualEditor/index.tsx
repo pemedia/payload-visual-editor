@@ -54,11 +54,24 @@ export const VisualEditor = (config: Config) => () => {
 
     const debounce = useRef(false);
 
+    const sidebarWidth = useRef(0);
+    const dragging = useRef(false);
+    const previousClientX = useRef(0);
+
     const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
 
     useEffect(() => {
         editorContainer?.classList.add("visual-editor");
         editorContainer?.classList.add("show-preview");
+
+        // check local storage for last sidebar width
+        const storedSidebarWidth = localStorage.getItem("visualEditorSidebar");
+        if(storedSidebarWidth) {
+            document.querySelector(':root').style.setProperty('--visualeditor-sidebar-width', `${storedSidebarWidth}px`);
+        }
+        window.addEventListener("mouseup", sidebarDrag);
+        document.body.addEventListener("mouseup", sidebarDrag);
+        document.addEventListener("mouseup", sidebarDrag);
     }, []);
 
     useResizeObserver(resizeContainer, ([entry]) => {
@@ -85,6 +98,39 @@ export const VisualEditor = (config: Config) => () => {
         }, 100);
     };
 
+    const sidebarDrag = (e) => {
+        const sidebarElem = document.querySelector(".collection-edit.visual-editor .collection-edit__edit > .render-fields, .global-edit.visual-editor .global-edit__edit > .render-fields");
+        if (e.type === "mousedown") {
+            e.preventDefault();
+            sidebarWidth.current = sidebarElem.offsetWidth;
+            dragging.current = true;
+            previousClientX.current = e.clientX;
+            window.addEventListener("mousemove", sidebarMove)
+
+            document.querySelector('#live-preview-iframe').setAttribute('dragging','true');
+
+        } else {
+            dragging.current = false;
+            window.removeEventListener("mousemove", sidebarMove)
+        }
+    }
+
+    const sidebarMove = (e) => {
+        if(dragging.current === true && sidebarWidth.current != 0 && e.which == 1) {
+            e.preventDefault();
+            const r = document.querySelector(':root');
+            const change = e.clientX - previousClientX.current;
+
+            let newValue = sidebarWidth.current + change;
+            if(newValue < 350) newValue = 350;
+
+            r.style.setProperty('--visualeditor-sidebar-width', `${newValue}px`);
+            localStorage.setItem("visualEditorSidebar", newValue);
+        } else {
+            document.querySelector('#live-preview-iframe').setAttribute('dragging','false');
+        }
+    }
+
     const togglePreview = () => {
         editorContainer.classList.toggle("show-preview");
     };
@@ -101,6 +147,7 @@ export const VisualEditor = (config: Config) => () => {
 
             <div className="ContentEditor">
                 <div className="live-preview-container">
+                    <div className="sidebar-drag-handle" onMouseDown={sidebarDrag} onMouseUp={sidebarDrag}></div>
                     <div className="live-preview">
                         <div className="live-preview-resize-container" ref={resizeContainer}>
                             <div className="live-preview-settings">

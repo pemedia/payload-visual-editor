@@ -1,5 +1,9 @@
 @import '~payload/dist/admin/scss/vars';
 
+:root {
+  --visualeditor-sidebar-width: 455px;
+}
+
 .ContentEditor {
   > .live-preview-container {
     display:none;
@@ -182,7 +186,7 @@
       padding:0;
 
       > .render-fields {
-        width: 455px;
+        width: var(--visualeditor-sidebar-width);
         height: calc(100vh - 6rem);
         overflow-y: auto;
         overflow-x: hidden;
@@ -229,9 +233,8 @@
         top: 6rem;
         right: 0;
         bottom: 0;
-        left: calc(455px + var(--nav-width));
+        left: calc(var(--visualeditor-sidebar-width) + var(--nav-width));
         background: var(--theme-elevation-50);
-        border-left: 1px solid var(--theme-elevation-100);
   
         > .live-preview {
           display: flex;
@@ -290,6 +293,10 @@
               background-color: #fff;
               // border-radius: 0.5rem;
 
+              &[dragging="true"] {
+                pointer-events: none;
+              }
+
               ::-webkit-scrollbar {
                 width: 10px;
               }
@@ -309,6 +316,14 @@
           }
         }
       }
+    }
+
+    .sidebar-drag-handle {
+      width: 5px;
+      height:100%;
+      background: var(--theme-elevation-0);
+      border-right: 2px solid var(--theme-elevation-200);
+      cursor:col-resize;
     }
   }
 }
