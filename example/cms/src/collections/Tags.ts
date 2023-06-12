@@ -1,11 +1,12 @@
 import { CollectionConfig } from "payload/types";
 
-export const Examples: CollectionConfig = {
-    slug: "examples",
+export const Tags: CollectionConfig = {
+    slug: "tags",
     fields: [
         {
-            name: "someField",
+            name: "name",
             type: "text",
+            required: true,
         },
     ],
-}
+};

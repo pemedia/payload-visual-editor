@@ -4,9 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "http-server"
+    "build-watch": "tsc -w",
+    "bundle-and-serve": "node esbuild.mjs",
+    "dev": "concurrently --kill-others yarn:build-watch yarn:bundle-and-serve"
   },
-  "dependencies": {
-    "http-server": "^14.1.1"
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "esbuild": "^0.18.1",
+    "esbuild-plugin-collection": "dkirchhof/esbuild-plugin-collection",
+    "typescript": "^5.1.3"
   }
 }

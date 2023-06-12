@@ -9,6 +9,7 @@
     "plugin:build": "tsc",
     "example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
     "example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
+    "example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
     "example:website:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn'",
     "example:website:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn dev'"
   },
