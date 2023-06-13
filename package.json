@@ -8,7 +8,7 @@
     "shell": "docker exec -i -t payload-visual-editor-node-1 /bin/sh",
     "plugin:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'yarn'",
     "plugin:build": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc'",
-    "plugin:build-watch": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && src/styles.scss dist/styles.scss && yarn tsc -w'",
+    "plugin:build-watch": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc -w'",
     "example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
     "example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
     "example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
