@@ -41,7 +41,6 @@ const getAllFields = (fields: Field[]) => {
 };
 
 const getValue = async (field: FieldAffectingData, values: Data) => {
-
     if (field.type === "relationship" || field.type === "upload") {
         if (values[field.name] === undefined) {
             if (field.required) {
@@ -67,17 +66,24 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
     }
 
     if (field.type === "array") {
-        // todo: Please check, because Jan coded this
-        const arrayFields = getAllFields([field.fields[0]]) as FieldAffectingData[];
+        const arrayFields = getAllFields(field.fields) as FieldAffectingData[];
         const arrayValues = values[field.name];
 
+        const resolvedValues: any[] = [];
+
         if (Array.isArray(arrayValues)) {
-            for (const [i, entry] of arrayValues.entries()) {
-                arrayValues[i][arrayFields[0].name] = await getValue(arrayFields[0], entry);
+            for (const value of arrayValues) {
+                const result: any = {};
+
+                for (let arrayField of arrayFields) {
+                    result[arrayField.name!] = await getValue(arrayField, value);
+                }
+
+                resolvedValues.push(result);
             }
-            return arrayValues;
         }
-        return [];
+
+        return resolvedValues;
     }
 
     if (field.type === "richText") {
