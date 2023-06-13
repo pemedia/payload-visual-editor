@@ -293,10 +293,6 @@
               background-color: #fff;
               // border-radius: 0.5rem;
 
-              &[dragging="true"] {
-                pointer-events: none;
-              }
-
               ::-webkit-scrollbar {
                 width: 10px;
               }
