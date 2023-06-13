@@ -25,9 +25,8 @@ const fetchRelations = async (slug: string, ids: string[]) => {
 };
 
 const getBlock = (blocks: Block[], blockType: string) => {
-    return blocks.find(b => b.slug === blockType);
+    return blocks.find(b => b.slug === blockType)!;
 };
-
 
 const getAllFields = (fields: Field[]) => {
     // todo: add more cases
@@ -101,13 +100,13 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
             blockValues.map(async (value: Data) => {
                 const fields = getBlock(field.blocks, value.blockType).fields as FieldAffectingData[];
 
-                const result = {
+                const result: any = {
                     id: value.id,
                     blockType: value.blockType,
                 };
 
                 for (let field of fields) {
-                    result[field.name] = await getValue(field, value);
+                    result[field.name!] = await getValue(field, value);
                 }
 
                 return result;
@@ -116,20 +115,19 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
     }
 
     if (field.type === "group") {
-        // todo: Please check, because Jan coded this
         const allGroupFields = getAllFields(field.fields) as FieldAffectingData[];
         const groupValues = values[field.name];
 
-        const result = {};
+        const result: any = {};
+
         for (let field of allGroupFields) {
-            result[field.name] = await getValue(field, groupValues);
+            result[field.name!] = await getValue(field, groupValues);
         }
 
         return result;
-
     }
 
-    return values[field.name];
+    return values[field.name!];
 };
 
 export const generateDocument = async (fieldConfigs: Field[], fields: Fields) => {
@@ -139,14 +137,14 @@ export const generateDocument = async (fieldConfigs: Field[], fields: Fields) =>
     // console.log(allFields);
     // console.log(values);
 
-    const result = {
+    const result: any = {
         // todo: id
         createdAt: values.createdAt,
         updatedAt: values.updatedAt,
     };
 
     for (let field of allFields) {
-        result[field.name] = await getValue(field, values);
+        result[field.name!] = await getValue(field, values);
     }
 
     // console.log('Payload result', result);
