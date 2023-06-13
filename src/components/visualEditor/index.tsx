@@ -7,7 +7,6 @@ import { ContextType } from "payload/dist/admin/components/utilities/DocumentInf
 import { Field } from "payload/types";
 import React, { useEffect, useRef, useState } from "react";
 import { generateDocument } from "../../utils/generateDocument";
-import "./styles.scss";
 import { useResizeObserver } from "./useResizeObserver";
 
 const SCREEN_SIZES = {

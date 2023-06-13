@@ -35,7 +35,11 @@ We will provide a npm package in the next days. But till then:
 In the `plugins` array of your [Payload config](https://payloadcms.com/docs/configuration/overview), call the plugin with [options](#options):
 
 ```js
-import visualEditor from '[/path-to-plugin]/visualEditor'
+// import plugin
+import { visualEditor } from '[/path-to-plugin]/visualEditor';
+
+// import styles
+import '[/path-to-plugin]/dist/styles.scss';
 
 const config = buildConfig({
   collections: [...],

@@ -1,6 +1,7 @@
 import path from "path";
 import { buildConfig } from "payload/config";
 import { visualEditor } from "../../../src";
+import "../../../src/styles.scss";
 import { Posts } from "./collections/Posts";
 import { Tags } from "./collections/Tags";
 import { Users } from "./collections/Users";
