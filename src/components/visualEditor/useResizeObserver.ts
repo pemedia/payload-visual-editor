@@ -7,7 +7,7 @@ export const useResizeObserver = (targetRef: RefObject<HTMLElement>, cb: ResizeO
         resizeObserver.observe(targetRef.current!);
 
         return () => {
-            if(targetRef.current) resizeObserver.unobserve(targetRef.current!);
+            resizeObserver.disconnect();
         };
     }, []);
 };
