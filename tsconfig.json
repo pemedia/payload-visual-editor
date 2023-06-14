@@ -9,8 +9,13 @@
     "declaration": true,
     "declarationDir": "./dist",
     "strict": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"
   ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
