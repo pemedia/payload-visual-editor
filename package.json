@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "dist/index.js",
   "repository": "git@github.com:pemedia/payload-visual-editor.git",
+  "description": "Payload CMS plugin which provides a visual live editor directly in the Admin UI.",
   "license": "MIT",
   "scripts": {
     "shell": "docker exec -i -t payload-visual-editor-node-1 /bin/sh",
