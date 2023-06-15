@@ -116,32 +116,33 @@ docker-compose up
 2. Open another terminal and install root dependencies:
 
 ```sh
-yarn plugin:yarn
+yarn docker:plugin:yarn
 ```
 
 3. Install dependencies of the payload example:
 
 ```sh
-yarn example:cms:yarn
+yarn docker:example:cms:yarn
 ```
 
 4. Run the payload dev server:
 
 ```sh
-yarn example:cms:dev
+yarn docker:example:cms:dev
 ```
 
 5. Open another terminal and install dependencies of the frontend example:
 
 ```sh
-yarn example:website:yarn
+yarn docker:example:website:yarn
 ```
 
 6. Start the dev server for the frontend:
 
 ```sh
-yarn example:website:dev
+yarn docker:example:website:dev
 ```
 
-- After changing collections, fields, etc., you can use `yarn example:cms:generate-types` to create an updated interface file.
-- To connect with the node container, run `yarn shell`.
+- After changing collections, fields, etc., you can use `yarn docker:example:cms:generate-types` to create an updated interface file.
+- To connect with the node container, run `yarn docker:shell`.
+- To connect with the database container, run `yarn docker:mongo`.

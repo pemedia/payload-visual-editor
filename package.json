@@ -6,15 +6,18 @@
   "description": "Payload CMS plugin which provides a visual live editor directly in the Admin UI.",
   "license": "MIT",
   "scripts": {
-    "shell": "docker exec -i -t payload-visual-editor-node-1 /bin/sh",
-    "plugin:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'yarn'",
-    "plugin:build": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc'",
-    "plugin:build-watch": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc -w'",
-    "example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
-    "example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
-    "example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
-    "example:website:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn'",
-    "example:website:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn dev'"
+    "build": "mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc",
+    "build-watch": "mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc -w",
+    "docker:shell": "docker exec -i -t payload-visual-editor-node-1 /bin/sh",
+    "docker:mongo": "docker exec -i -t payload-visual-editor-mongo-1 mongosh",
+    "docker:plugin:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'yarn'",
+    "docker:plugin:build": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc'",
+    "docker:plugin:build-watch": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc -w'",
+    "docker:example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
+    "docker:example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
+    "docker:example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
+    "docker:example:website:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn'",
+    "docker:example:website:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn dev'"
   },
   "peerDependencies": {
     "payload": "^1.9.0",
