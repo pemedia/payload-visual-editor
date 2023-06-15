@@ -1,9 +1,11 @@
 {
   "name": "payload-visual-editor",
   "version": "0.0.1",
-  "main": "dist/index.js",
-  "repository": "git@github.com:pemedia/payload-visual-editor.git",
   "description": "Payload CMS plugin which provides a visual live editor directly in the Admin UI.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:pemedia/payload-visual-editor.git",
+  "author": "info@pemedia.de",
   "license": "MIT",
   "scripts": {
     "build": "mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc",
@@ -17,8 +19,21 @@
     "docker:example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
     "docker:example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
     "docker:example:website:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn'",
-    "docker:example:website:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn dev'"
+    "docker:example:website:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn dev'",
+    "prepublishOnly": "yarn build"
   },
+  "files": [
+    "dist",
+    "LICENSE.txt"
+  ],
+  "keywords": [
+    "payload",
+    "payload-plugin",
+    "cms",
+    "plugin",
+    "typescript",
+    "react"
+  ],
   "peerDependencies": {
     "payload": "^1.9.0",
     "react": "^18.2.0"
