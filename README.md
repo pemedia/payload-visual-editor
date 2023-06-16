@@ -8,7 +8,7 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 
 - Adds a visual editor component to your collections:
   - Creates the visual editor UI in the Admin UIs edit view
-  - Handles the live data exchange with your frontend (currently focused on Next.js)
+  - Handles the live data exchange with your frontend 
 
 ![image](https://github.com/pemedia/payload-visual-live-preview/blob/main/visual-editor-screenshot.png?raw=true)
 
@@ -17,17 +17,10 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 
 ## Installation
 
-We will provide a npm package in the next days. But till then:
-- Check out or download this repository
-- create a `/visualEditor` folder inside your payload projects `/src` folder
-- Now you have to copy the content of the plugins `/src` folder into your payload project:
-  - Create a `/visualEditor` folder inside your payload projects `/src` folder
-  - Move the plugin files into this folder
-
 ```bash
-  yarn add TBD
+  yarn add payload-visual-editor
   # OR
-  npm i TBD
+  npm i payload-visual-editor
 ```
 
 ## Basic Usage
@@ -36,10 +29,10 @@ In the `plugins` array of your [Payload config](https://payloadcms.com/docs/conf
 
 ```js
 // import plugin
-import { visualEditor } from '[/path-to-plugin]/visualEditor';
+import { visualEditor } from 'payload-visual-editor';
 
 // import styles
-import '[/path-to-plugin]/dist/styles.scss';
+import 'payload-visual-editor/dist/styles.scss';
 
 const config = buildConfig({
   collections: [...],
