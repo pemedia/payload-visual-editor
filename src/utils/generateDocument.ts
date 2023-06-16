@@ -1,6 +1,6 @@
 import { reduceFieldsToValues } from "payload/components/forms";
 import { Data, Fields } from "payload/dist/admin/components/forms/Form/types";
-import { FieldAffectingData } from "payload/dist/fields/config/types";
+import { FieldAffectingData, fieldAffectsData, fieldHasSubFields } from "payload/dist/fields/config/types";
 import { Block, Field } from "payload/types";
 
 const cache = new Map();
@@ -29,10 +29,15 @@ const getBlock = (blocks: Block[], blockType: string) => {
 };
 
 const getAllFields = (fields: Field[]) => {
-    // todo: add more cases
     return fields.flatMap(field => {
-        if (field.type === "tabs") {
-            return field.tabs.flatMap(tab => tab.fields);
+        if (!fieldAffectsData(field)) {
+            if (field.type === "tabs") {
+                return field.tabs.flatMap(tab => tab.fields);
+            }
+
+            if (fieldHasSubFields(field)) {
+                return field.fields;
+            }
         }
 
         return field;
