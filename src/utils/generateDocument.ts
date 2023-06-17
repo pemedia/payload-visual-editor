@@ -1,6 +1,11 @@
 import { reduceFieldsToValues } from "payload/components/forms";
 import { Data, Fields } from "payload/dist/admin/components/forms/Form/types";
-import { FieldAffectingData, fieldAffectsData, fieldHasSubFields } from "payload/dist/fields/config/types";
+import {
+    FieldAffectingData,
+    fieldAffectsData,
+    fieldHasSubFields,
+    fieldIsPresentationalOnly
+} from "payload/dist/fields/config/types";
 import { Block, Field } from "payload/types";
 
 const cache = new Map();
@@ -28,19 +33,26 @@ const getBlock = (blocks: Block[], blockType: string) => {
     return blocks.find(b => b.slug === blockType)!;
 };
 
-const getAllFields = (fields: Field[]) => {
-    return fields.flatMap(field => {
-        if (!fieldAffectsData(field)) {
-            if (field.type === "tabs") {
-                return field.tabs.flatMap(tab => tab.fields);
-            }
-
-            if (fieldHasSubFields(field)) {
-                return field.fields;
-            }
+const getAllFields = (fields: Field[]): Field[] => {
+    return fields
+      .filter((field) => !fieldIsPresentationalOnly(field))
+      .flatMap(field => {
+        if(fieldAffectsData(field)) {
+          return field;
         }
 
-        return field;
+        if (field.type === "tabs") {
+          return field.tabs.flatMap(
+            tab => getAllFields(tab.fields)
+          );
+        }
+
+        if (fieldHasSubFields(field)) {
+          return getAllFields(field.fields);
+        }
+
+        console.error(field);
+        throw new Error(`Unrecognized field type ${field.type}, please report at https://github.com/pemedia/payload-visual-editor/issues`);
     });
 };
 
