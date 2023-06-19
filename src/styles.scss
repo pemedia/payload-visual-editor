@@ -208,6 +208,10 @@
       padding-right: var(--gutter-h);
     }
 
+    .tabs-field__tabs:after {
+      width: 0;
+    }
+
   }
   
   .collection-edit.visual-editor.show-preview,
