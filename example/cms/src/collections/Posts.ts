@@ -5,6 +5,11 @@ export const Posts: CollectionConfig = {
     slug: "posts",
     fields: [
         {
+            name: "title",
+            type: "text",
+            required: true,
+        },
+        {
             name: "subtitle",
             type: "text",
             required: true,
@@ -15,6 +20,13 @@ export const Posts: CollectionConfig = {
             relationTo: Tags.slug,
             hasMany: true,
             required: true,
+        },
+        {
+            name: "description",
+            type: "text",
+            admin: {
+                position: 'sidebar'
+            }
         },
     ],
 };

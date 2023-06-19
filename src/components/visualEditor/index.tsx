@@ -9,6 +9,10 @@ import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } fro
 import { generateDocument } from "../../utils/generateDocument";
 import { useResizeObserver } from "./useResizeObserver";
 
+import RenderFields from 'payload/dist/admin/components/forms/RenderFields';
+import fieldTypes from 'payload/dist/admin/components/forms/field-types';
+
+
 const SCREEN_SIZES = {
     desktop: {
         width: "100%",
@@ -129,6 +133,18 @@ export const VisualEditor = (config: Config) => () => {
 
     return (
         <>
+            {(fieldConfigs.filter(e => e.admin?.position === 'sidebar').length > 0) ? (
+            <div className="ContentEditorAdminSidebar">
+                <RenderFields
+                    readOnly={false}
+                    permissions={documentInfo.docPermissions?.fields}
+                    filter={(field) => field?.admin?.position === 'sidebar'}
+                    fieldTypes={fieldTypes}
+                    fieldSchema={fieldConfigs}
+                />
+            </div>
+            ) : null }
+
             <button className="toggleVisualEditor menu pill pill--has-action" type="button" onClick={togglePreview}>
                 <Edit /> Live Preview
             </button>
