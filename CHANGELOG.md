@@ -1,3 +1,9 @@
+## 0.0.5
+
+### Features
+
+- fields from the `{admin: {position:'sidebar'}}` are now useable. (in the main fields area)
+
 ## 0.0.4
 
 ### Bug Fixes

@@ -13,6 +13,10 @@
   display: none;
 }
 
+.ContentEditorAdminSidebar {
+  display:none;
+}
+
 @media (min-width: calc($breakpoint-m-width + 1px)) {
   .collection-edit.visual-editor,
   .global-edit.visual-editor {
@@ -113,8 +117,14 @@
         }
 
         > .render-fields {
+
           position: relative;
     
+          > .field-type {
+            padding-left: var(--gutter-h);
+            padding-right: var(--gutter-h);
+          }
+
           .toggleVisualEditor.menu {
             display:block;
             position: absolute;
@@ -168,6 +178,20 @@
         }
       }
     }
+
+    /* ------------------------------- */
+    /* --- Admin Position: Sidebar --- */
+    /* ------------------------------- */
+
+    .ContentEditorAdminSidebar {
+      display:block;
+      border: 1px solid var(--theme-elevation-100);
+      background-color: var(--theme-elevation-50) ;
+      padding: base(1);
+      padding-left: var(--gutter-h);
+      padding-right: var(--gutter-h);
+    }
+
   }
   
   .collection-edit.visual-editor.show-preview,
@@ -226,6 +250,7 @@
       
     .ContentEditor {
       display:flex;
+      padding:0 !important;
 
       > .live-preview-container {
         display: flex;
@@ -315,11 +340,16 @@
     }
 
     .sidebar-drag-handle {
-      width: 5px;
+      width: 2px;
       height:100%;
       background: var(--theme-elevation-0);
       border-right: 2px solid var(--theme-elevation-200);
       cursor:col-resize;
+    }
+
+    .ContentEditorAdminSidebar {
+      border-left: none;
+      border-right: none;
     }
   }
 }
