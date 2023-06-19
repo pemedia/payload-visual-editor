@@ -1,19 +1,19 @@
 # Payload Visual Editor Plugin
-This plugin provides a visual editor, including a nice UI, for [Payload](https://github.com/payloadcms/payload) collections.
+This plugin provides a visual editor, including a nice UI, for [Payload](https://github.com/payloadcms/payload).
 
 > **Note**
 > This plugin is currently under active development and still in alpha stage. Please check back periodically for updates.
 
 ## Core features:
 
-- Adds a visual editor component to your collections:
+- Adds a visual editor component to your collections and globals:
   - Creates the visual editor UI in the Admin UIs edit view
   - Handles the live data exchange with your frontend 
 
 ![image](https://github.com/pemedia/payload-visual-live-preview/blob/main/visual-editor-screenshot.png?raw=true)
 
-> **Warning**
-> In the Admin UI of the collections in which you use the visual editor plugin, you cannot use any elements in the `{admin: {position:'sidebar'}}` because for now we have to hide this area of the sidebar, to make the preview UI work. But we are elaborating on options to solve this in the future.
+> **Note**
+> For the collections in which you use the visual editor, fields in the `{admin: {position:'sidebar'}}` area will be rendered below all other fields, in the "main" area.
 
 ## Installation
 
