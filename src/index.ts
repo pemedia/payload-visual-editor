@@ -1,5 +1,6 @@
 import { Config } from "payload/config";
 import { createVisualEditorField } from "./fields/visualEditorField";
+import { createAdminSidebarField } from "./fields/adminSidebarField";
 import { CollectionConfig, GlobalConfig } from "payload/types";
 
 type CollectionOrGlobalConfig = CollectionConfig | GlobalConfig;
@@ -22,13 +23,46 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
     const pluginCogConfig = pluginCogConfigs?.[cogConfig.slug];
 
     if (pluginCogConfig) {
-        return {
-            ...cogConfig,
-            fields: [
-                ...cogConfig.fields,
-                createVisualEditorField(pluginCogConfig.previewUrl ?? previewUrl),
-            ],
-        };
+
+        const tabsIndex = cogConfig.fields.findIndex(e => e.type === 'tabs');
+        const hasTabs = (tabsIndex > -1) ? true : false;
+
+        if(hasTabs) {
+
+            let fields = cogConfig.fields;
+            let tabsContent = fields[tabsIndex];
+            tabsContent.tabs = [
+                ...tabsContent.tabs,
+                {
+                    label: 'More',
+                    fields: [
+                        createAdminSidebarField()
+                    ]
+                },  
+            ]
+            fields[tabsIndex] = tabsContent;
+
+            return {
+                ...cogConfig,
+                fields: [
+                    ...fields,
+                    createVisualEditorField(pluginCogConfig.previewUrl ?? previewUrl),
+                ],
+            };
+
+        } else {
+
+            return {
+                ...cogConfig,
+                fields: [
+                    ...cogConfig.fields,
+                    createAdminSidebarField(),
+                    createVisualEditorField(pluginCogConfig.previewUrl ?? previewUrl),
+                ],
+            };
+
+        }
+
     }
 
     return cogConfig

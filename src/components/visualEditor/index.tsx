@@ -133,18 +133,6 @@ export const VisualEditor = (config: Config) => () => {
 
     return (
         <>
-            {(fieldConfigs.filter(e => e.admin?.position === 'sidebar').length > 0) ? (
-            <div className="ContentEditorAdminSidebar">
-                <RenderFields
-                    readOnly={false}
-                    permissions={documentInfo.docPermissions?.fields}
-                    filter={(field) => field?.admin?.position === 'sidebar'}
-                    fieldTypes={fieldTypes}
-                    fieldSchema={fieldConfigs}
-                />
-            </div>
-            ) : null }
-
             <button className="toggleVisualEditor menu pill pill--has-action" type="button" onClick={togglePreview}>
                 <Edit /> Live Preview
             </button>
@@ -185,3 +173,26 @@ export const VisualEditor = (config: Config) => () => {
         </>
     );
 };
+
+
+export const AdminSidebar = () => {
+    const documentInfo = useDocumentInfo();
+    const fieldConfigs = getFieldConfigs(documentInfo);
+
+    return (
+        <>
+            {(fieldConfigs.filter(e => e.admin?.position === 'sidebar').length > 0) ? (
+            <div className="ContentEditorAdminSidebar">
+                <RenderFields
+                    readOnly={false}
+                    permissions={documentInfo.docPermissions?.fields}
+                    filter={(field) => field?.admin?.position === 'sidebar'}
+                    fieldTypes={fieldTypes}
+                    fieldSchema={fieldConfigs}
+                />
+            </div>
+            ) : null }
+        </>
+    )
+};
+

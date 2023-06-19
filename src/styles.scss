@@ -13,9 +13,25 @@
   display: none;
 }
 
-.ContentEditorAdminSidebar {
-  display:none;
+
+/* --------------------------------- */
+/* --- Hide admin sidebar fields --- */
+/* --------------------------------- */
+
+.collection-edit.visual-editor,
+.global-edit.visual-editor {
+
+  .collection-edit__sidebar-sticky-wrap,
+  .global-edit__sidebar-sticky-wrap {
+
+    .collection-edit__sidebar-fields,
+    .global-edit__sidebar-fields {
+      display:none;
+    }
+  }
+
 }
+
 
 @media (min-width: calc($breakpoint-m-width + 1px)) {
   .collection-edit.visual-editor,
@@ -183,7 +199,7 @@
     /* --- Admin Position: Sidebar --- */
     /* ------------------------------- */
 
-    .ContentEditorAdminSidebar {
+    .collection-edit__edit > .render-fields > .ContentEditorAdminSidebar {
       display:block;
       border: 1px solid var(--theme-elevation-100);
       background-color: var(--theme-elevation-50) ;
