@@ -208,15 +208,19 @@
     /* --- Admin Position: Sidebar --- */
     /* ------------------------------- */
 
-    .collection-edit__edit > .render-fields > .ContentEditorAdminSidebar {
-      display:block;
-      border: 1px solid var(--theme-elevation-100);
-      background-color: var(--theme-elevation-50) ;
-      padding: base(1);
-      padding-left: var(--gutter-h);
-      padding-right: var(--gutter-h);
+    .collection-edit__edit > .render-fields {
 
-    }
+      > .ContentEditorAdminSidebar {
+        display:block;
+        border: 1px solid var(--theme-elevation-100);
+        background-color: var(--theme-elevation-50) ;
+        padding: base(1);
+        padding-left: var(--gutter-h);
+        padding-right: var(--gutter-h);
+        margin-top:auto;
+      }
+
+    } 
 
     .tabs-field__tabs:after {
       width: 0;
@@ -377,9 +381,16 @@
       cursor:col-resize;
     }
 
-    .ContentEditorAdminSidebar {
-      border-left: none;
-      border-right: none;
+    .collection-edit__edit > .render-fields {
+
+      display: flex;
+      flex-direction: column;
+
+      > .ContentEditorAdminSidebar {
+        border-left: none;
+        border-right: none;
+        margin-top: auto;
+      }
     }
   }
 }
