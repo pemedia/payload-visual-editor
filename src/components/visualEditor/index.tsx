@@ -1,3 +1,6 @@
+import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
+import { useTranslation } from 'react-i18next';
+
 import { useAllFormFields } from "payload/components/forms";
 import { useDocumentInfo } from "payload/components/utilities";
 import { Fields } from "payload/dist/admin/components/forms/Form/types";
@@ -5,12 +8,15 @@ import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import Edit from "payload/dist/admin/components/icons/Edit";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
 import { Field } from "payload/types";
-import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 import { generateDocument } from "../../utils/generateDocument";
 import { useResizeObserver } from "./useResizeObserver";
 
 import RenderFields from 'payload/dist/admin/components/forms/RenderFields';
 import fieldTypes from 'payload/dist/admin/components/forms/field-types';
+
+import CopyToClipboard from 'payload/dist/admin/components/elements/CopyToClipboard';
+import { useConfig } from 'payload/components/utilities';
+
 
 
 const SCREEN_SIZES = {
@@ -178,11 +184,20 @@ export const VisualEditor = (config: Config) => () => {
 export const AdminSidebar = () => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
+    const baseClass = 'collection-edit';
+
+    const { 
+        serverURL,
+        routes: { api } 
+    } = useConfig();
+
+    const collection = documentInfo.collection;
+    const apiURL = `${serverURL}${api}/${collection?.slug}/${documentInfo.id}${collection?.versions?.drafts ? '?draft=true' : ''}`;
 
     return (
-        <>
-            {(fieldConfigs.filter(e => e.admin?.position === 'sidebar').length > 0) ? (
             <div className="ContentEditorAdminSidebar">
+
+                {(fieldConfigs.filter(e => e.admin?.position === 'sidebar').length > 0) ? (
                 <RenderFields
                     readOnly={false}
                     permissions={documentInfo.docPermissions?.fields}
@@ -190,9 +205,25 @@ export const AdminSidebar = () => {
                     fieldTypes={fieldTypes}
                     fieldSchema={fieldConfigs}
                 />
-            </div>
-            ) : null }
-        </>
+                ) : null }
+
+                <ul className={`${baseClass}__meta`}>
+                    <li className={`${baseClass}__api-url`}>
+                        <span className={`${baseClass}__label`}>
+                            API URL
+                            {' '}
+                            <CopyToClipboard value={apiURL} />
+                        </span>
+                        <a
+                            href={apiURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {apiURL}
+                        </a>
+                    </li>
+                </ul>
+        </div>
     )
 };
 

@@ -32,6 +32,15 @@
 
 }
 
+.ContentEditorAdminSidebar {
+
+  .collection-edit__meta {
+    padding:0;
+  }
+
+}
+
+
 
 @media (min-width: calc($breakpoint-m-width + 1px)) {
   .collection-edit.visual-editor,
@@ -206,6 +215,7 @@
       padding: base(1);
       padding-left: var(--gutter-h);
       padding-right: var(--gutter-h);
+
     }
 
     .tabs-field__tabs:after {
