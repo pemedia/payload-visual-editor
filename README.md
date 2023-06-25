@@ -66,11 +66,11 @@ const config = buildConfig({
   Use the collection / global slug as the key.
   If you don't want to override the previewUrl, just pass an empty object.
 
-### Using Localization
+### Localization
 
-if you are using Localization with multiple locales, it can be very handy, to be able to adjust the preview URL with the locale. Therefor you can add a `{{locale}}` placeholder anywhere into your `previewUrl` string (e.g. https://localhost:3001/{{locale}}/pages/preview`). 
+If you are using Localization with multiple locales, it can be very handy, to be able to adjust the preview URL based on the selected/current locale. To acomplish that, you can add a `{{locale}}` placeholder anywhere in your `previewUrl` string (e.g. `https://localhost:3001/{{locale}}/pages/preview`). 
 
-The placeholder will automatically get replaces with the locale you are currently editing your content in. 
+The placeholder will automatically get replaces with the current locale in which you are editing your content. 
 
 ## Frontend Integration in Next.js 
 
