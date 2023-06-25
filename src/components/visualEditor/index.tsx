@@ -12,6 +12,8 @@ import { useResizeObserver } from "./useResizeObserver";
 import RenderFields from 'payload/dist/admin/components/forms/RenderFields';
 import fieldTypes from 'payload/dist/admin/components/forms/field-types';
 
+import { useConfig, useLocale } from "payload/components/utilities";
+
 
 const SCREEN_SIZES = {
     desktop: {
@@ -59,6 +61,15 @@ export const VisualEditor = (config: Config) => () => {
     const debounce = useRef(false);
 
     const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
+
+    let previewUrl = config.previewUrl;
+
+    // handle localization placeholder {{locale}} in previewUrl
+    const { localization } = useConfig();
+    const locale = useLocale();
+    previewUrl = (localization) ? previewUrl.replace("{{locale}}",locale) : previewUrl.replace("{{locale}}","")
+
+
 
     useEffect(() => {
         editorContainer.classList.add("visual-editor");
@@ -175,7 +186,7 @@ export const VisualEditor = (config: Config) => () => {
                             <iframe
                                 id="live-preview-iframe"
                                 ref={iframe}
-                                src={config.previewUrl}
+                                src={previewUrl}
                                 onLoad={onIframeLoaded}
                             />
                         </div>
