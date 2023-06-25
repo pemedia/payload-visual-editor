@@ -65,7 +65,13 @@ const config = buildConfig({
   An object with configs for all collections / globals which should enable the live preview.
   Use the collection / global slug as the key.
   If you don't want to override the previewUrl, just pass an empty object.
-  
+
+### Using Localization
+
+if you are using Localization with multiple locales, it can be very handy, to be able to adjust the preview URL with the locale. Therefor you can add a `{{locale}}` placeholder anywhere into your `previewUrl` string (e.g. https://localhost:3001/{{locale}}/pages/preview`). 
+
+The placeholder will automatically get replaces with the locale you are currently editing your content in. 
+
 ## Frontend Integration in Next.js 
 
 In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
