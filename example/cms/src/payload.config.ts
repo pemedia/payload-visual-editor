@@ -28,6 +28,14 @@ export default buildConfig({
         Posts,
         Tags,
     ],
+    localization: {
+        locales: [
+          'en',
+          'de',
+        ],
+        defaultLocale: 'de',
+        fallback: true,
+      },
     typescript: {
         outputFile: path.resolve(__dirname, "../../website/src/payload-types.ts"),
     },
@@ -36,7 +44,7 @@ export default buildConfig({
     },
     plugins: [
         visualEditor({
-            previewUrl: "http://localhost:8080",
+            previewUrl: "http://localhost:8080/{{locale}}",
             collections: {
                 [Posts.slug]: {},
             },
