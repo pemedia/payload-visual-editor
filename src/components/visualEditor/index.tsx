@@ -1,21 +1,17 @@
-import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
-import { useTranslation } from 'react-i18next';
-
 import { useAllFormFields } from "payload/components/forms";
-import { useDocumentInfo } from "payload/components/utilities";
+import { useConfig, useDocumentInfo, useLocale } from "payload/components/utilities";
+import CopyToClipboard from "payload/dist/admin/components/elements/CopyToClipboard";
 import { Fields } from "payload/dist/admin/components/forms/Form/types";
+import RenderFields from "payload/dist/admin/components/forms/RenderFields";
+import fieldTypes from "payload/dist/admin/components/forms/field-types";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import Edit from "payload/dist/admin/components/icons/Edit";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
 import { Field } from "payload/types";
+import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
+import { PreviewUrlFn } from "../../types/previewUrl";
 import { generateDocument } from "../../utils/generateDocument";
 import { useResizeObserver } from "./useResizeObserver";
-
-import RenderFields from 'payload/dist/admin/components/forms/RenderFields';
-import fieldTypes from 'payload/dist/admin/components/forms/field-types';
-
-import CopyToClipboard from 'payload/dist/admin/components/elements/CopyToClipboard';
-import { useConfig, useLocale } from "payload/components/utilities";
 
 const SCREEN_SIZES = {
     desktop: {
@@ -33,7 +29,7 @@ const SCREEN_SIZES = {
 };
 
 interface Config {
-    previewUrl: (locale: string) => string;
+    previewUrl: PreviewUrlFn;
 }
 
 const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTMLIFrameElement) => {
@@ -67,8 +63,8 @@ export const VisualEditor = (config: Config) => () => {
     // handle localization in previewUrl
     const { localization } = useConfig();
     const locale = useLocale();
-    const previewUrl = (localization) ? config.previewUrl(locale) : config.previewUrl("")
 
+    const previewUrl = localization ? config.previewUrl({ locale }) : config.previewUrl({ locale: "" });
 
     useEffect(() => {
         editorContainer.classList.add("visual-editor");
@@ -78,7 +74,7 @@ export const VisualEditor = (config: Config) => () => {
         const storedSidebarWidth = localStorage.getItem("visualEditorSidebar");
 
         if (storedSidebarWidth) {
-            root.style.setProperty('--visualeditor-sidebar-width', `${storedSidebarWidth}px`);
+            root.style.setProperty("--visualeditor-sidebar-width", `${storedSidebarWidth}px`);
         }
     }, []);
 
@@ -188,46 +184,39 @@ export const VisualEditor = (config: Config) => () => {
 export const AdminSidebar = () => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
-    const baseClass = 'collection-edit';
+    const baseClass = "collection-edit";
 
-    const { 
+    const {
         serverURL,
-        routes: { api } 
+        routes: { api }
     } = useConfig();
 
     const collection = documentInfo.collection;
-    const apiURL = `${serverURL}${api}/${collection?.slug}/${documentInfo.id}${collection?.versions?.drafts ? '?draft=true' : ''}`;
+    const apiURL = `${serverURL}${api}/${collection?.slug}/${documentInfo.id}${collection?.versions?.drafts ? "?draft=true" : ""}`;
 
     return (
-            <div className="ContentEditorAdminSidebar">
-
-                {(fieldConfigs.filter(e => e.admin?.position === 'sidebar').length > 0) ? (
+        <div className="ContentEditorAdminSidebar">
+            {(fieldConfigs.filter(e => e.admin?.position === "sidebar").length > 0) ? (
                 <RenderFields
                     readOnly={false}
                     permissions={documentInfo.docPermissions?.fields}
-                    filter={(field) => field?.admin?.position === 'sidebar'}
+                    filter={(field) => field?.admin?.position === "sidebar"}
                     fieldTypes={fieldTypes}
                     fieldSchema={fieldConfigs}
                 />
-                ) : null }
+            ) : null}
 
-                <ul className={`${baseClass}__meta`}>
-                    <li className={`${baseClass}__api-url`}>
-                        <span className={`${baseClass}__label`}>
-                            API URL
-                            {' '}
-                            <CopyToClipboard value={apiURL} />
-                        </span>
-                        <a
-                            href={apiURL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            {apiURL}
-                        </a>
-                    </li>
-                </ul>
+            <ul className={`${baseClass}__meta`}>
+                <li className={`${baseClass}__api-url`}>
+                    <span className={`${baseClass}__label`}>
+                        API URL
+                        {" "}
+                        <CopyToClipboard value={apiURL} />
+                    </span>
+                    <a href={apiURL} target="_blank" rel="noopener noreferrer">{apiURL}</a>
+                </li>
+            </ul>
         </div>
-    )
+    );
 };
 

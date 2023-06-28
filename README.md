@@ -56,11 +56,11 @@ const config = buildConfig({
 
 ### Options
 
-- `previewUrl` : string | mandatory
+- `previewUrl` : ({ locale: string; }) => string | mandatory
 
   A string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
 
-- `collections` / `globals` : Record<string, { previewUrl?: string; }>
+- `collections` / `globals` : Record<string, { previewUrl?: ({ locale: string; }) => string; }>
 
   An object with configs for all collections / globals which should enable the live preview.
   Use the collection / global slug as the key.
@@ -75,7 +75,7 @@ const config = buildConfig({
   collections: [...],
   plugins: [
     visualEditor({
-      previewUrl: (locale) => `https://localhost:3001/${locale}/pages/preview`
+      previewUrl: params => `https://localhost:3001/${params.locale}/pages/preview`
       ...
     }),
   ],
