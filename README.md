@@ -58,13 +58,11 @@ const config = buildConfig({
 
 - `previewUrl` : ({ locale: string; }) => string | mandatory
 
-  A string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
+  A function returning a string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`). The `locale` property can be used if needed for [preview localization](#Localization).
 
 - `collections` / `globals` : Record<string, { previewUrl?: ({ locale: string; }) => string; }>
 
-  An object with configs for all collections / globals which should enable the live preview.
-  Use the collection / global slug as the key.
-  If you don't want to override the previewUrl, just pass an empty object.
+  An object with configs for all collections / globals which should enable the live preview. Use the collection / global slug as the key. If you don't want to override the previewUrl, just pass an empty object.
 
 ### Localization
 
