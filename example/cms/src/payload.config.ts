@@ -44,7 +44,7 @@ export default buildConfig({
     },
     plugins: [
         visualEditor({
-            previewUrl: "http://localhost:8080/{{locale}}",
+            previewUrl: () => `http://localhost:8080/`,
             collections: {
                 [Posts.slug]: {},
             },

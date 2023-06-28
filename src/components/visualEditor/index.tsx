@@ -31,7 +31,7 @@ const SCREEN_SIZES = {
 };
 
 interface Config {
-    previewUrl: string;
+    previewUrl: (locale: string) => string;
 }
 
 const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTMLIFrameElement) => {
@@ -62,13 +62,10 @@ export const VisualEditor = (config: Config) => () => {
 
     const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
 
-    let previewUrl = config.previewUrl;
-
-    // handle localization placeholder {{locale}} in previewUrl
+    // handle localization in previewUrl
     const { localization } = useConfig();
     const locale = useLocale();
-    previewUrl = (localization) ? previewUrl.replace("{{locale}}",locale) : previewUrl.replace("{{locale}}","")
-
+    const previewUrl = (localization) ? config.previewUrl(locale) : config.previewUrl("")
 
 
     useEffect(() => {

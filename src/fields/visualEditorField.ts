@@ -1,7 +1,7 @@
 import { Field } from "payload/types";
 import { VisualEditor } from "../components/visualEditor";
 
-export const createVisualEditorField = (previewUrl: string): Field => {
+export const createVisualEditorField = (previewUrl: (locale:string) => string): Field => {
     return {
         name: "visualeditor",
         type: "ui",

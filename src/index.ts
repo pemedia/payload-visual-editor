@@ -5,17 +5,17 @@ import { CollectionConfig, GlobalConfig } from "payload/types";
 type CollectionOrGlobalConfig = CollectionConfig | GlobalConfig;
 
 interface PluginCollectionOrGlobalConfig {
-    previewUrl?: string;
+    previewUrl?: (locale: string) => string;
 }
 
 export interface PluginConfig {
-    previewUrl: string;
+    previewUrl: (locale: string) => string;
     collections?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
     globals?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
 }
 
 const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
-    previewUrl: string,
+    previewUrl: (locale: string) => string,
     cogConfigs?: T[],
     pluginCogConfigs?: Record<string, PluginCollectionOrGlobalConfig | undefined>,
 ) => cogConfigs?.map(cogConfig => {
