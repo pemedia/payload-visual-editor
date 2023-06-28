@@ -13,9 +13,34 @@
   display: none;
 }
 
-.ContentEditorAdminSidebar {
-  display:none;
+
+/* --------------------------------- */
+/* --- Hide admin sidebar fields --- */
+/* --------------------------------- */
+
+.collection-edit.visual-editor,
+.global-edit.visual-editor {
+
+  .collection-edit__sidebar-sticky-wrap,
+  .global-edit__sidebar-sticky-wrap {
+
+    .collection-edit__sidebar-fields,
+    .global-edit__sidebar-fields {
+      display:none;
+    }
+  }
+
 }
+
+.ContentEditorAdminSidebar {
+
+  .collection-edit__meta {
+    padding:0;
+  }
+
+}
+
+
 
 @media (min-width: calc($breakpoint-m-width + 1px)) {
   .collection-edit.visual-editor,
@@ -183,13 +208,22 @@
     /* --- Admin Position: Sidebar --- */
     /* ------------------------------- */
 
-    .ContentEditorAdminSidebar {
-      display:block;
-      border: 1px solid var(--theme-elevation-100);
-      background-color: var(--theme-elevation-50) ;
-      padding: base(1);
-      padding-left: var(--gutter-h);
-      padding-right: var(--gutter-h);
+    .collection-edit__edit > .render-fields {
+
+      > .ContentEditorAdminSidebar {
+        display:block;
+        border: 1px solid var(--theme-elevation-100);
+        background-color: var(--theme-elevation-50) ;
+        padding: base(1);
+        padding-left: var(--gutter-h);
+        padding-right: var(--gutter-h);
+        margin-top:auto;
+      }
+
+    } 
+
+    .tabs-field__tabs:after {
+      width: 0;
     }
 
   }
@@ -259,7 +293,7 @@
         right: 0;
         bottom: 0;
         left: calc(var(--visualeditor-sidebar-width) + var(--nav-width));
-        background: var(--theme-elevation-50);
+        background: var(--theme-elevation-200);
   
         > .live-preview {
           display: flex;
@@ -293,6 +327,7 @@
               justify-content: center;
               padding: base(.25) base(.25);
               border-bottom: 1px solid var(--theme-elevation-100);
+              background: var(--theme-elevation-50);
       
               .size-display {
                 background: var(--theme-elevation-150);
@@ -347,9 +382,16 @@
       cursor:col-resize;
     }
 
-    .ContentEditorAdminSidebar {
-      border-left: none;
-      border-right: none;
+    .collection-edit__edit > .render-fields {
+
+      display: flex;
+      flex-direction: column;
+
+      > .ContentEditorAdminSidebar {
+        border-left: none;
+        border-right: none;
+        margin-top: auto;
+      }
     }
   }
 }

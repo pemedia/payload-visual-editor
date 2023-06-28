@@ -13,7 +13,7 @@ This plugin provides a visual editor, including a nice UI, for [Payload](https:/
 ![image](https://github.com/pemedia/payload-visual-live-preview/blob/main/visual-editor-screenshot.png?raw=true)
 
 > **Note**
-> For the collections in which you use the visual editor, fields in the `{admin: {position:'sidebar'}}` area will be rendered below all other fields, in the "main" area.
+> For the collections in which you use the visual editor, fields in the `{admin: {position:'sidebar'}}` area will be rendered below all other fields, in the "main" area or, if you are using tabs, in an extra tab called "More".
 
 ## Installation
 
