@@ -38,15 +38,15 @@ const config = buildConfig({
   collections: [...],
   plugins: [
     visualEditor({
-      previewUrl: 'http://localhost:3001/pages/preview',
+      previewUrl: () => `http://localhost:3001/pages/preview`,
       collections: {
         [COLLECTION_SLUG]: {
-          previewUrl: "..." // optional individual preview url for each collection
+          previewUrl: () => `...` // optional individual preview url for each collection
         },
       },
       globals: {
         [GLOBAL_SLUG]: {
-          previewUrl: "..." // optional individual preview url for each global
+          previewUrl: () => `...` // optional individual preview url for each global
         },
       },
     }),
@@ -68,11 +68,21 @@ const config = buildConfig({
 
 ### Localization
 
-If you are using Localization with multiple locales, it can be very handy, to be able to adjust the preview URL based on the selected/current locale. To acomplish that, you can add a `{{locale}}` placeholder anywhere in your `previewUrl` string (e.g. `https://localhost:3001/{{locale}}/pages/preview`). 
+If you are using Localization with multiple locales, it can be very handy, to be able to adjust the preview URL based on the selected/current locale. You can pass `locale` to the `previewUrl` function in your payload config an place it, where your frontend needs it to be:
 
-The placeholder will automatically get replaces with the current locale in which you are editing your content. 
+```js
+const config = buildConfig({
+  collections: [...],
+  plugins: [
+    visualEditor({
+      previewUrl: (locale) => `https://localhost:3001/${locale}/pages/preview`
+      ...
+    }),
+  ],
+});
+```
 
-## Frontend Integration in Next.js 
+## Frontend Integration in React / Next.js 
 
 In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
 
