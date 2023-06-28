@@ -38,15 +38,15 @@ const config = buildConfig({
   collections: [...],
   plugins: [
     visualEditor({
-      previewUrl: 'http://localhost:3001/pages/preview',
+      previewUrl: () => `http://localhost:3001/pages/preview`,
       collections: {
         [COLLECTION_SLUG]: {
-          previewUrl: "..." // optional individual preview url for each collection
+          previewUrl: () => `...` // optional individual preview url for each collection
         },
       },
       globals: {
         [GLOBAL_SLUG]: {
-          previewUrl: "..." // optional individual preview url for each global
+          previewUrl: () => `...` // optional individual preview url for each global
         },
       },
     }),
@@ -56,17 +56,31 @@ const config = buildConfig({
 
 ### Options
 
-- `previewUrl` : string | mandatory
+- `previewUrl` : ({ locale: string; }) => string | mandatory
 
-  A string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`).
+  A function returning a string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`). The `locale` property can be used if needed for [preview localization](#Localization).
 
-- `collections` / `globals` : Record<string, { previewUrl?: string; }>
+- `collections` / `globals` : Record<string, { previewUrl?: ({ locale: string; }) => string; }>
 
-  An object with configs for all collections / globals which should enable the live preview.
-  Use the collection / global slug as the key.
-  If you don't want to override the previewUrl, just pass an empty object.
-  
-## Frontend Integration in Next.js 
+  An object with configs for all collections / globals which should enable the live preview. Use the collection / global slug as the key. If you don't want to override the previewUrl, just pass an empty object.
+
+### Localization
+
+If you are using Localization with multiple locales, it can be very handy, to be able to adjust the preview URL based on the selected/current locale. You can pass `locale` to the `previewUrl` function in your payload config an place it, where your frontend needs it to be:
+
+```js
+const config = buildConfig({
+  collections: [...],
+  plugins: [
+    visualEditor({
+      previewUrl: params => `https://localhost:3001/${params.locale}/pages/preview`
+      ...
+    }),
+  ],
+});
+```
+
+## Frontend Integration in React / Next.js 
 
 In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
 
