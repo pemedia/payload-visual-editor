@@ -182,8 +182,10 @@ export const VisualEditor = (config: Config) => () => {
 
 
 export const AdminSidebar = () => {
+    
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
+    const locale = useLocale();
     const baseClass = "collection-edit";
 
     const {
@@ -192,7 +194,7 @@ export const AdminSidebar = () => {
     } = useConfig();
 
     const collection = documentInfo.collection;
-    const apiURL = `${serverURL}${api}/${collection?.slug}/${documentInfo.id}${collection?.versions?.drafts ? "?draft=true" : ""}`;
+    const apiURL = `${serverURL}${api}/${collection?.slug}/${documentInfo.id}?locale=${locale}${collection?.versions.drafts ? '&draft=true' : ''}`;
 
     return (
         <div className="ContentEditorAdminSidebar">
