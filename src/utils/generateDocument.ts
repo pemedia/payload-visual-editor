@@ -58,7 +58,7 @@ const getAllFields = (fields: Field[]): Field[] => {
 
 const getValue = async (field: FieldAffectingData, values: Data) => {
     if (field.type === "relationship" || field.type === "upload") {
-        if (values[field.name] === undefined) {
+        if (values[field.name] === undefined || !values[field.name]) {
             if (field.required) {
                 // NOTE: This is not the best way to fix relationship fields where the user didn't select the reference yet,
                 // but I don't want to make the fields optional.
@@ -70,14 +70,27 @@ const getValue = async (field: FieldAffectingData, values: Data) => {
             return undefined;
         }
 
-        if (typeof field.relationTo !== "string") {
-            throw new Error("not implemented");
-        }
 
         if (field.type === "relationship" && field.hasMany) {
+
+            if (typeof field.relationTo !== "string") {
+
+                let relationsArray: Array<any> = []
+                values[field.name].map((item: any) => {
+                    const data = fetchRelation(item.relationTo, item.value);
+                    data.then((result) => relationsArray.push(result));
+                })
+                return relationsArray;
+    
+            }
             return fetchRelations(field.relationTo, values[field.name]);
+
         } else {
+            
+            if (typeof field.relationTo !== "string") return fetchRelation(values[field.name].relationTo, values[field.name].value);
+
             return fetchRelation(field.relationTo, values[field.name]);
+
         }
     }
 
