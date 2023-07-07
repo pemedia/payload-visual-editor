@@ -10,6 +10,7 @@ export interface Config {
     users: User;
     posts: Post;
     tags: Tag;
+    categories: Category;
   };
   globals: {};
 }
@@ -28,8 +29,28 @@ export interface User {
 }
 export interface Post {
   id: string;
+  title: string;
   subtitle: string;
-  tags: string[] | Tag[];
+  category?: {
+    value: string | Category;
+    relationTo: 'categories';
+  };
+  tags?:
+    | {
+        value: string;
+        relationTo: 'tags';
+      }[]
+    | {
+        value: Tag;
+        relationTo: 'tags';
+      }[];
+  description?: string;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Category {
+  id: string;
+  name: string;
   updatedAt: string;
   createdAt: string;
 }

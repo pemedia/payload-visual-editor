@@ -4,6 +4,7 @@ import { visualEditor } from "../../../src";
 import "../../../src/styles.scss";
 import { Posts } from "./collections/Posts";
 import { Tags } from "./collections/Tags";
+import { Categories } from "./collections/Categories";
 import { Users } from "./collections/Users";
 
 export default buildConfig({
@@ -27,6 +28,7 @@ export default buildConfig({
         Users,
         Posts,
         Tags,
+        Categories,
     ],
     localization: {
         locales: [

@@ -1,8 +1,12 @@
 import { CollectionConfig } from "payload/types";
 import { Tags } from "./Tags";
+import { Categories } from "./Categories";
 
 export const Posts: CollectionConfig = {
     slug: "posts",
+    admin: {
+        useAsTitle: "title",
+    },
     fields: [
         {
             type: 'tabs',
@@ -21,11 +25,16 @@ export const Posts: CollectionConfig = {
                         required: true,
                     },
                     {
+                        name: "category",
+                        type: "relationship",
+                        relationTo: Categories.slug,
+                        hasMany: false,
+                    },
+                    {
                         name: "tags",
                         type: "relationship",
-                        relationTo: Tags.slug,
+                        relationTo: [Tags.slug, Categories.slug],
                         hasMany: true,
-                        required: true,
                     },
                 ]
             }]
