@@ -332,7 +332,7 @@ export const generateDocument = async (fieldConfigs: Field[], fields: Fields) =>
         result[field.name!] = await getValue(field, values);
     }
 
-    console.log('Payload result', result);
+    // console.log('Payload result', result);
 
     return result;
 };
