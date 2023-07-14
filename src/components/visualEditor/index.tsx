@@ -105,8 +105,6 @@ export const VisualEditor = (config: Config) => () => {
     const sidebarDragStart = (e: ReactMouseEvent) => {
         e.preventDefault();
 
-        console.log("drag start");
-
         const sidebar = e.currentTarget.closest(".render-fields")!;
         const sidebarBounds = sidebar.getBoundingClientRect();
 

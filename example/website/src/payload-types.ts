@@ -11,8 +11,11 @@ export interface Config {
     posts: Post;
     tags: Tag;
     categories: Category;
+    media: Media;
   };
-  globals: {};
+  globals: {
+    kitchenSink: KitchenSink;
+  };
 }
 export interface User {
   id: string;
@@ -31,19 +34,28 @@ export interface Post {
   id: string;
   title: string;
   subtitle: string;
-  category?: {
-    value: string | Category;
-    relationTo: 'categories';
-  };
-  tags?:
-    | {
-        value: string;
-        relationTo: 'tags';
-      }[]
-    | {
-        value: Tag;
-        relationTo: 'tags';
-      }[];
+  category?: string | Category;
+  tagsAndCategories?:
+    | (
+        | {
+            value: string;
+            relationTo: 'tags';
+          }
+        | {
+            value: string;
+            relationTo: 'categories';
+          }
+      )[]
+    | (
+        | {
+            value: Tag;
+            relationTo: 'tags';
+          }
+        | {
+            value: Category;
+            relationTo: 'categories';
+          }
+      )[];
   description?: string;
   updatedAt: string;
   createdAt: string;
@@ -59,4 +71,105 @@ export interface Tag {
   name: string;
   updatedAt: string;
   createdAt: string;
+}
+export interface Media {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string;
+  filename?: string;
+  mimeType?: string;
+  filesize?: number;
+  width?: number;
+  height?: number;
+}
+export interface KitchenSink {
+  id: string;
+  array: {
+    text?: string;
+    number?: number;
+    id?: string;
+  }[];
+  blocks: (
+    | {
+        text1: string;
+        text2: string;
+        id?: string;
+        blockName?: string;
+        blockType: 'testBlock1';
+      }
+    | {
+        number1?: number;
+        number2?: number;
+        id?: string;
+        blockName?: string;
+        blockType: 'testBlock2';
+      }
+  )[];
+  checkbox: boolean;
+  code: string;
+  date: string;
+  email: string;
+  group?: {
+    text?: string;
+    number?: number;
+  };
+  json:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  number: number;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  point: [number, number];
+  radio: 'radio1' | 'radio2';
+  relationship1: string | Tag;
+  relationship2: string[] | Tag[];
+  relationship3:
+    | {
+        value: string | Category;
+        relationTo: 'categories';
+      }
+    | {
+        value: string | Tag;
+        relationTo: 'tags';
+      };
+  relationship4:
+    | (
+        | {
+            value: string;
+            relationTo: 'categories';
+          }
+        | {
+            value: string;
+            relationTo: 'tags';
+          }
+      )[]
+    | (
+        | {
+            value: Category;
+            relationTo: 'categories';
+          }
+        | {
+            value: Tag;
+            relationTo: 'tags';
+          }
+      )[];
+  richText: {
+    [k: string]: unknown;
+  }[];
+  select1: 'select1' | 'select2';
+  select2: ('select1' | 'select2')[];
+  text: string;
+  textarea: string;
+  upload: string | Media;
+  updatedAt?: string;
+  createdAt?: string;
 }
