@@ -26,23 +26,66 @@
 
     .collection-edit__sidebar-fields,
     .global-edit__sidebar-fields {
-      display:none;
+      > * {
+        display: none;
+      }
+      > .status {
+        display: block;
+      }
     }
   }
 
 }
 
 .ContentEditorAdminSidebar {
-
-  .collection-edit__meta {
+  .collection-edit__meta,
+  .global-edit__meta {
     padding:0;
+    display:none;
   }
-
 }
 
-
-
 @media (min-width: calc($breakpoint-m-width + 1px)) {
+
+  // Show additional elements for versions
+  .collection-edit.visual-editor.versions,
+  .global-edit.visual-editor.versions {
+
+    .collection-edit__sidebar-sticky-wrap,
+    .global-edit__sidebar-sticky-wrap {
+
+      .collection-edit__sidebar-fields,
+      .global-edit__sidebar-fields {
+        display:block;
+        padding:0;
+        margin:0;
+
+        > * {
+          display:none;
+        }
+        > .status {
+          display:block;
+          position: fixed;
+          top: 0;
+          right: base(1);
+        }
+      }
+
+      .collection-edit__document-actions,
+      .global-edit__document-actions {
+        padding-top: 1.25rem;
+        button {
+          height: 3.25rem;
+          * {
+            line-height: 1.4;
+          }
+        }
+      }
+
+    }
+
+  }
+
   .collection-edit.visual-editor,
   .global-edit.visual-editor {
 
@@ -86,6 +129,10 @@
       .global-edit__document-actions {
         margin-left:auto;
 
+        &--has-2 > * {
+          width: auto;
+        }
+
         > * {
           margin:0;
           align-self: center;
@@ -108,14 +155,17 @@
         align-items: center;
       }
 
-      .collection-edit__sidebar-fields,
       .collection-edit__meta,
       .collection-edit__api-url,
-      .global-edit__sidebar-fields,
       .global-edit__meta,
       .global-edit__api-url {
         display:none;
       }
+      .collection-edit__sidebar-fields,
+      .global-edit__sidebar-fields {
+        display:none;
+      }
+
     }
 
     // --- Hide Button that opens new Modal inside live preview
@@ -208,7 +258,8 @@
     /* --- Admin Position: Sidebar --- */
     /* ------------------------------- */
 
-    .collection-edit__edit > .render-fields {
+    .collection-edit__edit > .render-fields,
+    .global-edit__edit > .render-fields {
 
       > .ContentEditorAdminSidebar {
         display:block;
@@ -224,6 +275,14 @@
 
     .tabs-field__tabs:after {
       width: 0;
+    }
+
+    .ContentEditorAdminSidebar {
+      .collection-edit__meta,
+      .global-edit__meta {
+        padding:0;
+        display:block;
+      }
     }
 
   }
@@ -382,7 +441,8 @@
       cursor:col-resize;
     }
 
-    .collection-edit__edit > .render-fields {
+    .collection-edit__edit > .render-fields,
+    .global-edit__edit > .render-fields {
 
       display: flex;
       flex-direction: column;
