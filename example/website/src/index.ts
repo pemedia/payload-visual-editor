@@ -2,11 +2,6 @@ import { Post, Tag, Category, Media, KitchenSink } from "./payload-types";
 
 new EventSource("/esbuild").addEventListener("change", () => location.reload())
 
-const titleContainer = document.getElementById("title")!;
-const subtitleContainer = document.getElementById("subtitle")!;
-const categoryContainer = document.getElementById("category")!;
-const tagsAndCategoriesContainer = document.getElementById("tagsAndCategories")!;
-
 const isCategory = (doc: any): doc is Category => {
     return doc.name !== undefined;
 };
