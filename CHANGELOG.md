@@ -1,3 +1,14 @@
+## 0.1.1
+
+### Features
+- Configuration option to hide preview by default  (#11) 
+- New logic to generate the preview data, now handling all Payload field types
+
+### Bug Fixes
+- Fixed layout for collections and globals using versioning and drafts (#14)
+- Showing versions and timestamps in sidebar, when versioning is enabled
+- Correct API url and link for globals in the sidebar area (#13) 
+
 ## 0.1.0
 
 ### Features
