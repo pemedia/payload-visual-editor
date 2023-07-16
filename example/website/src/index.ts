@@ -21,7 +21,6 @@ const isMedia = (doc: any): doc is Media => {
 
 window.addEventListener("message", event => {
     const data: Post | KitchenSink | undefined = event.data.cmsLivePreviewData;
-    console.log(data);
 
     clearElements();
     const typeCheck = data as any;
