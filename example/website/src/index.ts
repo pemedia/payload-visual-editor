@@ -151,7 +151,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // relationship (array)
     addElem(`<h3>Relationship 3 (array):</h3>`);
-    if(isCategory(data.relationship3.value)) {
+    if(data.relationship3.value && isCategory(data.relationship3.value)) {
         addElem(`<ul><li>${data.relationship3.relationTo}: ${data.relationship3.value.name}</li></ul>`);
     }
     addElem(`<hr />`);
