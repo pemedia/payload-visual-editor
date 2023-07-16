@@ -19,13 +19,21 @@ const isMedia = (doc: any): doc is Media => {
     return doc.filename !== undefined;
 };
 
+const isPost = (doc: any): doc is Post => {
+    return doc.title !== undefined;
+};
+
+const isKitchenSink = (doc: any): doc is KitchenSink => {
+    return doc.code !== undefined;
+};
+
 window.addEventListener("message", event => {
     const data: Post | KitchenSink | undefined = event.data.cmsLivePreviewData;
+    console.log(data);
 
     clearElements();
-    const typeCheck = data as any;
-    if (data && typeCheck.title) return postPreview(data as Post);
-    else if (data && typeCheck.code) return kitchenSinkPreview(data as KitchenSink);
+    if (isPost(data)) return postPreview(data);
+    else if (isKitchenSink(data)) return kitchenSinkPreview(data);
 });
 
 const postPreview = (data: Post) => {
