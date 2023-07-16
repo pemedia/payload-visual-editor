@@ -207,9 +207,6 @@ export const AdminSidebar = () => {
 
     const { t, i18n } = useTranslation('general');
 
-    console.log('documentInfo',docType, documentInfo)
-
-    
     const additionalMeta = () => {
 
         if (docType == 'collection') {
