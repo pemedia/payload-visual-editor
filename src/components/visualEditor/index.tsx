@@ -1,17 +1,20 @@
 import { useAllFormFields } from "payload/components/forms";
 import { useConfig, useDocumentInfo, useLocale } from "payload/components/utilities";
 import CopyToClipboard from "payload/dist/admin/components/elements/CopyToClipboard";
+import VersionsCount from "payload/dist/admin/components/elements/VersionsCount";
 import { Fields } from "payload/dist/admin/components/forms/Form/types";
 import RenderFields from "payload/dist/admin/components/forms/RenderFields";
 import fieldTypes from "payload/dist/admin/components/forms/field-types";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import Edit from "payload/dist/admin/components/icons/Edit";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
+import { formatDate } from "payload/dist/admin/utilities/formatDate";
 import { Field } from "payload/types";
 import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 import { PreviewUrlFn } from "../../types/previewUrl";
 import { generateDocument } from "../../utils/generateDocument";
 import { useResizeObserver } from "./useResizeObserver";
+import { useTranslation } from 'react-i18next';
 
 const SCREEN_SIZES = {
     desktop: {
@@ -67,8 +70,13 @@ export const VisualEditor = (config: Config) => () => {
     const previewUrl = localization ? config.previewUrl({ locale }) : config.previewUrl({ locale: "" });
 
     useEffect(() => {
+
         editorContainer.classList.add("visual-editor");
         editorContainer.classList.add("show-preview");
+
+        if(documentInfo.collection?.versions || documentInfo.global?.versions) {
+            editorContainer.classList.add("versions");
+        }
 
         // check local storage for last sidebar width
         const storedSidebarWidth = localStorage.getItem("visualEditorSidebar");
@@ -182,17 +190,95 @@ export const VisualEditor = (config: Config) => () => {
 
 
 export const AdminSidebar = () => {
-    const documentInfo = useDocumentInfo();
-    const fieldConfigs = getFieldConfigs(documentInfo);
-    const baseClass = "collection-edit";
 
     const {
         serverURL,
+        admin: { dateFormat },
         routes: { api }
     } = useConfig();
+    
+    const documentInfo = useDocumentInfo();
+    const fieldConfigs = getFieldConfigs(documentInfo);
 
-    const collection = documentInfo.collection;
-    const apiURL = `${serverURL}${api}/${collection?.slug}/${documentInfo.id}${collection?.versions?.drafts ? "?draft=true" : ""}`;
+    const docType: string = (documentInfo.collection) ? 'collection' : 'global'
+    const docTypeData = (documentInfo.collection) ? documentInfo.collection : documentInfo.global;
+    const baseClass = `${docType}-edit`;
+    const locale = useLocale();
+
+    const { t, i18n } = useTranslation('general');
+
+    const additionalMeta = () => {
+
+        if (docType == 'collection') {
+
+            const publishedDoc = documentInfo.publishedDoc;
+            const collection = documentInfo.collection;
+            const id = documentInfo.id;
+
+            const updatedAt = publishedDoc?.updatedAt;
+            const versions = collection?.versions;
+
+            return (
+                <React.Fragment>
+                    {versions && (
+                        <li>
+                        <div className={`${baseClass}__label`}>{t('version:versions')}</div>
+                        <VersionsCount
+                            collection={collection}
+                            id={id}
+                        />
+                        </li>
+                    )}
+                    {updatedAt && (
+                        <li>
+                            <div className={`${baseClass}__label`}>{t('lastModified')}</div>
+                            <div>{formatDate(updatedAt, dateFormat, i18n?.language)}</div>
+                        </li>
+                    )}
+                    {(publishedDoc?.createdAt) && (
+                        <li>
+                            <div className={`${baseClass}__label`}>{t('created')}</div>
+                            <div>{formatDate(publishedDoc?.createdAt, dateFormat, i18n?.language)}</div>
+                        </li>
+                    )}
+                </React.Fragment>
+            )
+        } else if (docType == 'global') {
+
+            const publishedDoc = documentInfo.publishedDoc;
+            const global = documentInfo.global;
+
+            const updatedAt = publishedDoc?.updatedAt;
+            const versions = global?.versions;
+
+            return (
+                <React.Fragment>
+                    {versions && (
+                        <li>
+                            <div className={`${baseClass}__label`}>{t('version:versions')}</div>
+                            <VersionsCount global={global} />
+                        </li>
+                    )}
+                    {updatedAt && (
+                        <li>
+                            <div className={`${baseClass}__label`}>{t('lastModified')}</div>
+                            <div>{formatDate(updatedAt, dateFormat, i18n?.language)}</div>
+                        </li>
+                    )}
+                </React.Fragment>
+            )
+
+        }
+
+        return null;
+
+    } 
+
+    if(!docTypeData) return null;
+
+    const apiURL = (docType == 'collection') ? 
+        `${serverURL}${api}/${docTypeData?.slug}/${documentInfo.id}?locale=${locale}${docTypeData?.versions.drafts ? '&draft=true' : ''}` :
+        `${serverURL}${api}/globals/${docTypeData?.slug}?locale=${locale}${docTypeData?.versions?.drafts ? "?draft=true" : ''}`;
 
     return (
         <div className="ContentEditorAdminSidebar">
@@ -215,6 +301,7 @@ export const AdminSidebar = () => {
                     </span>
                     <a href={apiURL} target="_blank" rel="noopener noreferrer">{apiURL}</a>
                 </li>
+                {additionalMeta()}
             </ul>
         </div>
     );
