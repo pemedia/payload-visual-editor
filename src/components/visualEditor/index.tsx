@@ -33,6 +33,7 @@ const SCREEN_SIZES = {
 
 interface Config {
     previewUrl: PreviewUrlFn;
+    showPreview?: boolean;
 }
 
 const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTMLIFrameElement) => {
@@ -47,6 +48,29 @@ const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTML
 
 const getFieldConfigs = (documentInfo: ContextType) => {
     return documentInfo.collection?.fields ?? documentInfo.global?.fields ?? [];
+};
+
+const getShouldShowPreview = (config: Config) => {
+    // check local storage first
+    const fromStorage = localStorage.getItem("visualEditorShowPreview");
+
+    if (fromStorage) {
+        if (fromStorage === "false") {
+            return false;
+        }
+
+        if (fromStorage === "true") {
+            return true;
+        }
+    }
+
+    // check config second 
+    if (config.showPreview === false) {
+        return false; 
+    }
+
+    // default
+    return true;
 };
 
 export const VisualEditor = (config: Config) => () => {
@@ -70,9 +94,11 @@ export const VisualEditor = (config: Config) => () => {
     const previewUrl = localization ? config.previewUrl({ locale }) : config.previewUrl({ locale: "" });
 
     useEffect(() => {
-
         editorContainer.classList.add("visual-editor");
-        editorContainer.classList.add("show-preview");
+
+        if (getShouldShowPreview(config)) {
+            editorContainer.classList.add("show-preview");
+        }
 
         if(documentInfo.collection?.versions || documentInfo.global?.versions) {
             editorContainer.classList.add("versions");
@@ -137,6 +163,7 @@ export const VisualEditor = (config: Config) => () => {
 
     const togglePreview = () => {
         editorContainer.classList.toggle("show-preview");
+        localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
     };
 
     const setPreviewSize = (size: { width: string; height: string; }) => () => {
