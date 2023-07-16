@@ -7,6 +7,9 @@ export const Posts: CollectionConfig = {
     admin: {
         useAsTitle: "title",
     },
+    versions: {
+        drafts: true,
+    },
     fields: [
         {
             type: "tabs",
@@ -35,6 +38,21 @@ export const Posts: CollectionConfig = {
                             type: "relationship",
                             relationTo: [Tags.slug, Categories.slug],
                             hasMany: true,
+                        },
+                        {
+                            name: 'status',
+                            type: 'select',
+                            options: [
+                                {
+                                    value: 'draft',
+                                    label: 'Draft',
+                                },
+                                {
+                                    value: 'published',
+                                    label: 'Published',
+                                },
+                            ],
+                            defaultValue: 'draft',
                         },
                     ],
                 },
