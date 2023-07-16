@@ -1,3 +1,8 @@
+## 0.1.2
+
+### Bug Fixes
+- Added missing react-i18next as peer dependency (#17)
+
 ## 0.1.1
 
 ### Features
