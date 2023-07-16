@@ -4,6 +4,7 @@ import { PreviewUrlFn } from "../types/previewUrl";
 
 interface Config {
     previewUrl: PreviewUrlFn; 
+    showPreview?: boolean;
 }
 
 export const createVisualEditorField = (config: Config): Field => {
@@ -14,6 +15,7 @@ export const createVisualEditorField = (config: Config): Field => {
             components: {
                 Field: VisualEditor({
                     previewUrl: config.previewUrl,
+                    showPreview: config.showPreview,
                 }),
             },
         },

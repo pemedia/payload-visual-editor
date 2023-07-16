@@ -12,12 +12,14 @@ interface PluginCollectionOrGlobalConfig {
 
 export interface PluginConfig {
     previewUrl: PreviewUrlFn;
+    showPreview?: boolean;
     collections?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
     globals?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
 }
 
 const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
     previewUrl: PreviewUrlFn,
+    showPreview?: boolean,
     cogConfigs?: T[],
     pluginCogConfigs?: Record<string, PluginCollectionOrGlobalConfig | undefined>,
 ) => cogConfigs?.map(cogConfig => {
@@ -49,6 +51,7 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
                     ...fields,
                     createVisualEditorField({
                         previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
+                        showPreview,
                     }),
                 ],
             };
@@ -60,6 +63,7 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
                     createAdminSidebarField(),
                     createVisualEditorField({
                         previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
+                        showPreview,
                     }),
                 ],
             };
@@ -71,6 +75,6 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
 
 export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Config => ({
     ...config,
-    collections: extendCogConfigs(pluginConfig.previewUrl, config.collections, pluginConfig.collections),
-    globals: extendCogConfigs(pluginConfig.previewUrl, config.globals, pluginConfig.globals),
+    collections: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.showPreview, config.collections, pluginConfig.collections),
+    globals: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.showPreview, config.globals, pluginConfig.globals),
 });
