@@ -1,4 +1,5 @@
 import { CollectionConfig } from "payload/types";
+import { Categories } from "./Categories";
 import { Tags } from "./Tags";
 
 export const Posts: CollectionConfig = {
@@ -11,7 +12,7 @@ export const Posts: CollectionConfig = {
     },
     fields: [
         {
-            type: 'tabs',
+            type: "tabs",
             tabs: [
                 {
                     label: "General",
@@ -25,6 +26,18 @@ export const Posts: CollectionConfig = {
                             name: "subtitle",
                             type: "text",
                             required: true,
+                        },
+                        {
+                            name: "category",
+                            type: "relationship",
+                            relationTo: Categories.slug,
+                            hasMany: false,
+                        },
+                        {
+                            name: "tagsAndCategories",
+                            type: "relationship",
+                            relationTo: [Tags.slug, Categories.slug],
+                            hasMany: true,
                         },
                         {
                             name: 'status',
@@ -49,9 +62,8 @@ export const Posts: CollectionConfig = {
             name: "description",
             type: "text",
             admin: {
-                position: 'sidebar'
-            }
+                position: "sidebar",
+            },
         },
-        
     ],
 };

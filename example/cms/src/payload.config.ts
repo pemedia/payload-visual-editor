@@ -2,9 +2,12 @@ import path from "path";
 import { buildConfig } from "payload/config";
 import { visualEditor } from "../../../src";
 import "../../../src/styles.scss";
+import { Categories } from "./collections/Categories";
+import { Media } from "./collections/Media";
 import { Posts } from "./collections/Posts";
 import { Tags } from "./collections/Tags";
 import { Users } from "./collections/Users";
+import { KitchenSink } from "./globals/kitchenSink";
 
 export default buildConfig({
     serverURL: "http://localhost:3000",
@@ -27,6 +30,11 @@ export default buildConfig({
         Users,
         Posts,
         Tags,
+        Categories,
+        Media,
+    ],
+    globals: [
+        KitchenSink,
     ],
     localization: {
         locales: [
@@ -47,6 +55,9 @@ export default buildConfig({
             previewUrl: () => `http://localhost:8080/`,
             collections: {
                 [Posts.slug]: {},
+            },
+            globals: {
+                [KitchenSink.slug]: {},
             },
         }),
     ],

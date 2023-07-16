@@ -5429,6 +5429,11 @@ ts-essentials@^7.0.3:
   resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-7.0.3.tgz#686fd155a02133eedcc5362dc8b5056cde3e5a38"
   integrity sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==
 
+ts-pattern@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/ts-pattern/-/ts-pattern-5.0.2.tgz#02f5dd1080a6ff5423fcc1ab6e3315bc6c90e2dc"
+  integrity sha512-JYcu4oJ7AGbww1z835AqMhrjwqclhICWhzjib4dp8MrY3UiFHqy1PVegVy+mW6VZ5vHrMeGombCbau2FGGSTJw==
+
 tslib@^2.0.0, tslib@^2.0.3, tslib@^2.5.0:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.5.3.tgz#24944ba2d990940e6e982c4bea147aba80209913"
