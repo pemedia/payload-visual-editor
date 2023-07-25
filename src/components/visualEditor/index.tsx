@@ -12,7 +12,7 @@ import { formatDate } from "payload/dist/admin/utilities/formatDate";
 import { Field } from "payload/types";
 import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 import { PreviewUrlFn } from "../../types/previewUrl";
-import { generateDocument } from "../../utils/generateDocument";
+import { generateDocument, GenDocConfig } from "../../utils/generateDocument";
 import { useResizeObserver } from "./useResizeObserver";
 import { useTranslation } from 'react-i18next';
 
@@ -36,9 +36,9 @@ interface Config {
     showPreview?: boolean;
 }
 
-const updatePreview = async (fieldConfigs: Field[], fields: Fields, iframe: HTMLIFrameElement) => {
+const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe: HTMLIFrameElement ) => {
     try {
-        const doc = await generateDocument(fieldConfigs, fields);
+        const doc = await generateDocument(genDocConfig, fields);
 
         iframe.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
     } catch (e) {
@@ -87,10 +87,20 @@ export const VisualEditor = (config: Config) => () => {
 
     const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
 
-    // handle localization in previewUrl
-    const { localization } = useConfig();
-    const locale = useLocale();
+    const {
+        localization,
+        serverURL,
+        routes: { api }
+    } = useConfig();
 
+    const configParams: GenDocConfig = {
+        fieldConfigs: fieldConfigs,
+        serverUrl: serverURL,
+        apiPath: api
+    }
+
+    // handle localization in previewUrl
+    const locale = useLocale();
     const previewUrl = localization ? config.previewUrl({ locale }) : config.previewUrl({ locale: "" });
 
     useEffect(() => {
@@ -124,7 +134,7 @@ export const VisualEditor = (config: Config) => () => {
         debounce.current = true;
 
         setTimeout(() => {
-            updatePreview(fieldConfigs, fields, iframe.current!);
+            updatePreview(configParams, fields, iframe.current!);
 
             debounce.current = false;
         }, 100);
@@ -132,7 +142,7 @@ export const VisualEditor = (config: Config) => () => {
 
     const onIframeLoaded = () => {
         setTimeout(() => {
-            updatePreview(fieldConfigs, fields, iframe.current!);
+            updatePreview(configParams, fields, iframe.current!);
         }, 100);
     };
 
