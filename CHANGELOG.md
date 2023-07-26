@@ -1,3 +1,8 @@
+## 0.1.3
+
+### Bug Fixes
+- Passing API path set in config to fetch relations (#18)
+
 ## 0.1.2
 
 ### Bug Fixes
