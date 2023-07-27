@@ -96,8 +96,12 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
     const convertBlockField = async (field: BlockField, values: Data) => {
         const blockValues = values[field.name];
 
-        if (!field.required && !blockValues) {
+        if (field.required && !blockValues) {
             return [];
+        }
+        
+        if (!field.required && !blockValues) {
+            return undefined;
         }
 
         return Promise.all(
