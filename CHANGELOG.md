@@ -1,7 +1,7 @@
 ## 0.1.4
 
 ### Bug Fixes
-- Fixed parsing block values while values are undefined (#20)
+- Fixed parsing block fields while values are undefined (#20)
 
 ## 0.1.3
 
