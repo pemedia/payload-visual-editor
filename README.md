@@ -2,7 +2,7 @@
 This plugin provides a visual editor, including a nice UI, for [Payload](https://github.com/payloadcms/payload).
 
 > **Note**
-> This plugin is currently under active development and still in alpha stage. Please check back periodically for updates.
+> This plugin is currently under active development. Please check back periodically for updates.
 
 ## Core features:
 
