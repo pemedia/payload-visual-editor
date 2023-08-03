@@ -123,7 +123,8 @@ return (
 )
 ```
 
-To trigger an initial render, send a `ready` message to the parent window, as soon as the DOM / react app is ready:
+Since the document will only be send to the frontend after a field has been changed the preview page wouldn't show any data on first render.
+To inform the cms to send the current document state to the frontend, send a `ready` message to the parent window, as soon as the DOM / react app is ready:
 
 ```js
 // react

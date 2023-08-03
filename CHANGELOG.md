@@ -1,3 +1,12 @@
+## 0.2.0
+
+### Features
+- The preview can now be opened in a separate window and in an iframe.
+
+### Breaking Changes
+
+- To fetch the current document state on first render, you have to send a ready event to the cms (s. [Frontend Integration in React / Next.js](https://github.com/pemedia/payload-visual-editor#frontend-integration-in-react--nextjs)).
+
 ## 0.1.4
 
 ### Bug Fixes

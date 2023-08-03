@@ -1,6 +1,6 @@
 {
   "name": "payload-visual-editor",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Payload CMS plugin which provides a visual live editor directly in the Admin UI.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
