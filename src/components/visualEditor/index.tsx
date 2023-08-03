@@ -1,4 +1,3 @@
-import { useAllFormFields } from "payload/components/forms";
 import { useConfig, useDocumentInfo, useLocale } from "payload/components/utilities";
 import CopyToClipboard from "payload/dist/admin/components/elements/CopyToClipboard";
 import VersionsCount from "payload/dist/admin/components/elements/VersionsCount";
@@ -7,14 +6,18 @@ import RenderFields from "payload/dist/admin/components/forms/RenderFields";
 import fieldTypes from "payload/dist/admin/components/forms/field-types";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import Edit from "payload/dist/admin/components/icons/Edit";
+import RelationShip from "payload/dist/admin/components/icons/Relationship";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
 import { formatDate } from "payload/dist/admin/utilities/formatDate";
-import { Field } from "payload/types";
 import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { match } from "ts-pattern";
 import { PreviewUrlFn } from "../../types/previewUrl";
-import { generateDocument, GenDocConfig } from "../../utils/generateDocument";
+import { GenDocConfig, generateDocument } from "../../utils/generateDocument";
+import { useFields } from "./useFields";
+import { useOnFieldChanges } from "./useOnFieldChanges";
+import { useOnPreviewMessage } from "./useOnPreviewMessage";
 import { useResizeObserver } from "./useResizeObserver";
-import { useTranslation } from 'react-i18next';
 
 const SCREEN_SIZES = {
     desktop: {
@@ -36,11 +39,12 @@ interface Config {
     showPreview?: boolean;
 }
 
-const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe: HTMLIFrameElement ) => {
+const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe: HTMLIFrameElement, previewWindow: Window | null) => {
     try {
         const doc = await generateDocument(genDocConfig, fields);
 
         iframe.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
+        previewWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
     } catch (e) {
         console.error(e);
     }
@@ -66,7 +70,7 @@ const getShouldShowPreview = (config: Config) => {
 
     // check config second 
     if (config.showPreview === false) {
-        return false; 
+        return false;
     }
 
     // default
@@ -76,14 +80,13 @@ const getShouldShowPreview = (config: Config) => {
 export const VisualEditor = (config: Config) => () => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
-    const [fields] = useAllFormFields();
+    const fields = useFields();
 
     const root = document.querySelector(":root") as HTMLElement;
     const editorContainer = document.querySelector(".collection-edit, .global-edit")!;
     const iframe = useRef<HTMLIFrameElement>(null);
     const resizeContainer = useRef<HTMLDivElement>(null);
-
-    const debounce = useRef(false);
+    const previewWindow = useRef<Window | null>(null);
 
     const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
 
@@ -110,7 +113,7 @@ export const VisualEditor = (config: Config) => () => {
             editorContainer.classList.add("show-preview");
         }
 
-        if(documentInfo.collection?.versions || documentInfo.global?.versions) {
+        if (documentInfo.collection?.versions || documentInfo.global?.versions) {
             editorContainer.classList.add("versions");
         }
 
@@ -122,29 +125,19 @@ export const VisualEditor = (config: Config) => () => {
         }
     }, []);
 
+    useOnPreviewMessage(previewUrl, message => {
+        match(message)
+            .with("ready", () => updatePreview(configParams, fields.current, iframe.current!, previewWindow.current))
+            .exhaustive();
+    });
+
     useResizeObserver(resizeContainer, ([entry]) => {
         setPreviewSizeDisplay(`${entry.contentRect.width} x ${entry.contentRect.height}`);
     });
 
-    useEffect(() => {
-        if (debounce.current) {
-            return;
-        }
-
-        debounce.current = true;
-
-        setTimeout(() => {
-            updatePreview(configParams, fields, iframe.current!);
-
-            debounce.current = false;
-        }, 100);
-    }, [fields]);
-
-    const onIframeLoaded = () => {
-        setTimeout(() => {
-            updatePreview(configParams, fields, iframe.current!);
-        }, 100);
-    };
+    useOnFieldChanges(fields.current, () => {
+        updatePreview(configParams, fields.current, iframe.current!, previewWindow.current);
+    });
 
     const sidebarDragStart = (e: ReactMouseEvent) => {
         e.preventDefault();
@@ -176,6 +169,22 @@ export const VisualEditor = (config: Config) => () => {
         localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
     };
 
+    const openPreviewWindow = () => {
+        previewWindow.current = open(previewUrl, "preview", "popup");
+
+        if (previewWindow.current) {
+            togglePreview();
+
+            const timer = setInterval(() => {
+                if (previewWindow.current!.closed) {
+                    clearInterval(timer);
+                    togglePreview();
+                    previewWindow.current = null;
+                }
+            }, 1000);
+        }
+    };
+
     const setPreviewSize = (size: { width: string; height: string; }) => () => {
         resizeContainer.current!.setAttribute("style", `width:${size.width}; height:${size.height};`);
     };
@@ -204,6 +213,10 @@ export const VisualEditor = (config: Config) => () => {
                                 <div className="pill size-display">
                                     {previewSizeDisplay}
                                 </div>
+
+                                <button className="openInWindow" type="button" onClick={openPreviewWindow}>
+                                    <RelationShip />
+                                </button>
                                 <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
                                     <CloseMenu />
                                 </button>
@@ -213,7 +226,6 @@ export const VisualEditor = (config: Config) => () => {
                                 id="live-preview-iframe"
                                 ref={iframe}
                                 src={previewUrl}
-                                onLoad={onIframeLoaded}
                             />
                         </div>
                     </div>
@@ -231,20 +243,20 @@ export const AdminSidebar = () => {
         admin: { dateFormat },
         routes: { api }
     } = useConfig();
-    
+
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
 
-    const docType: string = (documentInfo.collection) ? 'collection' : 'global'
+    const docType: string = (documentInfo.collection) ? "collection" : "global"
     const docTypeData = (documentInfo.collection) ? documentInfo.collection : documentInfo.global;
     const baseClass = `${docType}-edit`;
     const locale = useLocale();
 
-    const { t, i18n } = useTranslation('general');
+    const { t, i18n } = useTranslation("general");
 
     const additionalMeta = () => {
 
-        if (docType == 'collection') {
+        if (docType == "collection") {
 
             const publishedDoc = documentInfo.publishedDoc;
             const collection = documentInfo.collection;
@@ -257,28 +269,28 @@ export const AdminSidebar = () => {
                 <React.Fragment>
                     {versions && (
                         <li>
-                        <div className={`${baseClass}__label`}>{t('version:versions')}</div>
-                        <VersionsCount
-                            collection={collection}
-                            id={id}
-                        />
+                            <div className={`${baseClass}__label`}>{t("version:versions")}</div>
+                            <VersionsCount
+                                collection={collection}
+                                id={id}
+                            />
                         </li>
                     )}
                     {updatedAt && (
                         <li>
-                            <div className={`${baseClass}__label`}>{t('lastModified')}</div>
+                            <div className={`${baseClass}__label`}>{t("lastModified")}</div>
                             <div>{formatDate(updatedAt, dateFormat, i18n?.language)}</div>
                         </li>
                     )}
                     {(publishedDoc?.createdAt) && (
                         <li>
-                            <div className={`${baseClass}__label`}>{t('created')}</div>
+                            <div className={`${baseClass}__label`}>{t("created")}</div>
                             <div>{formatDate(publishedDoc?.createdAt, dateFormat, i18n?.language)}</div>
                         </li>
                     )}
                 </React.Fragment>
             )
-        } else if (docType == 'global') {
+        } else if (docType == "global") {
 
             const publishedDoc = documentInfo.publishedDoc;
             const global = documentInfo.global;
@@ -290,13 +302,13 @@ export const AdminSidebar = () => {
                 <React.Fragment>
                     {versions && (
                         <li>
-                            <div className={`${baseClass}__label`}>{t('version:versions')}</div>
+                            <div className={`${baseClass}__label`}>{t("version:versions")}</div>
                             <VersionsCount global={global} />
                         </li>
                     )}
                     {updatedAt && (
                         <li>
-                            <div className={`${baseClass}__label`}>{t('lastModified')}</div>
+                            <div className={`${baseClass}__label`}>{t("lastModified")}</div>
                             <div>{formatDate(updatedAt, dateFormat, i18n?.language)}</div>
                         </li>
                     )}
@@ -307,13 +319,15 @@ export const AdminSidebar = () => {
 
         return null;
 
-    } 
+    }
 
-    if(!docTypeData) return null;
+    if (!docTypeData) {
+        return null;
+    }
 
-    const apiURL = (docType == 'collection') ? 
-        `${serverURL}${api}/${docTypeData?.slug}/${documentInfo.id}?locale=${locale}${docTypeData?.versions.drafts ? '&draft=true' : ''}` :
-        `${serverURL}${api}/globals/${docTypeData?.slug}?locale=${locale}${docTypeData?.versions?.drafts ? "?draft=true" : ''}`;
+    const apiURL = (docType === "collection")
+        ? `${serverURL}${api}/${docTypeData?.slug}/${documentInfo.id}?locale=${locale}${docTypeData?.versions.drafts ? "&draft=true" : ""}`
+        : `${serverURL}${api}/globals/${docTypeData?.slug}?locale=${locale}${docTypeData?.versions?.drafts ? "?draft=true" : ""}`;
 
     return (
         <div className="ContentEditorAdminSidebar">
@@ -341,4 +355,3 @@ export const AdminSidebar = () => {
         </div>
     );
 };
-

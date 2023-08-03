@@ -24,11 +24,25 @@ const isKitchenSink = (doc: any): doc is KitchenSink => {
 
 window.addEventListener("message", event => {
     const data: Post | KitchenSink | undefined = event.data.cmsLivePreviewData;
-    console.log(data);
 
-    clearElements();
-    if (isPost(data)) return postPreview(data);
-    else if (isKitchenSink(data)) return kitchenSinkPreview(data);
+    if (!data) {
+        return;
+    }
+
+    if (isPost(data)) {
+        clearElements();
+        postPreview(data);
+    } else if (isKitchenSink(data)) {
+        clearElements();
+        kitchenSinkPreview(data);
+    }
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+
+    (opener ?? parent).postMessage("ready", "*");
+    }, 100);
 });
 
 const postPreview = (data: Post) => {

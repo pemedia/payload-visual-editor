@@ -396,14 +396,18 @@
                 justify-content: center;
               }
 
-              .toggleVisualEditor {
+              .openInWindow, .toggleVisualEditor {
                 border:none;
                 background:none;
                 appearance: none;
                 padding:0;
                 cursor: pointer;
+              }
+
+              .openInWindow {
                 margin-left:auto;
               }
+
             }
   
             iframe {
