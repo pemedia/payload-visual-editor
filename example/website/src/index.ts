@@ -39,10 +39,7 @@ window.addEventListener("message", event => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-
     (opener ?? parent).postMessage("ready", "*");
-    }, 100);
 });
 
 const postPreview = (data: Post) => {

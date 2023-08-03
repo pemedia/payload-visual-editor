@@ -97,12 +97,15 @@ useEffect(() => {
             setPage(event.data.cmsLivePreviewData);
         }
     };
+
     window.addEventListener("message", listener, false);
+
     return () => {
         window.removeEventListener("message", listener);
     };
 }, []);
 ```
+
 You can now pass this to your render function and you can use all your payload collection data in there. For example like this:
 
 ```js
@@ -119,6 +122,23 @@ return (
   </div>
 )
 ```
+
+To trigger an initial render, send a `ready` message to the parent window, as soon as the DOM / react app is ready:
+
+```js
+// react
+useEffect(() => {
+    (opener ?? parent).postMessage("ready", "*");
+}, []);
+
+// vanilla js
+window.addEventListener("DOMContentLoaded", () => {
+    (opener ?? parent).postMessage("ready", "*");
+});
+```
+
+> **Note**
+> If the cms and the frontend are running on different domains, the parent weren't able to listen on the ready event of the iframe / child window.
 
 ## Development
 
