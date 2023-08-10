@@ -123,6 +123,12 @@ export const VisualEditor = (config: Config) => () => {
         if (storedSidebarWidth) {
             root.style.setProperty("--visualeditor-sidebar-width", `${storedSidebarWidth}px`);
         }
+
+        return () => {
+            if (previewWindow.current) {
+                previewWindow.current.close();
+            }
+        };
     }, []);
 
     useOnPreviewMessage(previewUrl, message => {
@@ -237,7 +243,6 @@ export const VisualEditor = (config: Config) => () => {
 
 
 export const AdminSidebar = () => {
-
     const {
         serverURL,
         admin: { dateFormat },
