@@ -127,7 +127,7 @@ export const VisualEditor = (config: Config) => () => {
 
     useOnPreviewMessage(previewUrl, message => {
         match(message)
-            .with("ready", () => updatePreview(configParams, fields.current, iframe.current!, previewWindow.current))
+            .with({ type: "ready" }, () => updatePreview(configParams, fields.current, iframe.current!, previewWindow.current))
             .exhaustive();
     });
 
