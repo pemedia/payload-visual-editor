@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
-type Message = { type: "ready"; }
+type Message =
+    | { type: "ready"; }
+    | { type: "select"; name: string; }
 
 export const useOnPreviewMessage = (previewUrl: string, callback: (message: Message) => any) => {
     useEffect(() => {

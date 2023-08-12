@@ -43,9 +43,8 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 const postPreview = (data: Post) => {
-
-    addElem(`<h2>${data.title}</h2>`);
-    addElem(`<h3>${data.subtitle}</h3>`);
+    addElem(`<h2>${data.title}</h2>`, "title");
+    addElem(`<h3>${data.subtitle}</h3>`, "subtitle");
 
     if(data.tagsAndCategories !== undefined) {
 
@@ -62,11 +61,11 @@ const postPreview = (data: Post) => {
 
         }).filter(Boolean).join("\n");
 
-        addElem(`<ul>${tagList}</ul>`);
+        addElem(`<ul>${tagList}</ul>`, "tagsAndCategories");
     } 
 
     if (data.category !== undefined && isCategory(data.category)) {
-        addElem(`<div>${data.category.name}</div>`);
+        addElem(`<div>${data.category.name}</div>`, "category");
     }
 
 }
@@ -217,13 +216,24 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 }
 
 
-const addElem = (data: string) => {
+const addElem = (data: string, name?: string) => {
     const container = document.getElementById("preview");
     const template = document.createElement('template');
     data = data.trim();
     template.innerHTML = data;
     const htmlNode = template.content.firstChild;
-    if(container && htmlNode) container.appendChild(htmlNode);
+
+    if(container && htmlNode) {
+        container.appendChild(htmlNode);
+
+        if (name) {
+            (htmlNode as Element).classList.add("clickable");
+
+            htmlNode.addEventListener("click", () => {
+                (opener ?? parent).postMessage({ type: "select", name }, "*");
+            });
+        }
+    }
 }
 
 const clearElements = () => {

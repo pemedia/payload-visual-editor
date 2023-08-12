@@ -50,6 +50,26 @@ const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe:
     }
 };
 
+const selectInput = (name: string) => {
+    const element = document.getElementById(`field-${name}`);
+
+    if (!element) {
+        return;
+    }
+
+    if (element.tagName === "INPUT") {
+        return (element as HTMLInputElement).select();
+    }
+
+    const childElement = element.querySelector("input");
+
+    if (!childElement) {
+        return;
+    }
+
+    childElement.select();
+};
+
 const getFieldConfigs = (documentInfo: ContextType) => {
     return documentInfo.collection?.fields ?? documentInfo.global?.fields ?? [];
 };
@@ -134,6 +154,7 @@ export const VisualEditor = (config: Config) => () => {
     useOnPreviewMessage(previewUrl, message => {
         match(message)
             .with({ type: "ready" }, () => updatePreview(configParams, fields.current, iframe.current!, previewWindow.current))
+            .with({ type: "select" }, ({ name }) => selectInput(name))
             .exhaustive();
     });
 
