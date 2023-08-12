@@ -50,28 +50,44 @@ const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe:
     }
 };
 
-const selectInput = (name: string) => {
+const findElements = (name: string) => {
     const element = document.getElementById(`field-${name}`);
 
     if (!element) {
-        return;
+        return null;
     }
 
     if (element.tagName === "INPUT") {
-        element.scrollIntoView({ behavior: "smooth" });
-        (element as HTMLInputElement).select();
-
-        return;
+        return {
+            scrollTo: element.closest(".field-type"),
+            select: element as HTMLInputElement,
+        };
     }
 
     const childElement = element.querySelector("input");
 
-    if (!childElement) {
+    return {
+        scrollTo: element.closest(".field-type"),
+        select: childElement as HTMLInputElement | null,
+    };
+};
+
+const selectInput = (name: string) => {
+    const elements = findElements(name);
+
+    if (!elements) {
         return;
     }
 
-    childElement.scrollIntoView({ behavior: "smooth" });
-    childElement.select();
+    if (elements.select) {
+        elements.select.select();
+    }
+
+    if (elements.scrollTo) {
+        setTimeout(() => {
+            elements.scrollTo!.scrollIntoView({ block: "center", behavior: "smooth" });
+        }, 0);
+    }
 };
 
 const getFieldConfigs = (documentInfo: ContextType) => {
