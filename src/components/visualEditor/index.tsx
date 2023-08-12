@@ -58,7 +58,10 @@ const selectInput = (name: string) => {
     }
 
     if (element.tagName === "INPUT") {
-        return (element as HTMLInputElement).select();
+        element.scrollIntoView({ behavior: "smooth" });
+        (element as HTMLInputElement).select();
+
+        return;
     }
 
     const childElement = element.querySelector("input");
@@ -67,6 +70,7 @@ const selectInput = (name: string) => {
         return;
     }
 
+    childElement.scrollIntoView({ behavior: "smooth" });
     childElement.select();
 };
 

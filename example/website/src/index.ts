@@ -78,7 +78,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
         return `<li>Number: ${item.text} – Number: ${item.number}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<h3>Array:</h3>`);
-    addElem(`<ul>${array}</ul>`);
+    addElem(`<ul>${array}</ul>`, "array");
 
     // blocks
     const blocks = data.blocks.map(item => {
@@ -86,43 +86,43 @@ const kitchenSinkPreview = (data: KitchenSink) => {
         else if (item.blockType == 'testBlock2') return `<li>BlockType2:  ${item.number1} - ${item.number2}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<h3>Blocks:</h3>`);
-    addElem(`<ul>${blocks}</ul>`);
+    addElem(`<ul>${blocks}</ul>`, "blocks");
     addElem(`<hr />`);
 
     // checkbox
     addElem(`<h3>Checkbox:</h3>`);
-    addElem(`<div><input type="checkbox" ${(data.checkbox) ? 'checked' : ''} /></div>`);
+    addElem(`<div><input type="checkbox" ${(data.checkbox) ? 'checked' : ''} /></div>`, "checkbox");
     addElem(`<hr />`);
 
     // code
     addElem(`<h3>Code:</h3>`);
-    addElem(`<code>${data.code}</code>`);
+    addElem(`<code>${data.code}</code>`, "code");
     addElem(`<hr />`);
 
     // date
     addElem(`<h3>Date:</h3>`);
-    addElem(`<div>${data.date}</div>`);
+    addElem(`<div>${data.date}</div>`, "date");
     addElem(`<hr />`);
 
     // email
     addElem(`<h3>Email:</h3>`);
-    addElem(`<div>${data.email}</div>`);
+    addElem(`<div>${data.email}</div>`, "email");
     addElem(`<hr />`);
 
     // group
     addElem(`<h3>Group:</h3>`);
-    addElem(`<div>${data.group?.number}</div>`);
-    addElem(`<div>${data.group?.text}</div>`);
+    addElem(`<div>${data.group?.number}</div>`, "group__number");
+    addElem(`<div>${data.group?.text}</div>`, "group__text");
     addElem(`<hr />`);
 
     // json
     addElem(`<h3>JSON:</h3>`);
-    addElem(`<code>${ JSON.stringify(data.json) }</code>`);
+    addElem(`<code>${ JSON.stringify(data.json) }</code>`, "json");
     addElem(`<hr />`);
 
     // number
     addElem(`<h3>Number:</h3>`);
-    addElem(`<div>${data.number}</div>`);
+    addElem(`<div>${data.number}</div>`, "number");
     addElem(`<hr />`);
 
     // point
@@ -130,18 +130,18 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     const points = data.point.map((item, index) => {
         return `<li>[${index}] = ${item}</li>`;
     }).filter(Boolean).join("\n");
-    addElem(`<ul>${points}</ul>`);
+    addElem(`<ul>${points}</ul>`, "point");
     addElem(`<hr />`);
 
     // radio
     addElem(`<h3>Radio:</h3>`);
-    addElem(`<div>${data.radio}</div>`);
+    addElem(`<div>${data.radio}</div>`, "radio");
     addElem(`<hr />`);
 
     // relationship (single)
     addElem(`<h3>Relationship 1 (single):</h3>`);
     if(isTag(data.relationship1)) {
-        addElem(`<ul><li>${data.relationship1.name}</li></ul>`);
+        addElem(`<ul><li>${data.relationship1.name}</li></ul>`, "relationship1");
     }
     addElem(`<hr />`);
 
@@ -151,13 +151,13 @@ const kitchenSinkPreview = (data: KitchenSink) => {
         if(isTag(item)) return `<li>[${index}] = ${item.name}</li>`;
         return null;
     }).filter(Boolean).join("\n");
-    addElem(`<ul>${relationships2}</ul>`);
+    addElem(`<ul>${relationships2}</ul>`, "relationships2");
     addElem(`<hr />`);
 
     // relationship (array)
     addElem(`<h3>Relationship 3 (array):</h3>`);
     if(data.relationship3.value && isCategory(data.relationship3.value)) {
-        addElem(`<ul><li>${data.relationship3.relationTo}: ${data.relationship3.value.name}</li></ul>`);
+        addElem(`<ul><li>${data.relationship3.relationTo}: ${data.relationship3.value.name}</li></ul>`, "relationship3");
     }
     addElem(`<hr />`);
 
@@ -169,17 +169,17 @@ const kitchenSinkPreview = (data: KitchenSink) => {
         }
         return null;
     }).filter(Boolean).join("\n");
-    addElem(`<ul>${relationships4}</ul>`);
+    addElem(`<ul>${relationships4}</ul>`, "relationships4");
     addElem(`<hr />`);
 
     // rich text
     addElem(`<h3>Rich text:</h3>`);
-    addElem(`<code>${ JSON.stringify([data.richText]) }</code>`);
+    addElem(`<code>${ JSON.stringify([data.richText]) }</code>`, "richText");
     addElem(`<hr />`);
 
     // select 1
     addElem(`<h3>Select 1 (single):</h3>`);
-    addElem(`<ul><li>${data.select1}</li></ul>`);
+    addElem(`<ul><li>${data.select1}</li></ul>`, "select1");
     addElem(`<hr />`);
 
     // select 2
@@ -187,17 +187,17 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     const selects = data.select2.map((item, index) => {
         return `<li>[${index}] = ${item}</li>`;
     }).filter(Boolean).join("\n");
-    addElem(`<ul>${selects}</ul>`);    
+    addElem(`<ul>${selects}</ul>`, "select2");    
     addElem(`<hr />`);
 
     // text
     addElem(`<h3>Text:</h3>`);
-    addElem(`<div>${data.text}</div>`);
+    addElem(`<div>${data.text}</div>`, "text");
     addElem(`<hr />`);
 
     // textarea
     addElem(`<h3>Textarea:</h3>`);
-    addElem(`<div>${data.textarea.replace(/(?:\r\n|\r|\n)/g, "<br>")}</div>`);
+    addElem(`<div>${data.textarea.replace(/(?:\r\n|\r|\n)/g, "<br>")}</div>`, "textarea");
     addElem(`<hr />`);
 
     // upload
