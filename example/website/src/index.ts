@@ -25,16 +25,33 @@ const isKitchenSink = (doc: any): doc is KitchenSink => {
 window.addEventListener("message", event => {
     const data: Post | KitchenSink | undefined = event.data.cmsLivePreviewData;
 
-    if (!data) {
+    if (data) {
+        if (isPost(data)) {
+            clearElements();
+            postPreview(data);
+        } else if (isKitchenSink(data)) {
+            clearElements();
+            kitchenSinkPreview(data);
+        }
+
         return;
     }
 
-    if (isPost(data)) {
-        clearElements();
-        postPreview(data);
-    } else if (isKitchenSink(data)) {
-        clearElements();
-        kitchenSinkPreview(data);
+    const focus = event.data.focus;
+
+    if (focus) {
+        const element = document.querySelector(`.clickable[data-payload-name=${focus}]`);
+
+        if (element) {
+            element.scrollIntoView({ block: "center", behavior: "smooth" });
+            element.classList.add("focus");
+
+            setTimeout(() => {
+                element.classList.remove("focus");
+            }, 1000);
+        }
+
+        return;
     }
 });
 
@@ -46,7 +63,7 @@ const postPreview = (data: Post) => {
     addElem(`<h2>${data.title}</h2>`, "title");
     addElem(`<h3>${data.subtitle}</h3>`, "subtitle");
 
-    if(data.tagsAndCategories !== undefined) {
+    if (data.tagsAndCategories !== undefined) {
 
         const tagList = data.tagsAndCategories.map(tagOrCategory => {
             if (tagOrCategory.relationTo === "tags" && isTag(tagOrCategory.value)) {
@@ -62,7 +79,7 @@ const postPreview = (data: Post) => {
         }).filter(Boolean).join("\n");
 
         addElem(`<ul>${tagList}</ul>`, "tagsAndCategories");
-    } 
+    }
 
     if (data.category !== undefined && isCategory(data.category)) {
         addElem(`<div>${data.category.name}</div>`, "category");
@@ -82,7 +99,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // blocks
     const blocks = data.blocks.map(item => {
-        if(item.blockType == 'testBlock1') return `<li>BlockType1:  ${item.text1} - ${item.text2}</li>`;
+        if (item.blockType == 'testBlock1') return `<li>BlockType1:  ${item.text1} - ${item.text2}</li>`;
         else if (item.blockType == 'testBlock2') return `<li>BlockType2:  ${item.number1} - ${item.number2}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<h3>Blocks:</h3>`);
@@ -117,7 +134,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // json
     addElem(`<h3>JSON:</h3>`);
-    addElem(`<code>${ JSON.stringify(data.json) }</code>`, "json");
+    addElem(`<code>${JSON.stringify(data.json)}</code>`, "json");
     addElem(`<hr />`);
 
     // number
@@ -140,7 +157,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // relationship (single)
     addElem(`<h3>Relationship 1 (single):</h3>`);
-    if(isTag(data.relationship1)) {
+    if (isTag(data.relationship1)) {
         addElem(`<ul><li>${data.relationship1.name}</li></ul>`, "relationship1");
     }
     addElem(`<hr />`);
@@ -148,7 +165,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     // relationship (multi)
     addElem(`<h3>Relationship 2 (multi):</h3>`);
     const relationships2 = data.relationship2.map((item, index) => {
-        if(isTag(item)) return `<li>[${index}] = ${item.name}</li>`;
+        if (isTag(item)) return `<li>[${index}] = ${item.name}</li>`;
         return null;
     }).filter(Boolean).join("\n");
     addElem(`<ul>${relationships2}</ul>`, "relationships2");
@@ -156,7 +173,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // relationship (array)
     addElem(`<h3>Relationship 3 (array):</h3>`);
-    if(data.relationship3.value && isCategory(data.relationship3.value)) {
+    if (data.relationship3.value && isCategory(data.relationship3.value)) {
         addElem(`<ul><li>${data.relationship3.relationTo}: ${data.relationship3.value.name}</li></ul>`, "relationship3");
     }
     addElem(`<hr />`);
@@ -164,7 +181,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     // relationship (array multi)
     addElem(`<h3>Relationship 4 (array multi):</h3>`);
     const relationships4 = data.relationship4.map((item, index) => {
-        if(isTag(item.value) || isCategory(item.value)) {
+        if (isTag(item.value) || isCategory(item.value)) {
             return `<li>${item.relationTo}: ${item.value.name}</li>`;
         }
         return null;
@@ -174,7 +191,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // rich text
     addElem(`<h3>Rich text:</h3>`);
-    addElem(`<code>${ JSON.stringify([data.richText]) }</code>`, "richText");
+    addElem(`<code>${JSON.stringify([data.richText])}</code>`, "richText");
     addElem(`<hr />`);
 
     // select 1
@@ -187,7 +204,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     const selects = data.select2.map((item, index) => {
         return `<li>[${index}] = ${item}</li>`;
     }).filter(Boolean).join("\n");
-    addElem(`<ul>${selects}</ul>`, "select2");    
+    addElem(`<ul>${selects}</ul>`, "select2");
     addElem(`<hr />`);
 
     // text
@@ -202,13 +219,13 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // upload
     addElem(`<h3>Upload:</h3>`);
-    if(isMedia(data.upload)) {
+    if (isMedia(data.upload)) {
         let mediaElem: string | null = null;
-        if(data.upload.mimeType?.includes("image/")) mediaElem = `<img src="${data.upload.url}" width="50%" />`
-        else if(data.upload.mimeType?.includes("video/")) mediaElem = `<video width="100%" controls><source src="${data.upload.url}" type="${data.upload.mimeType}"></video>`
+        if (data.upload.mimeType?.includes("image/")) mediaElem = `<img src="${data.upload.url}" width="50%" />`
+        else if (data.upload.mimeType?.includes("video/")) mediaElem = `<video width="100%" controls><source src="${data.upload.url}" type="${data.upload.mimeType}"></video>`
         addElem(`<div>
             <div>${data.upload.filename}</div>
-           ${(mediaElem) ? `<div>${mediaElem}</div>` : '' }
+           ${(mediaElem) ? `<div>${mediaElem}</div>` : ''}
         </div>`);
     }
     addElem(`<hr />`);
@@ -223,11 +240,12 @@ const addElem = (data: string, name?: string) => {
     template.innerHTML = data;
     const htmlNode = template.content.firstChild;
 
-    if(container && htmlNode) {
+    if (container && htmlNode) {
         container.appendChild(htmlNode);
 
         if (name) {
-            (htmlNode as Element).classList.add("clickable");
+            (htmlNode as HTMLElement).classList.add("clickable");
+            (htmlNode as HTMLElement).dataset.payloadName = name;
 
             htmlNode.addEventListener("click", () => {
                 (opener ?? parent).postMessage({ type: "select", name }, "*");
@@ -238,5 +256,5 @@ const addElem = (data: string, name?: string) => {
 
 const clearElements = () => {
     const container = document.getElementById("preview");
-    if(container) container.innerHTML = "";
+    if (container) container.innerHTML = "";
 }

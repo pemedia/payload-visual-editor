@@ -16,6 +16,7 @@ import { PreviewUrlFn } from "../../types/previewUrl";
 import { GenDocConfig, generateDocument } from "../../utils/generateDocument";
 import { useFields } from "./useFields";
 import { useOnFieldChanges } from "./useOnFieldChanges";
+import { useOnFocusInput } from "./useOnFocusInput";
 import { useOnPreviewMessage } from "./useOnPreviewMessage";
 import { useResizeObserver } from "./useResizeObserver";
 
@@ -184,6 +185,11 @@ export const VisualEditor = (config: Config) => () => {
 
     useOnFieldChanges(fields.current, () => {
         updatePreview(configParams, fields.current, iframe.current!, previewWindow.current);
+    });
+
+    useOnFocusInput(name => {
+        iframe.current?.contentWindow?.postMessage({ focus: name }, "*");
+        previewWindow.current?.postMessage({ focus: name }, "*");
     });
 
     const sidebarDragStart = (e: ReactMouseEvent) => {

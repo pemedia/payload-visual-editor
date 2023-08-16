@@ -8,6 +8,18 @@
         <script src="./bundle.js" defer></script>
 
         <style>
+            @keyframes focus {
+                0% {
+                    box-shadow: 0 0 0px red;
+                }
+                50% {
+                    box-shadow: 0 0 10px red;
+                }
+                100% {
+                    box-shadow: 0 0 0px red;
+                }
+            }
+
             .clickable:empty {
                 min-width: 2rem;
                 min-height: 2rem;
@@ -17,6 +29,10 @@
                 outline: 1px dashed black;
 
                 cursor: pointer;
+            }
+
+            .clickable.focus {
+                animation: focus both 1s;
             }
         </style>
     </head>
