@@ -73,7 +73,7 @@
 
       .collection-edit__document-actions,
       .global-edit__document-actions {
-        padding-top: 1.25rem;
+        margin-top: 1.25rem;
         button {
           height: 3.25rem;
           * {
@@ -353,7 +353,7 @@
         right: 0;
         bottom: 0;
         left: calc(var(--visualeditor-sidebar-width) + var(--nav-width));
-        background: var(--theme-elevation-200);
+        background: var(--theme-elevation-100);
   
         > .live-preview {
           display: flex;
@@ -364,16 +364,16 @@
           overflow: hidden;
   
           .live-preview-resize-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: auto 1fr;
             resize: both;
             overflow: auto;
             width: 100%;
             max-width: 100%;
-            min-width: 340px;
+            min-width: 100px;
             height: 100%;
             max-height: 100%;
-            min-height: 450px;
+            min-height: 150px;
             border: none;
             border-radius: 4px;
             overflow: hidden;
@@ -381,31 +381,145 @@
             border-radius: 0.75rem;
             box-shadow: 0 5px 10px rgba(0,0,0,0.25);
 
+
             > .live-preview-settings {
               display: flex;
               gap: base(.25);
               justify-content: center;
-              padding: base(.25) base(.25);
+              padding: 0;
               border-bottom: 1px solid var(--theme-elevation-100);
               background: var(--theme-elevation-50);
-      
-              .size-display {
-                background: var(--theme-elevation-150);
-                box-shadow: 0 0 0 1px var(--theme-elevation-200);
-                width: 7rem;
-                justify-content: center;
+              color: var(--theme-elevation-500);
+              height: base(1.5);
+
+              .selectMenu {
+                position: relative;
+
+                button.selected {
+                  position: relative;
+                  border:none;
+                  background:none;
+                  appearance: none;
+                  padding:0;
+                  cursor: pointer;
+                  height: 100%;
+                  padding: 0 base(.95) 0 base(.5);
+
+                  .icon {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    right:0;
+                    top:0;
+                    height: 100%;
+
+                    .icon--chevron {
+                      transition: transform .25s ease;
+
+                       .stroke {
+                        fill: none;
+                        stroke: var(--theme-elevation-800);
+                        stroke-width: 1.5px;
+                      }
+                    }
+                  }
+                }
+
+                &.expanded {
+                  button.selected {
+                    .icon .icon--chevron {
+                      transform: rotate(180deg);
+                    }
+                  }
+                }
+
+                div.menu {
+                  position: absolute;
+                  z-index: 1;
+                  background: var(--theme-elevation-100);
+                  top: 100%;
+                  overflow: hidden;
+                  height: 0;
+                  transition: height .25s ease;
+
+                  ul {
+                    list-style: none;
+                    padding: 0;
+                    margin:0;
+                  }
+
+                  li {
+                    button {
+                      border:none;
+                      background:none;
+                      appearance: none;
+                      cursor: pointer;
+                      padding: base(0.5) base(1) base(0.5) base(.85);
+                      color: var(--theme-elevation-800);
+                      &:hover {
+                        color: var(--theme-elevation-1000);
+                        text-decoration: underline;
+                      }
+                    }
+                    
+                  }
+                }
+
               }
 
-              .openInWindow, .toggleVisualEditor {
+              .rotate button {
+                border:none;
+                background:none;
+                appearance: none;
+                cursor: pointer;
+                font-size: 1.5em;
+                height: 100%;
+                svg {
+                  width: base(.5);
+                  margin-bottom: 3px;
+                  transition: transform .25s ease;
+                }
+
+                &:active svg {
+                  transform: rotate(180deg);
+                }
+              }
+      
+              .size-display {
+                align-self: center;
+                white-space: nowrap;
+              }
+
+              .elemsRight {
+                margin-left: auto;
+                padding-right: base(.15);
+              }
+
+              .iconButton {
                 border:none;
                 background:none;
                 appearance: none;
                 padding:0;
                 cursor: pointer;
+                height: 100%;
+                padding: base(.15);
+                svg {
+                  width: base(.75);
+                  height: base(.75);
+                }
+              }
+
+              .toggleVisualEditor {
+                .icon--close-menu .fill {
+                  fill: var(--theme-elevation-500);
+                }
               }
 
               .openInWindow {
-                margin-left:auto;
+                .icon--relationship .stroke {
+                  stroke: var(--theme-elevation-500);
+                  stroke-width: 1.5px;
+                }
               }
 
             }
@@ -415,7 +529,31 @@
               height:100%;
               border:none;
               background-color: #fff;
-              // border-radius: 0.5rem;
+
+              &[data-scale="25"] {
+                transform-origin: top left;
+                transform: scale(0.25, 0.25);
+                width: 400%;
+                height: 400%;
+              }
+
+              &[data-scale="50"] {
+                transform-origin: top left;
+                transform: scale(0.5, 0.5);
+                width: 200%;
+                height: 200%;
+              }
+
+              &[data-scale="75"] {
+                transform-origin: top left;
+                transform: scale(0.75, 0.75);
+                width: 150%;
+                height: 150%;
+              }
+
+              &[data-scale="100"] {
+
+              }
 
               ::-webkit-scrollbar {
                 width: 10px;
@@ -442,7 +580,7 @@
       width: 2px;
       height:100%;
       background: var(--theme-elevation-0);
-      border-right: 2px solid var(--theme-elevation-200);
+      border-right: 1px solid var(--theme-elevation-100);
       cursor:col-resize;
     }
 
