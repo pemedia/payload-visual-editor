@@ -342,7 +342,6 @@ export const VisualEditor = (config: Config) => () => {
 
     const rotatePreview = () => {
         if(resizeContainer.current) {
-            console.log('rotate', selectedSizeItem);
             // get current dimensions
             const newWidth = resizeContainer.current?.offsetWidth;
             const newHeight = resizeContainer.current?.offsetHeight;
@@ -476,7 +475,6 @@ export const AdminSidebar = () => {
             const updatedAt = publishedDoc?.updatedAt;
             const versions = collection?.versions;
             const preview = collection?.admin?.preview;
-            console.log(preview)
 
             return (
                 <React.Fragment>
