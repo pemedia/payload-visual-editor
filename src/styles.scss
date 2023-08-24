@@ -364,10 +364,9 @@
           overflow: hidden;
   
           .live-preview-resize-container {
+            position: relative;
             display: grid;
             grid-template-rows: auto 1fr;
-            resize: both;
-            overflow: auto;
             width: 100%;
             max-width: 100%;
             min-width: 100px;
@@ -375,12 +374,14 @@
             max-height: 100%;
             min-height: 150px;
             border: none;
-            border-radius: 4px;
-            overflow: hidden;
             padding: 0;
             border-radius: 0.75rem;
             box-shadow: 0 5px 10px rgba(0,0,0,0.25);
+            overflow: hidden;
 
+            &.responsive {
+              resize: both;
+            }
 
             > .live-preview-settings {
               display: flex;
@@ -456,6 +457,7 @@
                       cursor: pointer;
                       padding: base(0.5) base(1) base(0.5) base(.85);
                       color: var(--theme-elevation-800);
+                      white-space: nowrap;
                       &:hover {
                         color: var(--theme-elevation-1000);
                         text-decoration: underline;
@@ -488,6 +490,7 @@
               .size-display {
                 align-self: center;
                 white-space: nowrap;
+                padding: 0 base(.25);
               }
 
               .elemsRight {

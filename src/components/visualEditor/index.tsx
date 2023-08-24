@@ -40,6 +40,12 @@ const SCREEN_SIZES: ScreenSize[] = [
         height: "100%",
     },
     {
+        slug: "desktop",
+        label: "Desktop",
+        width: 1440,
+        height: 900,
+    },
+    {
         slug: "tablet",
         label: "Tablet",
         width: 1024,
@@ -49,7 +55,7 @@ const SCREEN_SIZES: ScreenSize[] = [
         slug: "smartphone",
         label: "Smartphone",
         width: 375,
-        height: 668,
+        height: 700,
     },
 ];
 
@@ -360,7 +366,7 @@ export const VisualEditor = (config: Config) => () => {
                 <div className="live-preview-container">
                     <div className="sidebar-drag-handle" onMouseDown={sidebarDragStart}></div>
                     <div ref={livePreviewContainer} className="live-preview">
-                        <div className="live-preview-resize-container" ref={resizeContainer}>
+                        <div ref={resizeContainer} className={`live-preview-resize-container ${(selectedSizeItem.slug == "responsive") ? 'responsive' : ''}`}>
                             <div className="live-preview-settings">
                                 <div ref={sizeSelect} className="selectMenu sizeSelect">
                                     <button className="selected" type="button" onClick={toggleMenu(sizeSelect)}>
