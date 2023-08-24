@@ -404,7 +404,7 @@
                   padding:0;
                   cursor: pointer;
                   height: 100%;
-                  padding: 0 base(.95) 0 base(.5);
+                  padding: 0 base(.95) 0 0;
 
                   .icon {
                     content: "";
@@ -424,6 +424,10 @@
                       }
                     }
                   }
+                }
+
+                &:first-child button {
+                  padding-left: base(.5);
                 }
 
                 &.expanded {
