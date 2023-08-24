@@ -1,6 +1,7 @@
 import { useConfig, useDocumentInfo, useLocale } from "payload/components/utilities";
 import CopyToClipboard from "payload/dist/admin/components/elements/CopyToClipboard";
 import VersionsCount from "payload/dist/admin/components/elements/VersionsCount";
+import PreviewButton from "payload/dist/admin/components/elements/PreviewButton";
 import { Fields } from "payload/dist/admin/components/forms/Form/types";
 import RenderFields from "payload/dist/admin/components/forms/RenderFields";
 import fieldTypes from "payload/dist/admin/components/forms/field-types";
@@ -450,7 +451,21 @@ export const AdminSidebar = () => {
 
     const { t, i18n } = useTranslation("general");
 
-    const additionalMeta = () => {
+    const apiUrlElement = (apiURL: string) => {
+
+        return (
+            <li className={`${baseClass}__api-url`}>
+                <span className={`${baseClass}__label`}>
+                    API URL
+                    {" "}
+                    <CopyToClipboard value={apiURL} />
+                </span>
+                <a href={apiURL} target="_blank" rel="noopener noreferrer">{apiURL}</a>
+            </li>
+        )
+    }
+
+    const additionalMeta = (apiURL: string) => {
 
         if (docType == "collection") {
 
@@ -460,9 +475,19 @@ export const AdminSidebar = () => {
 
             const updatedAt = publishedDoc?.updatedAt;
             const versions = collection?.versions;
+            const preview = collection?.admin?.preview;
+            console.log(preview)
 
             return (
                 <React.Fragment>
+
+                    {(preview && (versions?.drafts && !versions?.drafts?.autosave)) && (
+                        <PreviewButton
+                            generatePreviewURL={preview}
+                            CustomComponent={collection?.admin?.components?.edit?.PreviewButton}
+                        />
+                    )}
+                    {apiUrlElement(apiURL)}
                     {versions && (
                         <li>
                             <div className={`${baseClass}__label`}>{t("version:versions")}</div>
@@ -493,9 +518,18 @@ export const AdminSidebar = () => {
 
             const updatedAt = publishedDoc?.updatedAt;
             const versions = global?.versions;
+            const preview = global?.admin?.preview;
 
             return (
                 <React.Fragment>
+
+                    {(preview) && (
+                        <PreviewButton
+                            generatePreviewURL={preview}
+                            CustomComponent={global?.admin?.components?.elements?.PreviewButton}
+                        />
+                    )}
+                    {apiUrlElement(apiURL)}
                     {versions && (
                         <li>
                             <div className={`${baseClass}__label`}>{t("version:versions")}</div>
@@ -538,15 +572,7 @@ export const AdminSidebar = () => {
             ) : null}
 
             <ul className={`${baseClass}__meta`}>
-                <li className={`${baseClass}__api-url`}>
-                    <span className={`${baseClass}__label`}>
-                        API URL
-                        {" "}
-                        <CopyToClipboard value={apiURL} />
-                    </span>
-                    <a href={apiURL} target="_blank" rel="noopener noreferrer">{apiURL}</a>
-                </li>
-                {additionalMeta()}
+                {additionalMeta(apiURL)}
             </ul>
         </div>
     );

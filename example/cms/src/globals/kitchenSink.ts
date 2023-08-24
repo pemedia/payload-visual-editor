@@ -7,6 +7,11 @@ import { Tags } from "../collections/Tags";
 
 export const KitchenSink: GlobalConfig = {
     slug: "kitchenSink",
+    admin: {
+        preview: (doc, { locale }) => {
+            return `https://bigbird.com/preview/`;
+        },
+    },
     fields: [
         {
             name: "array",

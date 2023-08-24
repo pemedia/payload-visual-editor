@@ -6,6 +6,9 @@ export const Posts: CollectionConfig = {
     slug: "posts",
     admin: {
         useAsTitle: "title",
+        preview: (doc, { locale }) => {
+            return `https://bigbird.com/preview/`;
+        },
     },
     versions: {
         drafts: true,
