@@ -106,7 +106,8 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
 
         return Promise.all(
             blockValues.map(async (value: Data) => {
-                const fields = getBlock(field.blocks, value.blockType).fields as FieldAffectingData[];
+                const block = getBlock(field.blocks, value.blockType);
+                const fields = getAllFields(block.fields) as FieldAffectingData[];
 
                 const result: any = {
                     id: value.id,
