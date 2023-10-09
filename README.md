@@ -1,8 +1,7 @@
 # Payload Visual Editor Plugin
-This plugin provides a visual editor, including a nice UI, for [Payload](https://github.com/payloadcms/payload).
-
 > **Note**
-> This plugin is currently under active development. Please check back periodically for updates.
+> This plugin provides a visual live preview, including a nice UI, for **[Payload](https://github.com/payloadcms/payload) versions 1.x.**  
+> For **Payload CMS 2.x** you don't need this plugin, as it offers the live preview as a **core feature**. 🎉
 
 ## Core features:
 
