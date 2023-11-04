@@ -1,3 +1,6 @@
+import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { visualEditor } from "../../../src";
@@ -13,6 +16,7 @@ export default buildConfig({
     serverURL: "http://localhost:3000",
     admin: {
         user: Users.slug,
+        bundler: webpackBundler(),
         webpack: config => ({
             ...config,
             resolve: {
@@ -38,12 +42,16 @@ export default buildConfig({
     ],
     localization: {
         locales: [
-          'en',
-          'de',
+            'en',
+            'de',
         ],
         defaultLocale: 'de',
         fallback: true,
-      },
+    },
+    db: mongooseAdapter({
+        url: process.env.MONGODB_URI!,
+    }),
+    editor: lexicalEditor({}),
     typescript: {
         outputFile: path.resolve(__dirname, "../../website/src/payload-types.ts"),
     },

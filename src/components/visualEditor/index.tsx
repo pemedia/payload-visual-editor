@@ -1,20 +1,12 @@
 import { useAllFormFields } from "payload/components/forms";
 import { useConfig, useDocumentInfo, useLocale } from "payload/components/utilities";
-import CopyToClipboard from "payload/dist/admin/components/elements/CopyToClipboard";
-import VersionsCount from "payload/dist/admin/components/elements/VersionsCount";
 import { Fields } from "payload/dist/admin/components/forms/Form/types";
-import RenderFields from "payload/dist/admin/components/forms/RenderFields";
-import fieldTypes from "payload/dist/admin/components/forms/field-types";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
-import Edit from "payload/dist/admin/components/icons/Edit";
 import { ContextType } from "payload/dist/admin/components/utilities/DocumentInfo/types";
-import { formatDate } from "payload/dist/admin/utilities/formatDate";
-import { Field } from "payload/types";
 import React, { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 import { PreviewUrlFn } from "../../types/previewUrl";
-import { generateDocument, GenDocConfig } from "../../utils/generateDocument";
+import { GenDocConfig, generateDocument } from "../../utils/generateDocument";
 import { useResizeObserver } from "./useResizeObserver";
-import { useTranslation } from 'react-i18next';
 
 const SCREEN_SIZES = {
     desktop: {
@@ -36,7 +28,7 @@ interface Config {
     showPreview?: boolean;
 }
 
-const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe: HTMLIFrameElement ) => {
+const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe: HTMLIFrameElement) => {
     try {
         const doc = await generateDocument(genDocConfig, fields);
 
@@ -66,14 +58,14 @@ const getShouldShowPreview = (config: Config) => {
 
     // check config second 
     if (config.showPreview === false) {
-        return false; 
+        return false;
     }
 
     // default
     return true;
 };
 
-export const VisualEditor = (config: Config) => () => {
+export const VisualEditor = (config: Config) => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
     const [fields] = useAllFormFields();
@@ -101,16 +93,16 @@ export const VisualEditor = (config: Config) => () => {
 
     // handle localization in previewUrl
     const locale = useLocale();
-    const previewUrl = localization ? config.previewUrl({ locale }) : config.previewUrl({ locale: "" });
+    const previewUrl = localization ? config.previewUrl({ locale: locale.code }) : config.previewUrl({ locale: "" });
 
     useEffect(() => {
-        editorContainer.classList.add("visual-editor");
+        // editorContainer.classList.add("visual-editor");
 
         if (getShouldShowPreview(config)) {
             editorContainer.classList.add("show-preview");
         }
 
-        if(documentInfo.collection?.versions || documentInfo.global?.versions) {
+        if (documentInfo.collection?.versions || documentInfo.global?.versions) {
             editorContainer.classList.add("versions");
         }
 
@@ -181,164 +173,67 @@ export const VisualEditor = (config: Config) => () => {
     };
 
     return (
-        <>
-            <button className="toggleVisualEditor menu pill pill--has-action" type="button" onClick={togglePreview}>
-                <Edit /> Live Preview
-            </button>
+        <div className="live-preview-resize-container" ref={resizeContainer}>
+            <div className="live-preview-settings">
+                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
+                    Desktop
+                </button>
+                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
+                    Tablet
+                </button>
+                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
+                    Mobile
+                </button>
+                <div className="pill size-display">
+                    {previewSizeDisplay}
+                </div>
+                <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
+                    <CloseMenu />
+                </button>
+            </div>
 
-            <div className="ContentEditor">
-                <div className="live-preview-container">
-                    <div className="sidebar-drag-handle" onMouseDown={sidebarDragStart}></div>
-                    <div className="live-preview">
-                        <div className="live-preview-resize-container" ref={resizeContainer}>
-                            <div className="live-preview-settings">
-                                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
-                                    Desktop
-                                </button>
-                                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
-                                    Tablet
-                                </button>
-                                <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
-                                    Mobile
-                                </button>
-                                <div className="pill size-display">
-                                    {previewSizeDisplay}
-                                </div>
-                                <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
-                                    <CloseMenu />
-                                </button>
+            <iframe
+                id="live-preview-iframe"
+                ref={iframe}
+                src={previewUrl}
+                onLoad={onIframeLoaded}
+            />
+        </div>
+    );
+
+    return (
+        <div className="ContentEditor">
+            <div className="live-preview-container">
+                <div className="sidebar-drag-handle" onMouseDown={sidebarDragStart}></div>
+                <div className="live-preview">
+                    <div className="live-preview-resize-container" ref={resizeContainer}>
+                        <div className="live-preview-settings">
+                            <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
+                                Desktop
+                            </button>
+                            <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
+                                Tablet
+                            </button>
+                            <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
+                                Mobile
+                            </button>
+                            <div className="pill size-display">
+                                {previewSizeDisplay}
                             </div>
-
-                            <iframe
-                                id="live-preview-iframe"
-                                ref={iframe}
-                                src={previewUrl}
-                                onLoad={onIframeLoaded}
-                            />
+                            <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
+                                <CloseMenu />
+                            </button>
                         </div>
+
+                        <iframe
+                            id="live-preview-iframe"
+                            ref={iframe}
+                            src={previewUrl}
+                            onLoad={onIframeLoaded}
+                        />
                     </div>
                 </div>
             </div>
-        </>
-    );
-};
-
-
-export const AdminSidebar = () => {
-
-    const {
-        serverURL,
-        admin: { dateFormat },
-        routes: { api }
-    } = useConfig();
-    
-    const documentInfo = useDocumentInfo();
-    const fieldConfigs = getFieldConfigs(documentInfo);
-
-    const docType: string = (documentInfo.collection) ? 'collection' : 'global'
-    const docTypeData = (documentInfo.collection) ? documentInfo.collection : documentInfo.global;
-    const baseClass = `${docType}-edit`;
-    const locale = useLocale();
-
-    const { t, i18n } = useTranslation('general');
-
-    const additionalMeta = () => {
-
-        if (docType == 'collection') {
-
-            const publishedDoc = documentInfo.publishedDoc;
-            const collection = documentInfo.collection;
-            const id = documentInfo.id;
-
-            const updatedAt = publishedDoc?.updatedAt;
-            const versions = collection?.versions;
-
-            return (
-                <React.Fragment>
-                    {versions && (
-                        <li>
-                        <div className={`${baseClass}__label`}>{t('version:versions')}</div>
-                        <VersionsCount
-                            collection={collection}
-                            id={id}
-                        />
-                        </li>
-                    )}
-                    {updatedAt && (
-                        <li>
-                            <div className={`${baseClass}__label`}>{t('lastModified')}</div>
-                            <div>{formatDate(updatedAt, dateFormat, i18n?.language)}</div>
-                        </li>
-                    )}
-                    {(publishedDoc?.createdAt) && (
-                        <li>
-                            <div className={`${baseClass}__label`}>{t('created')}</div>
-                            <div>{formatDate(publishedDoc?.createdAt, dateFormat, i18n?.language)}</div>
-                        </li>
-                    )}
-                </React.Fragment>
-            )
-        } else if (docType == 'global') {
-
-            const publishedDoc = documentInfo.publishedDoc;
-            const global = documentInfo.global;
-
-            const updatedAt = publishedDoc?.updatedAt;
-            const versions = global?.versions;
-
-            return (
-                <React.Fragment>
-                    {versions && (
-                        <li>
-                            <div className={`${baseClass}__label`}>{t('version:versions')}</div>
-                            <VersionsCount global={global} />
-                        </li>
-                    )}
-                    {updatedAt && (
-                        <li>
-                            <div className={`${baseClass}__label`}>{t('lastModified')}</div>
-                            <div>{formatDate(updatedAt, dateFormat, i18n?.language)}</div>
-                        </li>
-                    )}
-                </React.Fragment>
-            )
-
-        }
-
-        return null;
-
-    } 
-
-    if(!docTypeData) return null;
-
-    const apiURL = (docType == 'collection') ? 
-        `${serverURL}${api}/${docTypeData?.slug}/${documentInfo.id}?locale=${locale}${docTypeData?.versions.drafts ? '&draft=true' : ''}` :
-        `${serverURL}${api}/globals/${docTypeData?.slug}?locale=${locale}${docTypeData?.versions?.drafts ? "?draft=true" : ''}`;
-
-    return (
-        <div className="ContentEditorAdminSidebar">
-            {(fieldConfigs.filter(e => e.admin?.position === "sidebar").length > 0) ? (
-                <RenderFields
-                    readOnly={false}
-                    permissions={documentInfo.docPermissions?.fields}
-                    filter={(field) => field?.admin?.position === "sidebar"}
-                    fieldTypes={fieldTypes}
-                    fieldSchema={fieldConfigs}
-                />
-            ) : null}
-
-            <ul className={`${baseClass}__meta`}>
-                <li className={`${baseClass}__api-url`}>
-                    <span className={`${baseClass}__label`}>
-                        API URL
-                        {" "}
-                        <CopyToClipboard value={apiURL} />
-                    </span>
-                    <a href={apiURL} target="_blank" rel="noopener noreferrer">{apiURL}</a>
-                </li>
-                {additionalMeta()}
-            </ul>
         </div>
     );
 };
-

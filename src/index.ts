@@ -1,7 +1,6 @@
 import { Config } from "payload/config";
-import { createVisualEditorField } from "./fields/visualEditorField";
-import { createAdminSidebarField } from "./fields/adminSidebarField";
-import { CollectionConfig, GlobalConfig, TabsField } from "payload/types";
+import { CollectionConfig, GlobalConfig } from "payload/types";
+import { createVisualEditorView } from "./components/visualEditorView";
 import { PreviewUrlFn } from "./types/previewUrl";
 
 type CollectionOrGlobalConfig = CollectionConfig | GlobalConfig;
@@ -26,48 +25,26 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
     const pluginCogConfig = pluginCogConfigs?.[cogConfig.slug];
 
     if (pluginCogConfig) {
-        const tabsIndex = cogConfig.fields.findIndex(e => e.type === "tabs");
-        const hasTabs = (tabsIndex > -1) ? true : false;
-
-        if (hasTabs) {
-            let fields = cogConfig.fields;
-            let tabsContent = fields[tabsIndex] as TabsField;
-
-            tabsContent.tabs = [
-                ...tabsContent.tabs,
-                {
-                    label: "More",
-                    fields: [
-                        createAdminSidebarField(),
-                    ],
+        cogConfig.admin = {
+            ...cogConfig.admin,
+            components: {
+                ...cogConfig.admin?.components,
+                views: {
+                    ...cogConfig.admin?.components?.views,
+                    Edit: {
+                        ...cogConfig.admin?.components?.views?.Edit,
+                        Default: {
+                            Component: createVisualEditorView({ previewUrl: pluginCogConfig.previewUrl ?? previewUrl }),
+                            path: "/preview",
+                            Tab: {
+                                label: "Preview",
+                                href: "/preview",
+                            },
+                        },
+                    },
                 },
-            ];
-
-            fields[tabsIndex] = tabsContent;
-
-            return {
-                ...cogConfig,
-                fields: [
-                    ...fields,
-                    createVisualEditorField({
-                        previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
-                        showPreview,
-                    }),
-                ],
-            };
-        } else {
-            return {
-                ...cogConfig,
-                fields: [
-                    ...cogConfig.fields,
-                    createAdminSidebarField(),
-                    createVisualEditorField({
-                        previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
-                        showPreview,
-                    }),
-                ],
-            };
-        }
+            },
+        };
     }
 
     return cogConfig
