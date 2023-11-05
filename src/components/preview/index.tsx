@@ -25,7 +25,6 @@ const SCREEN_SIZES = {
 
 interface Props {
     previewUrl: PreviewUrlFn;
-    showPreview?: boolean;
     close: () => void;
 }
 
@@ -43,36 +42,12 @@ const getFieldConfigs = (documentInfo: ContextType) => {
     return documentInfo.collection?.fields ?? documentInfo.global?.fields ?? [];
 };
 
-const getShouldShowPreview = (props: Props) => {
-    // check local storage first
-    const fromStorage = localStorage.getItem("visualEditorShowPreview");
-
-    if (fromStorage) {
-        if (fromStorage === "false") {
-            return false;
-        }
-
-        if (fromStorage === "true") {
-            return true;
-        }
-    }
-
-    // check config second 
-    if (props.showPreview === false) {
-        return false;
-    }
-
-    // default
-    return true;
-};
-
 export const Preview = (props: Props) => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
     const [fields] = useAllFormFields();
 
     const root = document.querySelector(":root") as HTMLElement;
-    const editorContainer = document.querySelector(".collection-edit, .global-edit")!;
     const iframe = useRef<HTMLIFrameElement>(null);
     const resizeContainer = useRef<HTMLDivElement>(null);
 
@@ -95,25 +70,6 @@ export const Preview = (props: Props) => {
     // handle localization in previewUrl
     const locale = useLocale();
     const previewUrl = localization ? props.previewUrl({ locale: locale.code }) : props.previewUrl({ locale: "" });
-
-    useEffect(() => {
-        // editorContainer.classList.add("visual-editor");
-
-        if (getShouldShowPreview(props)) {
-            editorContainer.classList.add("show-preview");
-        }
-
-        if (documentInfo.collection?.versions || documentInfo.global?.versions) {
-            editorContainer.classList.add("versions");
-        }
-
-        // check local storage for last sidebar width
-        const storedSidebarWidth = localStorage.getItem("visualEditorSidebar");
-
-        if (storedSidebarWidth) {
-            root.style.setProperty("--visualeditor-sidebar-width", `${storedSidebarWidth}px`);
-        }
-    }, []);
 
     useResizeObserver(resizeContainer, ([entry]) => {
         setPreviewSizeDisplay(`${entry.contentRect.width} x ${entry.contentRect.height}`);
@@ -197,39 +153,39 @@ export const Preview = (props: Props) => {
         </div>
     );
 
-    return (
-        <div className="ContentEditor">
-            <div className="live-preview-container">
-                <div className="sidebar-drag-handle" onMouseDown={sidebarDragStart}></div>
-                <div className="live-preview">
-                    <div className="live-preview-resize-container" ref={resizeContainer}>
-                        <div className="live-preview-settings">
-                            <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
-                                Desktop
-                            </button>
-                            <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
-                                Tablet
-                            </button>
-                            <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
-                                Mobile
-                            </button>
-                            <div className="pill size-display">
-                                {previewSizeDisplay}
-                            </div>
-                            <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
-                                <CloseMenu />
-                            </button>
-                        </div>
+    // return (
+    //     <div className="ContentEditor">
+    //         <div className="live-preview-container">
+    //             <div className="sidebar-drag-handle" onMouseDown={sidebarDragStart}></div>
+    //             <div className="live-preview">
+    //                 <div className="live-preview-resize-container" ref={resizeContainer}>
+    //                     <div className="live-preview-settings">
+    //                         <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
+    //                             Desktop
+    //                         </button>
+    //                         <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
+    //                             Tablet
+    //                         </button>
+    //                         <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
+    //                             Mobile
+    //                         </button>
+    //                         <div className="pill size-display">
+    //                             {previewSizeDisplay}
+    //                         </div>
+    //                         <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
+    //                             <CloseMenu />
+    //                         </button>
+    //                     </div>
 
-                        <iframe
-                            id="live-preview-iframe"
-                            ref={iframe}
-                            src={previewUrl}
-                            onLoad={onIframeLoaded}
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+    //                     <iframe
+    //                         id="live-preview-iframe"
+    //                         ref={iframe}
+    //                         src={previewUrl}
+    //                         onLoad={onIframeLoaded}
+    //                     />
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     </div>
+    // );
 };
