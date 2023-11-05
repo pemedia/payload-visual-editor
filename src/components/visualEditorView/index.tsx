@@ -11,6 +11,11 @@ import { useTranslation } from "react-i18next";
 import { PreviewUrlFn } from "../../types/previewUrl";
 import { Preview } from "../preview";
 
+type Options = {
+    previewUrl: PreviewUrlFn;
+    showPreview: boolean;
+}
+
 type Props = (CollectionEditViewProps | GlobalEditViewProps) & { fieldTypes: FieldTypes };
 
 const getCollectionOrGlobalProps = (props: Props) => {
@@ -45,10 +50,10 @@ const getCollectionOrGlobalProps = (props: Props) => {
     });
 };
 
-export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) => (props_: Props) => {
+export const createVisualEditorView = (options: Options) => (props_: Props) => {
     const props = getCollectionOrGlobalProps(props_);
 
-    const [showPreview, setShowPreview_] = useState(localStorage.getItem("visualEditorShowPreview") === "true");
+    const [showPreview, setShowPreview_] = useState(options.showPreview && localStorage.getItem("visualEditorShowPreview") === "true");
 
     const { i18n, t } = useTranslation("general");
     // const { previewWindowType } = useLivePreviewContext()

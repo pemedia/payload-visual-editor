@@ -33,15 +33,11 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
                     ...cogConfig.admin?.components?.views,
                     Edit: {
                         ...cogConfig.admin?.components?.views?.Edit,
-                        Default: {
-                            Component: createVisualEditorView({ previewUrl: pluginCogConfig.previewUrl ?? previewUrl }),
-                            path: "/preview",
-                            Tab: {
-                                label: "Preview",
-                                href: "/preview",
-                            },
-                        },
-                    },
+                        Default: createVisualEditorView({
+                            previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
+                            showPreview: showPreview ?? true,
+                        }),
+                    } as any,
                 },
             },
         };
