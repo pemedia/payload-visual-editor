@@ -8,8 +8,8 @@ import { CollectionEditViewProps, GlobalEditViewProps } from "payload/dist/admin
 import { getTranslation } from "payload/dist/utilities/getTranslation";
 import React, { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { VisualEditor } from "../visualEditor";
 import { PreviewUrlFn } from "../../types/previewUrl";
+import { Preview } from "../preview";
 
 type Props = (CollectionEditViewProps | GlobalEditViewProps) & { fieldTypes: FieldTypes };
 
@@ -125,7 +125,7 @@ export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) =>
 
                 <div className={showPreview ? "preview" : "open-preview"}>
                     {showPreview
-                        ? <VisualEditor
+                        ? <Preview
                             previewUrl={options.previewUrl}
                             close={closePreview} />
                         : <button

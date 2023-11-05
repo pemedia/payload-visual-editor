@@ -66,7 +66,7 @@ const getShouldShowPreview = (props: Props) => {
     return true;
 };
 
-export const VisualEditor = (props: Props) => {
+export const Preview = (props: Props) => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
     const [fields] = useAllFormFields();
