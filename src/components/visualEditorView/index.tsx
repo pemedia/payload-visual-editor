@@ -48,18 +48,18 @@ const getCollectionOrGlobalProps = (props: Props) => {
 export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) => (props_: Props) => {
     const props = getCollectionOrGlobalProps(props_);
 
-    const [showPreview, setShowPreview] = useState(false);
+    const [showPreview, setShowPreview] = useState(localStorage.getItem("visualEditorShowPreview") === "true");
 
     const { i18n, t } = useTranslation("general");
     // const { previewWindowType } = useLivePreviewContext()
 
     const closePreview = () => {
-        // localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
+        localStorage.setItem("visualEditorShowPreview", "false");
         setShowPreview(false);
     };
 
     const openPreview = () => {
-        // localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
+        localStorage.setItem("visualEditorShowPreview", "true");
         setShowPreview(true);
     };
 
