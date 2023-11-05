@@ -23,9 +23,10 @@ const SCREEN_SIZES = {
     },
 };
 
-interface Config {
+interface Props {
     previewUrl: PreviewUrlFn;
     showPreview?: boolean;
+    close: () => void;
 }
 
 const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, iframe: HTMLIFrameElement) => {
@@ -42,7 +43,7 @@ const getFieldConfigs = (documentInfo: ContextType) => {
     return documentInfo.collection?.fields ?? documentInfo.global?.fields ?? [];
 };
 
-const getShouldShowPreview = (config: Config) => {
+const getShouldShowPreview = (props: Props) => {
     // check local storage first
     const fromStorage = localStorage.getItem("visualEditorShowPreview");
 
@@ -57,7 +58,7 @@ const getShouldShowPreview = (config: Config) => {
     }
 
     // check config second 
-    if (config.showPreview === false) {
+    if (props.showPreview === false) {
         return false;
     }
 
@@ -65,7 +66,7 @@ const getShouldShowPreview = (config: Config) => {
     return true;
 };
 
-export const VisualEditor = (config: Config) => {
+export const VisualEditor = (props: Props) => {
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
     const [fields] = useAllFormFields();
@@ -93,12 +94,12 @@ export const VisualEditor = (config: Config) => {
 
     // handle localization in previewUrl
     const locale = useLocale();
-    const previewUrl = localization ? config.previewUrl({ locale: locale.code }) : config.previewUrl({ locale: "" });
+    const previewUrl = localization ? props.previewUrl({ locale: locale.code }) : props.previewUrl({ locale: "" });
 
     useEffect(() => {
         // editorContainer.classList.add("visual-editor");
 
-        if (getShouldShowPreview(config)) {
+        if (getShouldShowPreview(props)) {
             editorContainer.classList.add("show-preview");
         }
 
@@ -163,11 +164,6 @@ export const VisualEditor = (config: Config) => {
         }, { once: true });
     };
 
-    const togglePreview = () => {
-        editorContainer.classList.toggle("show-preview");
-        localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
-    };
-
     const setPreviewSize = (size: { width: string; height: string; }) => () => {
         resizeContainer.current!.setAttribute("style", `width:${size.width}; height:${size.height};`);
     };
@@ -187,7 +183,7 @@ export const VisualEditor = (config: Config) => {
                 <div className="pill size-display">
                     {previewSizeDisplay}
                 </div>
-                <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
+                <button className="close" type="button" onClick={props.close}>
                     <CloseMenu />
                 </button>
             </div>

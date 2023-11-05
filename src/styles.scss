@@ -2,12 +2,21 @@
 
 .visual-editor {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: calc(var(--base) * 1.5);
+    grid-template-columns: 1fr auto;
 
-    .gutter--right {
-        padding-right: 0;
+    &.open {
+        grid-template-columns: 1fr 1fr;
     }
+
+    > .document-fields {
+        overflow-x: hidden;
+    }
+}
+
+.open-preview {
+    position: sticky;
+    top: var(--doc-controls-height);
+    padding-right: var(--gutter-h);
 }
 
 .preview {
@@ -20,7 +29,7 @@
     align-items: center;
     justify-content: center;
 
-    background: red;
+    background: var(--theme-elevation-100);
 
     > .live-preview-resize-container {
         display: grid;
@@ -47,7 +56,7 @@
                 justify-content: center;
             }
 
-            .toggleVisualEditor {
+            .close {
                 border:none;
                 background:none;
                 appearance: none;

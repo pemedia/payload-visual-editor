@@ -6,127 +6,125 @@ import { LeaveWithoutSaving } from "payload/dist/admin/components/modals/LeaveWi
 import { SetStepNav } from "payload/dist/admin/components/views/collections/Edit/SetStepNav";
 import { CollectionEditViewProps, GlobalEditViewProps } from "payload/dist/admin/components/views/types";
 import { getTranslation } from "payload/dist/utilities/getTranslation";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { VisualEditor } from "../visualEditor";
 import { PreviewUrlFn } from "../../types/previewUrl";
 
-const baseClass = "visual-editor"
+type Props = (CollectionEditViewProps | GlobalEditViewProps) & { fieldTypes: FieldTypes };
 
-export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) => (props: (CollectionEditViewProps | GlobalEditViewProps) & { fieldTypes: FieldTypes }) => {
-    console.log(props)
-
+const getCollectionOrGlobalProps = (props: Props) => {
     if ("collection" in props) {
-        return <CollectionVisualEditorView previewUrl={options.previewUrl} {...props} />;
-    } else {
-        return <GlobalVisualEditorView previewUrl={options.previewUrl} {...props} />;
+        return ({
+            apiURL: props.apiURL,
+            fieldTypes: props.fieldTypes,
+            data: props.data,
+            permissions: props.permissions,
+
+            collection: props.collection,
+            disableActions: props.disableActions,
+            disableLeaveWithoutSaving: props.disableLeaveWithoutSaving,
+            hasSavePermission: props.hasSavePermission,
+            isEditing: props.isEditing,
+            id: props.id,
+            fields: props.collection?.fields,
+        });
     }
+
+    return ({
+        apiURL: props.apiURL,
+        fieldTypes: props.fieldTypes,
+        data: props.data,
+        permissions: props.permissions,
+
+        global: props.global,
+        fields: props.global.fields,
+        label: props.global.label,
+        description: props.global.admin?.description,
+        hasSavePermission: props.permissions?.update?.permission,
+    });
 };
 
+export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) => (props_: Props) => {
+    const props = getCollectionOrGlobalProps(props_);
 
-const CollectionVisualEditorView = (props: (CollectionEditViewProps) & { previewUrl: PreviewUrlFn; fieldTypes: FieldTypes; }) => {
-    const { i18n, t } = useTranslation("general")
+    const [showPreview, setShowPreview] = useState(false);
 
-    const { apiURL, data, fieldTypes, permissions } = props
+    const { i18n, t } = useTranslation("general");
+    // const { previewWindowType } = useLivePreviewContext()
 
-    const collection = props.collection
-    const disableActions = props.disableActions
-    const disableLeaveWithoutSaving = props.disableLeaveWithoutSaving
-    const hasSavePermission = props.hasSavePermission
-    const isEditing = props.isEditing
-    const id = props.id
-    const fields = props.collection.fields
+    const closePreview = () => {
+        // localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
+        setShowPreview(false);
+    };
+
+    const openPreview = () => {
+        // localStorage.setItem("visualEditorShowPreview", editorContainer.classList.contains("show-preview").toString());
+        setShowPreview(true);
+    };
 
     return (
         <Fragment>
-            <Meta
-                description={t("editing")}
-                keywords={`${getTranslation(collection.labels.singular, i18n)}, Payload, CMS`}
-                title={`${isEditing ? t("editing") : t("creating")} - ${getTranslation(
-                    collection.labels.singular,
-                    i18n,
-                )}`}
-            />
-            {(collection && !(collection.versions?.drafts && collection.versions?.drafts?.autosave)) &&
-                !disableLeaveWithoutSaving && <LeaveWithoutSaving />}
+            {props.collection && (
+                <Meta
+                    description={t('editing')}
+                    keywords={`${getTranslation(props.collection.labels.singular, i18n)}, Payload, CMS`}
+                    title={`${props.isEditing ? t('editing') : t('creating')} - ${getTranslation(props.collection.labels.singular, i18n)}`}
+                />
+            )}
+
+            {props.global && (
+                <Meta
+                    description={getTranslation(props.label, i18n)}
+                    keywords={`${getTranslation(props.label, i18n)}, Payload, CMS`}
+                    title={getTranslation(props.label, i18n)}
+                />
+            )}
+
+            {((props.collection && !(props.collection.versions?.drafts && props.collection.versions?.drafts?.autosave)) ||
+                (props.global && !(props.global.versions?.drafts && props.global.versions?.drafts?.autosave))) &&
+                !props.disableLeaveWithoutSaving && <LeaveWithoutSaving />}
+
             <SetStepNav
-                collection={collection}
-                global={global}
-                id={id}
-                isEditing={isEditing}
-                view={t("livePreview")}
-            />
-            <DocumentControls
-                apiURL={apiURL}
-                collection={collection}
-                data={data}
-                disableActions={disableActions}
-                hasSavePermission={hasSavePermission}
-                id={id}
-                isEditing={isEditing}
-                permissions={permissions}
+                collection={props.collection}
+                global={props.global}
+                id={props.id}
+                isEditing={props.isEditing}
+                view={t('livePreview')}
             />
 
-            <div className={baseClass}>
+            <DocumentControls
+                apiURL={props.apiURL}
+                collection={props.collection}
+                data={props.data}
+                disableActions={props.disableActions}
+                global={props.global}
+                hasSavePermission={props.hasSavePermission}
+                id={props.id}
+                isEditing={props.isEditing}
+                permissions={props.permissions}
+            />
+
+            <div className={showPreview ? "visual-editor open" : "visual-editor"}>
                 <DocumentFields
-                    fieldTypes={fieldTypes}
-                    fields={fields}
+                    description={props.description}
+                    fieldTypes={props.fieldTypes}
+                    fields={props.fields}
                     forceSidebarWrap
-                    hasSavePermission={hasSavePermission}
-                    permissions={permissions}
+                    hasSavePermission={props.hasSavePermission}
+                    permissions={props.permissions}
                 />
 
-                <div className="preview">
-                    <VisualEditor previewUrl={props.previewUrl} />
-                </div>
-            </div>
-        </Fragment>
-    );
-};
-
-const GlobalVisualEditorView = (props: (GlobalEditViewProps) & { previewUrl: PreviewUrlFn; fieldTypes: FieldTypes; }) => {
-    const { i18n, t } = useTranslation("general")
-
-    const { apiURL, data, fieldTypes, permissions } = props
-
-    const global = props?.global
-    const fields = props?.global?.fields
-    const label = props?.global?.label
-    const description = props?.global?.admin?.description
-    const hasSavePermission = permissions!.update.permission
-
-    return (
-        <Fragment>
-            <Meta
-                description={getTranslation(label, i18n)}
-                keywords={`${getTranslation(label, i18n)}, Payload, CMS`}
-                title={getTranslation(label, i18n)}
-            />
-            {(global && !(global.versions?.drafts && global.versions?.drafts?.autosave)) && <LeaveWithoutSaving />}
-            <SetStepNav
-                global={global}
-                view={t("livePreview")}
-            />
-            <DocumentControls
-                apiURL={apiURL}
-                data={data}
-                global={global}
-                hasSavePermission={hasSavePermission}
-                permissions={permissions}
-            />
-
-            <div className={baseClass}>
-                <DocumentFields
-                    description={description}
-                    fieldTypes={fieldTypes}
-                    fields={fields}
-                    forceSidebarWrap
-                    hasSavePermission={hasSavePermission}
-                    permissions={permissions!}
-                />
-
-                <div className="preview">
-                    <VisualEditor previewUrl={props.previewUrl} />
+                <div className={showPreview ? "preview" : "open-preview"}>
+                    {showPreview
+                        ? <VisualEditor 
+                            previewUrl={options.previewUrl} 
+                            close={closePreview} />
+                        : <button
+                            type="button"
+                            className="btn btn--style-secondary btn--size-small"
+                            onClick={openPreview}>{t("livePreview")}</button>
+                    }
                 </div>
             </div>
         </Fragment>
