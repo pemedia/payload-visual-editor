@@ -19,13 +19,13 @@ const getCollectionOrGlobalProps = (props: Props) => {
             apiURL: props.apiURL,
             fieldTypes: props.fieldTypes,
             data: props.data,
-            permissions: props.permissions,
+            permissions: props.permissions!,
 
             collection: props.collection,
             disableActions: props.disableActions,
             disableLeaveWithoutSaving: props.disableLeaveWithoutSaving,
-            hasSavePermission: props.hasSavePermission,
-            isEditing: props.isEditing,
+            hasSavePermission: props.hasSavePermission!,
+            isEditing: props.isEditing!,
             id: props.id,
             fields: props.collection?.fields,
         });
@@ -35,41 +35,41 @@ const getCollectionOrGlobalProps = (props: Props) => {
         apiURL: props.apiURL,
         fieldTypes: props.fieldTypes,
         data: props.data,
-        permissions: props.permissions,
+        permissions: props.permissions!,
 
         global: props.global,
         fields: props.global.fields,
         label: props.global.label,
         description: props.global.admin?.description,
-        hasSavePermission: props.permissions?.update?.permission,
+        hasSavePermission: props.permissions?.update?.permission!,
     });
 };
 
 export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) => (props_: Props) => {
     const props = getCollectionOrGlobalProps(props_);
 
-    const [showPreview, setShowPreview] = useState(localStorage.getItem("visualEditorShowPreview") === "true");
+    const [showPreview, setShowPreview_] = useState(localStorage.getItem("visualEditorShowPreview") === "true");
 
     const { i18n, t } = useTranslation("general");
     // const { previewWindowType } = useLivePreviewContext()
 
     const closePreview = () => {
         localStorage.setItem("visualEditorShowPreview", "false");
-        setShowPreview(false);
+        setShowPreview_(false);
     };
 
     const openPreview = () => {
         localStorage.setItem("visualEditorShowPreview", "true");
-        setShowPreview(true);
+        setShowPreview_(true);
     };
 
     return (
         <Fragment>
             {props.collection && (
                 <Meta
-                    description={t('editing')}
+                    description={t("editing")}
                     keywords={`${getTranslation(props.collection.labels.singular, i18n)}, Payload, CMS`}
-                    title={`${props.isEditing ? t('editing') : t('creating')} - ${getTranslation(props.collection.labels.singular, i18n)}`}
+                    title={`${props.isEditing ? t("editing") : t("creating")} - ${getTranslation(props.collection.labels.singular, i18n)}`}
                 />
             )}
 
@@ -85,13 +85,21 @@ export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) =>
                 (props.global && !(props.global.versions?.drafts && props.global.versions?.drafts?.autosave))) &&
                 !props.disableLeaveWithoutSaving && <LeaveWithoutSaving />}
 
-            <SetStepNav
-                collection={props.collection}
-                global={props.global}
-                id={props.id}
-                isEditing={props.isEditing}
-                view={t('livePreview')}
-            />
+            {props.collection && (
+                <SetStepNav
+                    collection={props.collection}
+                    id={props.id}
+                    isEditing={props.isEditing}
+                    view={t("edit")}
+                />
+            )}
+
+            {props.global && (
+                <SetStepNav
+                    global={props.global}
+                    view={t("edit")}
+                />
+            )}
 
             <DocumentControls
                 apiURL={props.apiURL}
@@ -117,8 +125,8 @@ export const createVisualEditorView = (options: { previewUrl: PreviewUrlFn }) =>
 
                 <div className={showPreview ? "preview" : "open-preview"}>
                     {showPreview
-                        ? <VisualEditor 
-                            previewUrl={options.previewUrl} 
+                        ? <VisualEditor
+                            previewUrl={options.previewUrl}
                             close={closePreview} />
                         : <button
                             type="button"
