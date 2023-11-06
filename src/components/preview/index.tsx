@@ -43,6 +43,7 @@ const getFieldConfigs = (documentInfo: ContextType) => {
 };
 
 export const Preview = (props: Props) => {
+    const payloadConfig = useConfig();
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
     const [fields] = useAllFormFields();
@@ -55,21 +56,17 @@ export const Preview = (props: Props) => {
 
     const [previewSizeDisplay, setPreviewSizeDisplay] = useState("");
 
-    const {
-        localization,
-        serverURL,
-        routes: { api }
-    } = useConfig();
-
-    const configParams: GenDocConfig = {
-        fieldConfigs: fieldConfigs,
-        serverUrl: serverURL,
-        apiPath: api
-    }
+    const genDocConfig: GenDocConfig = {
+        collections: payloadConfig.collections,
+        globals: payloadConfig.globals,
+        fieldConfigs,
+        serverUrl: payloadConfig.serverURL,
+        apiPath: payloadConfig.routes.api,
+    };
 
     // handle localization in previewUrl
     const locale = useLocale();
-    const previewUrl = localization ? props.previewUrl({ locale: locale.code }) : props.previewUrl({ locale: "" });
+    const previewUrl = payloadConfig.localization ? props.previewUrl({ locale: locale.code }) : props.previewUrl({ locale: "" });
 
     useResizeObserver(resizeContainer, ([entry]) => {
         setPreviewSizeDisplay(`${entry.contentRect.width} x ${entry.contentRect.height}`);
@@ -83,7 +80,7 @@ export const Preview = (props: Props) => {
         debounce.current = true;
 
         setTimeout(() => {
-            updatePreview(configParams, fields, iframe.current!);
+            updatePreview(genDocConfig, fields, iframe.current!);
 
             debounce.current = false;
         }, 100);
@@ -91,7 +88,7 @@ export const Preview = (props: Props) => {
 
     const onIframeLoaded = () => {
         setTimeout(() => {
-            updatePreview(configParams, fields, iframe.current!);
+            updatePreview(genDocConfig, fields, iframe.current!);
         }, 100);
     };
 

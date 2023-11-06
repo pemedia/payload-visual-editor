@@ -17,7 +17,7 @@
     "docker:plugin:build-watch": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'mkdir -p dist && cp src/styles.scss dist/styles.scss && yarn tsc -w'",
     "docker:example:cms:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn'",
     "docker:example:cms:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn dev'",
-    "docker:example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types'",
+    "docker:example:cms:generate-types": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/cms && yarn generate:types && cp src/types/payload-types.ts ../website/payload-types.ts'",
     "docker:example:website:yarn": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn'",
     "docker:example:website:dev": "docker exec -t payload-visual-editor-node-1 /bin/sh -c 'cd example/website && yarn dev'",
     "prepublishOnly": "yarn build"

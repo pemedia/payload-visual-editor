@@ -15,20 +15,42 @@ import {
     fieldIsPresentationalOnly,
     optionIsObject
 } from "payload/dist/fields/config/types";
-import { Block, Field } from "payload/types";
+import { Block, Field, SanitizedCollectionConfig, SanitizedGlobalConfig } from "payload/types";
 import { match } from "ts-pattern";
+import { LivePreviewCollectionOrGlobalConfig } from "../types/livePreviewCollectionOrGlobalConfig";
 
 const cache = new Map();
 
-
 export interface GenDocConfig {
+    collections: SanitizedCollectionConfig[];
+    globals: SanitizedGlobalConfig[];
     fieldConfigs: Field[];
     serverUrl: string;
     apiPath: string;
 }
 
-export const generateDocument = async (config: GenDocConfig, fields: Fields) => {
+const getCollectionOrGlobalConfig = (config: GenDocConfig, slug: string) => {
+    const cogConfig = config.collections.find(c => c.slug === slug) ?? config.globals.find(g => g.slug === slug);
 
+    if (!cogConfig) {
+        throw new Error(`can't find config for ${slug}`);
+    }
+
+    return cogConfig;
+};
+
+const getFallback = (config: GenDocConfig, slug: string) => {
+    const cogConfig = getCollectionOrGlobalConfig(config, slug);
+    const livePreviewConfig = cogConfig.custom.livePreview as LivePreviewCollectionOrGlobalConfig<any> | undefined;
+
+    if (livePreviewConfig) {
+        return livePreviewConfig.fallback;
+    }
+
+    return {};
+}
+
+export const generateDocument = async (config: GenDocConfig, fields: Fields) => {
     const fetchRelation = async (slug: string, id: string) => {
         const key = `${slug}_${id}`;
 
@@ -43,7 +65,6 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
 
         return data;
     };
-
 
     const getBlock = (blocks: Block[], blockType: string) => {
         return blocks.find(b => b.slug === blockType)!;
@@ -99,7 +120,7 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
         if (field.required && !blockValues) {
             return [];
         }
-        
+
         if (!field.required && !blockValues) {
             return undefined;
         }
@@ -150,22 +171,18 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
     };
 
     const convertSingleTypeSingleValueRelationshipField = async (field: RelationshipField, values: Data) => {
-        const relation = values[field.name] as string | undefined;
+        const value = values[field.name] as string | undefined;
+        const relationTo = field.relationTo as string;
 
-        if (field.required && !relation) {
-            // NOTE: This is not the best way to fix relationship fields where the user didn't select the reference yet,
-            // but I don't want to make the fields optional.
-            // IDEA: We could use custom props in the field to define a default value, which will be used until a reference is selected.
-            // How to make this requirement clear to the developer?
-            // Or we could get the config for this relation and generate an empty document of it
-            return {};
+        if (field.required && !value) {
+            return getFallback(config, relationTo);
         }
 
-        if (!field.required && !relation) {
+        if (!field.required && !value) {
             return undefined;
         }
 
-        return fetchRelation(field.relationTo as string, relation!);
+        return fetchRelation(relationTo, value!);
     };
 
     const convertSingleTypeMultiValueRelationshipField = (field: RelationshipField, values: Data) => {
@@ -188,14 +205,10 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
 
     const convertMultiTypeSingleValueRelationshipField = async (field: RelationshipField, values: Data) => {
         const relation = values[field.name] as ValueWithRelation | undefined;
+        const relationTo = field.relationTo as string[];
 
         if (field.required && !relation) {
-            // NOTE: This is not the best way to fix relationship fields where the user didn't select the reference yet,
-            // but I don't want to make the fields optional.
-            // IDEA: We could use custom props in the field to define a default value, which will be used until a reference is selected.
-            // How to make this requirement clear to the developer?
-            // Or we could get the config for this relation and generate an empty document of it
-            return {};
+            return getFallback(config, relationTo[0]);
         }
 
         if (!field.required && !relation) {
@@ -329,9 +342,6 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
         .with({ type: "upload" }, f => convertUploadField(f, values))
         .exhaustive();
 
-
-
-
     const { fieldConfigs } = config;
 
     const allFields = getAllFields(fieldConfigs) as FieldAffectingData[];
@@ -346,6 +356,6 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
     for (let field of allFields) {
         result[field.name!] = await getValue(field, values);
     }
-    return result;
 
+    return result;
 };
