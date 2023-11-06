@@ -16,7 +16,7 @@ import { usePersistentState } from "./usePersistentState";
 
 type Options = {
     previewUrl: PreviewUrlFn;
-    showPreview: boolean;
+    defaultPreviewMode: PreviewMode;
 }
 
 type Props = (CollectionEditViewProps | GlobalEditViewProps) & { fieldTypes: FieldTypes };
@@ -56,7 +56,7 @@ const getCollectionOrGlobalProps = (props: Props) => {
 export const createVisualEditorView = (options: Options) => (props_: Props) => {
     const props = getCollectionOrGlobalProps(props_);
 
-    const [previewMode, setPreviewMode] = usePersistentState<PreviewMode>("visualEditorPreviewState", "iframe");
+    const [previewMode, setPreviewMode] = usePersistentState<PreviewMode>("visualEditorPreviewState", options.defaultPreviewMode);
 
     const { i18n, t } = useTranslation("general");
 
