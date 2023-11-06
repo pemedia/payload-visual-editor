@@ -123,19 +123,17 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
                 {match(previewMode)
                     .with("iframe", () => (
                         <div className="preview-container">
-                            <IFramePreview 
+                            <IFramePreview
                                 previewUrlFn={options.previewUrl}
-                                setPreviewMode={setPreviewMode} 
+                                setPreviewMode={setPreviewMode}
                             />
                         </div>
                     ))
                     .with("popup", () => (
-                        <div className="preview-container">
-                            <PopupPreview 
-                                previewUrlFn={options.previewUrl}
-                                setPreviewMode={setPreviewMode} 
-                            />
-                        </div>
+                        <PopupPreview
+                            previewUrlFn={options.previewUrl}
+                            setPreviewMode={setPreviewMode}
+                        />
                     ))
                     .with("none", () => (
                         <div className="open-preview-container">
