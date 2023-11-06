@@ -7,6 +7,7 @@ import {
     GroupField,
     RadioField,
     RelationshipField,
+    RichTextField,
     SelectField,
     UploadField,
     ValueWithRelation,
@@ -297,6 +298,24 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
         return fetchRelation(field.relationTo, values[field.name]);
     };
 
+    const convertRichTextField = (field: RichTextField, values: Data) => {
+        const value = values[field.name];
+
+        if (field.required && !value) {
+            // lexical editor
+            if ((field.editor as any).editorConfig.lexical) {
+                return {
+                    root: {},
+                };
+            }
+
+            // slate editor
+            return [];
+        }
+
+        return value;
+    };
+
     const convertSimpleField = (defaultValue: any) => (field: { name: string; required?: boolean; }, values: Data) => {
         const value = values[field.name];
 
@@ -310,11 +329,6 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
     const convertCheckboxField = convertSimpleField(false);
     const convertNumberField = convertSimpleField(0);
     const convertPointField = convertSimpleField([0, 0]);
-
-    // todo: types of the rich text fields are different for slate ([]) and lexical ({ root: ... })
-    // the generated type is wrong, so we have to wait for a fix from payload 
-    const convertRichTextField = convertSimpleField([]); 
-
     const convertStringField = convertSimpleField("");
 
     const getValue = async (field: FieldAffectingData, values: Data) => match(field)
