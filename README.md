@@ -84,10 +84,11 @@ const config = buildConfig({
 
 ### Relation Fallbacks
 
-When adding blocks or editing relationship/upload fields, you will often encounter the issue that the data is incomplete.
+When adding blocks or editing relationship / upload fields, you will often encounter the issue that the data is incomplete.
 For instance, because no relation has been selected yet.
-However, when such fields are marked as required and there is no check for undefined values in the frontend, it can lead to unexpected errors in the rendering process.
-To address problem, fallbacks can be set up for the collections/globals.
+However, when such fields are marked as required and there is no check for undefined values in the frontend, 
+it can lead to unexpected errors in the rendering process.  
+To address this problem, fallbacks can be set up for the collections / globals.
 In cases where a field is required but no value has been selected, the fallback of the respective collection will be returned.
 
 ```js
