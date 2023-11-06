@@ -6,10 +6,13 @@ import { LeaveWithoutSaving } from "payload/dist/admin/components/modals/LeaveWi
 import { SetStepNav } from "payload/dist/admin/components/views/collections/Edit/SetStepNav";
 import { CollectionEditViewProps, GlobalEditViewProps } from "payload/dist/admin/components/views/types";
 import { getTranslation } from "payload/dist/utilities/getTranslation";
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { match } from "ts-pattern";
+import { PreviewMode } from "../../types/previewMode";
 import { PreviewUrlFn } from "../../types/previewUrl";
-import { Preview } from "../preview";
+import { IFramePreview, PopupPreview } from "../preview";
+import { usePersistentState } from "./usePersistentState";
 
 type Options = {
     previewUrl: PreviewUrlFn;
@@ -53,20 +56,9 @@ const getCollectionOrGlobalProps = (props: Props) => {
 export const createVisualEditorView = (options: Options) => (props_: Props) => {
     const props = getCollectionOrGlobalProps(props_);
 
-    const [showPreview, setShowPreview_] = useState(options.showPreview && localStorage.getItem("visualEditorShowPreview") === "true");
+    const [previewMode, setPreviewMode] = usePersistentState<PreviewMode>("visualEditorPreviewState", "iframe");
 
     const { i18n, t } = useTranslation("general");
-    // const { previewWindowType } = useLivePreviewContext()
-
-    const closePreview = () => {
-        localStorage.setItem("visualEditorShowPreview", "false");
-        setShowPreview_(false);
-    };
-
-    const openPreview = () => {
-        localStorage.setItem("visualEditorShowPreview", "true");
-        setShowPreview_(true);
-    };
 
     return (
         <Fragment>
@@ -118,7 +110,7 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
                 permissions={props.permissions}
             />
 
-            <div className={showPreview ? "visual-editor open" : "visual-editor"}>
+            <div className={`visual-editor ${previewMode}`}>
                 <DocumentFields
                     description={props.description}
                     fieldTypes={props.fieldTypes}
@@ -128,17 +120,42 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
                     permissions={props.permissions}
                 />
 
-                <div className={showPreview ? "preview" : "open-preview"}>
-                    {showPreview
-                        ? <Preview
-                            previewUrl={options.previewUrl}
-                            close={closePreview} />
-                        : <button
-                            type="button"
-                            className="btn btn--style-secondary btn--size-small"
-                            onClick={openPreview}>{t("livePreview")}</button>
-                    }
-                </div>
+                {match(previewMode)
+                    .with("iframe", () => (
+                        <div className="preview-container">
+                            <IFramePreview 
+                                previewUrlFn={options.previewUrl}
+                                setPreviewMode={setPreviewMode} 
+                            />
+                        </div>
+                    ))
+                    .with("popup", () => (
+                        <div className="preview-container">
+                            <PopupPreview 
+                                previewUrlFn={options.previewUrl}
+                                setPreviewMode={setPreviewMode} 
+                            />
+                        </div>
+                    ))
+                    .with("none", () => (
+                        <div className="open-preview-container">
+                            <div>{t("livePreview")}</div>
+                            <button
+                                type="button"
+                                className="btn btn--style-secondary btn--size-small"
+                                onClick={() => setPreviewMode("iframe")}>
+                                Side by Side
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn--style-secondary btn--size-small"
+                                onClick={() => setPreviewMode("popup")}>
+                                Popup
+                            </button>
+                        </div>
+                    ))
+                    .exhaustive()
+                }
             </div>
         </Fragment>
     );

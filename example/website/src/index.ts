@@ -27,6 +27,12 @@ window.addEventListener("message", event => {
     else if (isKitchenSink(data)) return kitchenSinkPreview(data);
 });
 
+window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        (opener ?? parent).postMessage("ready", "*");
+    }, 100);
+});
+
 const postPreview = (data: Post) => {
 
     addElem(`<h2>${data.title}</h2>`);

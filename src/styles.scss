@@ -4,7 +4,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
 
-    &.open {
+    &.iframe {
         grid-template-columns: 1fr 1fr;
     }
 
@@ -13,13 +13,25 @@
     }
 }
 
-.open-preview {
+.open-preview-container {
     position: sticky;
     top: var(--doc-controls-height);
+    height: calc(100vh - var(--doc-controls-height));
     padding-right: var(--gutter-h);
+    padding-top: var(--base);
+
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base) * .5);
+
+    text-align: center;
+
+    > button {
+        margin: 0;
+    }
 }
 
-.preview {
+.preview-container {
     position: sticky;
     top: var(--doc-controls-height);
     height: calc(100vh - var(--doc-controls-height));
@@ -37,7 +49,7 @@
 
         width: 100%;
         max-width: 100%;
-        min-width: 340px;
+        min-width: 375px;
 
         height: 100%;
         max-height: 100%;
@@ -50,27 +62,41 @@
         box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 10px;
 
         > .live-preview-settings {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto;
             gap: base(.25);
-            justify-content: center;
-            padding: base(.25) base(.25);
+
             border-bottom: 1px solid var(--theme-elevation-100);
             background: var(--theme-elevation-50);
 
-            .size-display {
-                background: var(--theme-elevation-150);
-                box-shadow: 0 0 0 1px var(--theme-elevation-200);
-                width: 7rem;
-                justify-content: center;
-            }
+            > div {
+                display: flex;
+                gap: base(.25);
+                padding: base(.25);
+                
+                > .size-display {
+                    background: var(--theme-elevation-150);
+                    box-shadow: 0 0 0 1px var(--theme-elevation-200);
+                    width: 7rem;
+                    justify-content: center;
+                }
 
-            .close {
-                border:none;
-                background:none;
-                appearance: none;
-                padding:0;
-                cursor: pointer;
-                margin-left:auto;
+                > .openInWindow, .close {
+                    width: var(--base);
+                    height: var(--base);
+                    padding:0;
+
+                    appearance: none;
+                    background:none;
+                    border:none;
+
+                    cursor: pointer;
+                }
+
+                > .openInWindow > svg {
+                    width: 70%; 
+                    height: 70%; 
+                }
             }
         }
 
