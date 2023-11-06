@@ -1,6 +1,7 @@
-import { CollectionConfig } from "payload/types";
+import { CollectionWithFallbackConfig } from "../../../../src";
+import { Tag } from "../types/payload-types";
 
-export const Tags: CollectionConfig = {
+export const Tags: CollectionWithFallbackConfig<Tag> = {
     slug: "tags",
     admin: {
         useAsTitle: "name",
@@ -12,4 +13,12 @@ export const Tags: CollectionConfig = {
             required: true,
         },
     ],
+    custom: {
+        fallback: {
+            id: "",
+            name: "Fallback Tag",
+            createdAt: "",
+            updatedAt: "",
+        },
+    },
 };

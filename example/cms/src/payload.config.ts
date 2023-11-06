@@ -53,7 +53,7 @@ export default buildConfig({
     }),
     editor: lexicalEditor({}),
     typescript: {
-        outputFile: path.resolve(__dirname, "../../website/src/payload-types.ts"),
+        outputFile: path.resolve(__dirname, "types/payload-types.ts"),
     },
     graphQL: {
         schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),

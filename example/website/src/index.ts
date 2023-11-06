@@ -130,34 +130,28 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // relationship (single)
     addElem(`<h3>Relationship 1 (single):</h3>`);
-    if(isTag(data.relationship1)) {
-        addElem(`<ul><li>${data.relationship1.name}</li></ul>`);
-    }
+    addElem(`<ul><li>${(data.relationship1 as Tag).name}</li></ul>`);
     addElem(`<hr />`);
 
     // relationship (multi)
     addElem(`<h3>Relationship 2 (multi):</h3>`);
-    const relationships2 = data.relationship2.map((item, index) => {
-        if(isTag(item)) return `<li>[${index}] = ${item.name}</li>`;
-        return null;
+    const relationships2 = (data.relationship2 as Tag[]).map((item, index) => {
+        return `<li>[${index}] = ${item.name}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<ul>${relationships2}</ul>`);
     addElem(`<hr />`);
 
     // relationship (array)
     addElem(`<h3>Relationship 3 (array):</h3>`);
-    if(data.relationship3.value && isCategory(data.relationship3.value)) {
-        addElem(`<ul><li>${data.relationship3.relationTo}: ${data.relationship3.value.name}</li></ul>`);
-    }
+    addElem(`<ul><li>${data.relationship3.relationTo}: ${(data.relationship3.value as Tag | Category).name}</li></ul>`);
     addElem(`<hr />`);
 
     // relationship (array multi)
     addElem(`<h3>Relationship 4 (array multi):</h3>`);
     const relationships4 = data.relationship4.map((item, index) => {
-        if(isTag(item.value) || isCategory(item.value)) {
-            return `<li>${item.relationTo}: ${item.value.name}</li>`;
-        }
-        return null;
+        const value = item.value as Tag | Category;
+
+        return `<li>${item.relationTo}: ${value.name}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<ul>${relationships4}</ul>`);
     addElem(`<hr />`);
