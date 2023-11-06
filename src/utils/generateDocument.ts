@@ -310,7 +310,11 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
     const convertCheckboxField = convertSimpleField(false);
     const convertNumberField = convertSimpleField(0);
     const convertPointField = convertSimpleField([0, 0]);
-    const convertRichTextField = convertSimpleField([]);
+
+    // todo: types of the rich text fields are different for slate ([]) and lexical ({ root: ... })
+    // the generated type is wrong, so we have to wait for a fix from payload 
+    const convertRichTextField = convertSimpleField([]); 
+
     const convertStringField = convertSimpleField("");
 
     const getValue = async (field: FieldAffectingData, values: Data) => match(field)
