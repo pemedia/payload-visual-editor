@@ -17,7 +17,6 @@ import {
 } from "payload/dist/fields/config/types";
 import { Block, Field, SanitizedCollectionConfig, SanitizedGlobalConfig } from "payload/types";
 import { match } from "ts-pattern";
-import { LivePreviewCollectionOrGlobalConfig } from "../types/livePreviewCollectionOrGlobalConfig";
 
 const cache = new Map();
 
@@ -41,14 +40,9 @@ const getCollectionOrGlobalConfig = (config: GenDocConfig, slug: string) => {
 
 const getFallback = (config: GenDocConfig, slug: string) => {
     const cogConfig = getCollectionOrGlobalConfig(config, slug);
-    const livePreviewConfig = cogConfig.custom.livePreview as LivePreviewCollectionOrGlobalConfig<any> | undefined;
 
-    if (livePreviewConfig) {
-        return livePreviewConfig.fallback;
-    }
-
-    return {};
-}
+    return cogConfig.custom.fallback ?? {};
+};
 
 export const generateDocument = async (config: GenDocConfig, fields: Fields) => {
     const fetchRelation = async (slug: string, id: string) => {
@@ -297,12 +291,7 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
         const id = values[field.name];
 
         if (field.required && !id) {
-            // NOTE: This is not the best way to fix relationship fields where the user didn't select the reference yet,
-            // but I don't want to make the fields optional.
-            // IDEA: We could use custom props in the field to define a default value, which will be used until a reference is selected.
-            // How to make this requirement clear to the developer?
-            // Or we could get the config for this relation and generate an empty document of it
-            return {};
+            return getFallback(config, field.relationTo);
         }
 
         return fetchRelation(field.relationTo, values[field.name]);

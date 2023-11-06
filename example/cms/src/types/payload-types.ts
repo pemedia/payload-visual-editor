@@ -12,7 +12,7 @@ export interface Config {
     posts: Post;
     tags: Tag;
     categories: Category;
-    media: Media;
+    media: Medium;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -68,7 +68,7 @@ export interface Tag {
   updatedAt: string;
   createdAt: string;
 }
-export interface Media {
+export interface Medium {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -180,7 +180,7 @@ export interface KitchenSink {
   select2: ('select1' | 'select2')[];
   text: string;
   textarea: string;
-  upload: string | Media;
+  upload: string | Medium;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

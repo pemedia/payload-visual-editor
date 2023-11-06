@@ -1,4 +1,4 @@
-import { Post, Tag, Category, Media, KitchenSink } from "./payload-types";
+import { Post, Tag, Category, Medium, KitchenSink } from "./payload-types";
 
 new EventSource("/esbuild").addEventListener("change", () => location.reload())
 
@@ -8,10 +8,6 @@ const isCategory = (doc: any): doc is Category => {
 
 const isTag = (doc: any): doc is Tag => {
     return doc.name !== undefined;
-};
-
-const isMedia = (doc: any): doc is Media => {
-    return doc.filename !== undefined;
 };
 
 const isPost = (doc: any): doc is Post => {
@@ -186,19 +182,24 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // upload
     addElem(`<h3>Upload:</h3>`);
-    if(isMedia(data.upload)) {
-        let mediaElem: string | null = null;
-        if(data.upload.mimeType?.includes("image/")) mediaElem = `<img src="${data.upload.url}" width="50%" />`
-        else if(data.upload.mimeType?.includes("video/")) mediaElem = `<video width="100%" controls><source src="${data.upload.url}" type="${data.upload.mimeType}"></video>`
-        addElem(`<div>
-            <div>${data.upload.filename}</div>
-           ${(mediaElem) ? `<div>${mediaElem}</div>` : '' }
-        </div>`);
+    const upload = data.upload as Medium;
+
+    let mediaElem: string | null = null;
+
+    if(upload.mimeType?.includes("image/")) {
+        mediaElem = `<img src="${upload.url}" width="50%" />`;
+    } else if(upload.mimeType?.includes("video/")) {
+        mediaElem = `<video width="100%" controls><source src="${upload.url}" type="${upload.mimeType}"></video>`;
     }
+
+    addElem(`
+        <div>
+            <div>${upload.filename}</div>
+           ${(mediaElem) ? `<div>${mediaElem}</div>` : '' }
+        </div>
+    `);
     addElem(`<hr />`);
-
 }
-
 
 const addElem = (data: string) => {
     const container = document.getElementById("preview");

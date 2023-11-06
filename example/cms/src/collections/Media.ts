@@ -1,7 +1,11 @@
-import { CollectionConfig } from "payload/types";
+import { CollectionWithFallbackConfig } from "../../../../src";
+import { Medium } from "../types/payload-types";
 
-export const Media: CollectionConfig = {
+export const Media: CollectionWithFallbackConfig<Medium> = {
     slug: "media",
+    typescript: {
+        interface: "Medium",
+    },
     fields: [],
     upload: {
         staticDir: "media",
@@ -35,5 +39,15 @@ export const Media: CollectionConfig = {
     //             },
     //         },
     //     ],
+    },
+    custom: {
+        fallback: {
+            id: "",
+            createdAt: "",
+            updatedAt: "",
+            mimeType: "image/jpeg",
+            url: "https://fastly.picsum.photos/id/1038/200/200.jpg?hmac=H5HUzcu1mnVoapNKQB4L0bitWDrUhwiYuke8QItf9ng",
+            filename: "lorem picsum",
+        },
     },
 };
