@@ -31,6 +31,10 @@
     }
 }
 
+.visual-editor:has(> .document-fields--has-sidebar) > .open-preview-container {
+    padding-left: var(--gutter-h);
+}
+
 .preview-container {
     position: sticky;
     top: var(--doc-controls-height);
