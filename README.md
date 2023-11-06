@@ -1,8 +1,9 @@
 # Payload Visual Editor Plugin
 > **Note**
-> This plugin provides a visual live preview, including a nice UI, for **[Payload](https://github.com/payloadcms/payload) versions 2.x.**  
-> Version 0.** is compatible with Payload 1.**
-> Version 2.** is compatible with Payload 2.**
+> This plugin provides a visual live preview, including a nice UI, for **[Payload](https://github.com/payloadcms/payload)**  
+>   
+> Version 0.x.x is compatible with Payload 1.x.x  
+> Version 2.x.x is compatible with Payload 2.x.x  
 
 ## Core features:
 
