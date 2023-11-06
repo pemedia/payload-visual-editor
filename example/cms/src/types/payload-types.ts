@@ -127,6 +127,16 @@ export interface KitchenSink {
         blockName?: string | null;
         blockType: 'testBlock2';
       }
+    | {
+        textPosition: 'left' | 'right';
+        text: {
+          [k: string]: unknown;
+        }[];
+        medium: string | Medium;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'complexBlock';
+      }
   )[];
   checkbox: boolean;
   code: string;

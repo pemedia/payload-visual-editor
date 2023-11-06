@@ -1,4 +1,5 @@
 import { GlobalConfig } from "payload/types";
+import { ComplexBlock } from "../blocks/ComplexBlock";
 import { TestBlock1 } from "../blocks/TestBlock1";
 import { TestBlock2 } from "../blocks/TestBlock2";
 import { Categories } from "../collections/Categories";
@@ -21,7 +22,7 @@ export const KitchenSink: GlobalConfig = {
             name: "blocks",
             type: "blocks",
             required: true,
-            blocks: [TestBlock1, TestBlock2],
+            blocks: [TestBlock1, TestBlock2, ComplexBlock],
         },
         {
             name: "checkbox",
