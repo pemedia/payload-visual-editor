@@ -17,8 +17,10 @@ export const PopupPreview = (props: Props) => {
     useEffect(() => {
         previewWindow.current = open(previewUrl, "preview", "popup");
 
+        let timer: NodeJS.Timer | undefined;
+
         if (previewWindow.current) {
-            const timer = setInterval(() => {
+            timer = setInterval(() => {
                 if (previewWindow.current!.closed) {
                     clearInterval(timer);
 
@@ -30,6 +32,10 @@ export const PopupPreview = (props: Props) => {
         }
 
         return () => {
+            if (timer) {
+                clearInterval(timer);
+            }
+
             if (previewWindow.current) {
                 previewWindow.current.close();
             }
