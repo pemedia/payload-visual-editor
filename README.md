@@ -27,10 +27,10 @@ In the `plugins` array of your [Payload config](https://payloadcms.com/docs/conf
 
 ```js
 // import plugin
-import { visualEditor } from 'payload-visual-editor';
+import { visualEditor } from "payload-visual-editor";
 
 // import styles
-import 'payload-visual-editor/dist/styles.scss';
+import "payload-visual-editor/dist/styles.scss";
 
 const config = buildConfig({
   collections: [...],
@@ -58,9 +58,9 @@ const config = buildConfig({
 
   A function returning a string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`). The `locale` property can be used if needed for [preview localization](#Localization).
 
-- `showPreview` : `boolean`
+- `defaultPreviewMode` : `"iframe" | "popup" | "none"`
 
-  Show or hide preview while opening an edit page the first time. After toggling, the state will be saved in localStore. Default: true
+  Preferred preview mode while opening an edit page the first time. After toggling, the state will be saved in localStore. Default: "iframe"
 
 - `collections` / `globals` : `Record<string, { previewUrl?: ({ locale: string; }) => string; }>`
 
@@ -92,23 +92,23 @@ To address this problem, fallbacks can be set up for the collections / globals.
 In cases where a field is required but no value has been selected, the fallback of the respective collection will be returned.
 
 ```js
-import { CollectionWithFallbackConfig } from 'payload-visual-editor';
+import { CollectionWithFallbackConfig } from "payload-visual-editor";
 
 export const Tags: CollectionWithFallbackConfig<Tag> = {
-    slug: 'tags',
+    slug: "tags",
     fields: [
         {
-            name: 'name',
-            type: 'text',
+            name: "name",
+            type: "text",
             required: true,
         },
     ],
     custom: {
         fallback: {
-            id: '',
-            name: 'Fallback Tag',
-            createdAt: '',
-            updatedAt: '',
+            id: "",
+            name: "Fallback Tag",
+            createdAt: "",
+            updatedAt: "",
         },
     },
 };
@@ -116,7 +116,7 @@ export const Tags: CollectionWithFallbackConfig<Tag> = {
 
 ## Frontend Integration in React / Next.js 
 
-In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
+In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it"s a collection with he name `page`. 
 
 ```js
 const [page, setPage] = useState<Page | null>(null);
@@ -149,6 +149,21 @@ return (
         </main>
     </div>
 );
+```
+
+Since the document will only be send to the frontend after a field has been changed the preview page wouldn"t show any data on first render.
+To inform the cms to send the current document state to the frontend, send a `ready` message to the parent window, as soon as the DOM / react app is ready:
+
+```js
+// react
+useEffect(() => {
+    (opener ?? parent).postMessage("ready", "*");
+}, []);
+
+// vanilla js
+window.addEventListener("DOMContentLoaded", () => {
+    (opener ?? parent).postMessage("ready", "*");
+});
 ```
 
 ## Development
