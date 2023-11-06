@@ -2,7 +2,9 @@ import { Config } from "payload/config";
 import { CollectionConfig, GlobalConfig } from "payload/types";
 import { createVisualEditorView } from "./components/visualEditorView";
 import { PreviewUrlFn } from "./types/previewUrl";
-import { createLivewPreviewCollectionOrGlobalConfig } from "./utils/createLivePreviewCollectionOrGlobalConfig";
+
+export * from "./types/collectionWithFallbackConfig";
+export * from "./types/globalWithFallbackConfig";
 
 type CollectionOrGlobalConfig = CollectionConfig | GlobalConfig;
 
@@ -52,6 +54,3 @@ export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Co
     collections: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.showPreview, config.collections, pluginConfig.collections),
     globals: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.showPreview, config.globals, pluginConfig.globals),
 });
-
-export const createCollectionConfig = createLivewPreviewCollectionOrGlobalConfig;
-export const createGlobalConfig = createLivewPreviewCollectionOrGlobalConfig;
