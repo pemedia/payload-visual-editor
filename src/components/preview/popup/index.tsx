@@ -17,7 +17,7 @@ export const PopupPreview = (props: Props) => {
     useEffect(() => {
         previewWindow.current = open(previewUrl, "preview", "popup");
 
-        let timer: NodeJS.Timer | undefined;
+        let timer: any;
 
         if (previewWindow.current) {
             timer = setInterval(() => {
