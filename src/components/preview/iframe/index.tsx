@@ -1,12 +1,11 @@
-import { ExternalLinkIcon } from "payload/dist/admin/components/graphics/ExternalLink";
+import Chevron from "payload/dist/admin/components/icons/Chevron";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
 import React, { RefObject, useRef, useState } from "react";
 import { PreviewMode } from "../../../types/previewMode";
 import { PreviewUrlFn } from "../../../types/previewUrl";
+import NewWindow from "../../icons/NewWindow";
 import { usePreview } from "../hooks/usePreview";
 import { useResizeObserver } from "./useResizeObserver";
-import Chevron from "payload/dist/admin/components/icons/Chevron";
-import NewWindow from "../../icons/NewWindow";
 
 interface Props {
     previewUrlFn: PreviewUrlFn;
@@ -48,7 +47,6 @@ const SCREEN_SIZES: ScreenSize[] = [
 ];
 
 export const IFramePreview = (props: Props) => {
-
     const iframe = useRef<HTMLIFrameElement>(null);
     const resizeContainer = useRef<HTMLDivElement>(null);
     const livePreviewContainer = useRef<HTMLDivElement>(null);
@@ -68,36 +66,33 @@ export const IFramePreview = (props: Props) => {
     useResizeObserver(resizeContainer, ([entry]) => {
         const scalePercent = entry.target.querySelector("iframe")?.getAttribute("data-scale");
         const scalePercentNumber = (scalePercent) ? parseFloat(scalePercent) : 100;
-        calculateSizeDisplay(entry.contentRect.width, entry.contentRect.height, scalePercentNumber)
+
+        calculateSizeDisplay(entry.contentRect.width, entry.contentRect.height, scalePercentNumber);
     });
 
     const toggleMenu = (selectMenu: RefObject<HTMLDivElement>) => () => {
         if (selectMenu.current) {
-            const menuList = selectMenu.current.querySelector('.menu')
-            if (menuList) {
+            const menuList = selectMenu.current.querySelector(".menu");
 
+            if (menuList) {
                 if (selectMenu.current.classList.contains("expanded")) {
                     selectMenu.current.classList.remove("expanded");
-                    menuList.setAttribute("style", `height: 0px`)
+                    menuList.setAttribute("style", `height: 0px`);
                 } else {
                     selectMenu.current.classList.add("expanded");
-                    menuList.setAttribute("style", `height: ${menuList.scrollHeight}px`)
+                    menuList.setAttribute("style", `height: ${menuList.scrollHeight}px`);
                 }
-
             }
-
         }
     };
 
     const selectIframeSizeMenu = (item: ScreenSize) => () => {
-
         let scaleToUse = 100;
-        const useItem = { ...item }
+        const useItem = { ...item };
 
         if (livePreviewContainer.current && typeof useItem.width === "number" && typeof useItem.height === "number") {
-
             // check if size fits in viewport
-            const elemStyles = getComputedStyle(livePreviewContainer.current)
+            const elemStyles = getComputedStyle(livePreviewContainer.current);
 
             const availWidth = livePreviewContainer.current.clientWidth - parseFloat(elemStyles.paddingLeft) - parseFloat(elemStyles.paddingRight);
             const availHeight = livePreviewContainer.current.clientHeight - parseFloat(elemStyles.paddingTop) - parseFloat(elemStyles.paddingBottom);
@@ -106,79 +101,68 @@ export const IFramePreview = (props: Props) => {
             const origHeight = useItem.height;
 
             if (useItem.width > availWidth || useItem.height > availHeight) {
-                // console.log('too large', `${availWidth}x${availHeight}`, `${useItem.width}x${useItem.height}`)
+                // console.log("too large", `${availWidth}x${availHeight}`, `${useItem.width}x${useItem.height}`)
                 scaleToUse = 75;
                 useItem.width = origWidth * (scaleToUse / 100);
                 useItem.height = origHeight * (scaleToUse / 100);
 
                 if (useItem.width > availWidth || useItem.height > availHeight) {
-                    // console.log('STILL too large', `${availWidth}x${availHeight}`, `${useItem.width}x${useItem.height}`)
+                    // console.log("STILL too large", `${availWidth}x${availHeight}`, `${useItem.width}x${useItem.height}`)
                     scaleToUse = 50;
                     useItem.width = origWidth * (scaleToUse / 100);
                     useItem.height = origHeight * (scaleToUse / 100);
 
                     if (useItem.width > availWidth || useItem.height > availHeight) {
-                        // console.log('STILL STILL too large', `${availWidth}x${availHeight}`, `${useItem.width}x${useItem.height}`)
+                        // console.log("STILL STILL too large", `${availWidth}x${availHeight}`, `${useItem.width}x${useItem.height}`)
                         scaleToUse = 25;
                         useItem.width = origWidth * (scaleToUse / 100);
                         useItem.height = origHeight * (scaleToUse / 100);
                     }
-
                 }
-
             }
-
         }
 
-        setSelectedSizeItem(useItem)
-        setSelectedScale(scaleToUse)
+        setSelectedSizeItem(useItem);
+        setSelectedScale(scaleToUse);
 
         sizeSelect.current?.classList.remove("expanded");
-        sizeSelect.current?.querySelector('.menu')?.setAttribute("style", `height: 0px`)
-        changeIframeSize(useItem)
-
-    }
+        sizeSelect.current?.querySelector(".menu")?.setAttribute("style", `height: 0px`);
+        changeIframeSize(useItem);
+    };
 
     const selectIframeScaleMenu = (scale: number) => () => {
-
         if (resizeContainer.current) {
-
             const scaleFactor = selectedScale / scale;
             const width = resizeContainer.current?.offsetWidth / scaleFactor;
             const height = resizeContainer.current?.offsetHeight / scaleFactor;
 
             resizeContainer.current!.setAttribute("style", `width:${width}px; height:${height}px;`);
-            calculateSizeDisplay(width, height, scale)
+            calculateSizeDisplay(width, height, scale);
 
             scaleSelect.current?.classList.remove("expanded");
-            scaleSelect.current?.querySelector('.menu')?.setAttribute("style", `height: 0px`)
+            scaleSelect.current?.querySelector(".menu")?.setAttribute("style", `height: 0px`);
 
-            setSelectedScale(scale)
-
+            setSelectedScale(scale);
         }
-
-    }
+    };
 
     const changeIframeSize = (item: ScreenSize) => {
-        let params: any = {}
-        if (typeof item.width === 'string' && typeof item.height === 'string') {
-            params = {
-                width: item.width,
-                height: item.height,
-            }
-        } else {
-            params = {
-                width: `${item.width}px`,
-                height: `${item.height}px`,
-            }
-        }
+        const size = (value: string | number) => typeof value === "string" ? value : `${value}px`;
+
+        const params = {
+            width: size(item.width),
+            height: size(item.height),
+        };
+
         resizeContainer.current!.setAttribute("style", `width:${params.width}; height:${params.height};`);
     };
 
     const calculateSizeDisplay = (width: number, height: number, scalePercent: number) => {
         const scaleFactor = scalePercent / 100;
+
         const finalWidth = width / scaleFactor;
         const finalHeight = height / scaleFactor;
+
         setPreviewSizeDisplay(`${String(Math.round(finalWidth))} x ${String(Math.round(finalHeight))}`);
     }
 
@@ -193,14 +177,15 @@ export const IFramePreview = (props: Props) => {
                 label: selectedSizeItem.label,
                 width: newHeight,
                 height: newWidth,
-            }
-            changeIframeSize(newItem)
+            };
+
+            changeIframeSize(newItem);
         }
-    }
+    };
 
     return (
         <div ref={livePreviewContainer} className="live-preview-container">
-            <div ref={resizeContainer} className={`live-preview-resize-container ${(selectedSizeItem.slug == "responsive") ? 'responsive' : ''}`}>
+            <div ref={resizeContainer} className={`live-preview-resize-container ${(selectedSizeItem.slug == "responsive") ? "responsive" : ""}`}>
                 <div className="live-preview-settings">
                     <div ref={sizeSelect} className="selectMenu sizeSelect">
                         <button className="selected" type="button" onClick={toggleMenu(sizeSelect)}>
@@ -261,5 +246,4 @@ export const IFramePreview = (props: Props) => {
             </div>
         </div>
     );
-
 };

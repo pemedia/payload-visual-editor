@@ -11,10 +11,10 @@ import { useTranslation } from "react-i18next";
 import { match } from "ts-pattern";
 import { PreviewMode } from "../../types/previewMode";
 import { PreviewUrlFn } from "../../types/previewUrl";
+import NewWindow from "../icons/NewWindow";
+import SideBySide from "../icons/SideBySide";
 import { IFramePreview, PopupPreview } from "../preview";
 import { usePersistentState } from "./usePersistentState";
-import SideBySide from "../icons/SideBySide";
-import NewWindow from "../icons/NewWindow";
 
 type Options = {
     previewUrl: PreviewUrlFn;
@@ -139,7 +139,6 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
                     ))
                     .with("none", () => (
                         <div className="preview-container sidebar">
-                            {/* <h5>{t('livePreview')}</h5> */}
                             <button
                                 type="button"
                                 className="btn"
