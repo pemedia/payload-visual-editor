@@ -6,6 +6,7 @@ import { PreviewUrlFn } from "../../../types/previewUrl";
 import { usePreview } from "../hooks/usePreview";
 import { useResizeObserver } from "./useResizeObserver";
 import Chevron from "payload/dist/admin/components/icons/Chevron";
+import NewWindow from "../../icons/NewWindow";
 
 interface Props {
     previewUrlFn: PreviewUrlFn;
@@ -243,7 +244,7 @@ export const IFramePreview = (props: Props) => {
 
                     <div className="elemsRight">
                         <button className="iconButton openInWindow" type="button" onClick={() => props.setPreviewMode("popup")}>
-                            <ExternalLinkIcon />
+                            <NewWindow />
                         </button>
                         <button className="iconButton closeVisualEditor" type="button" onClick={() => props.setPreviewMode("none")}>
                             <CloseMenu />
@@ -261,39 +262,4 @@ export const IFramePreview = (props: Props) => {
         </div>
     );
 
-    // return (
-    //     <div className="ContentEditor">
-    //         <div className="live-preview-container">
-    //             <div className="sidebar-drag-handle" onMouseDown={sidebarDragStart}></div>
-    //             <div className="live-preview">
-    //                 <div className="live-preview-resize-container" ref={resizeContainer}>
-    //                     <div className="live-preview-settings">
-    //                         <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.desktop)}>
-    //                             Desktop
-    //                         </button>
-    //                         <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.tablet)}>
-    //                             Tablet
-    //                         </button>
-    //                         <button className="pill pill--has-action" type="button" onClick={setPreviewSize(SCREEN_SIZES.mobile)}>
-    //                             Mobile
-    //                         </button>
-    //                         <div className="pill size-display">
-    //                             {previewSizeDisplay}
-    //                         </div>
-    //                         <button className="toggleVisualEditor" type="button" onClick={togglePreview}>
-    //                             <CloseMenu />
-    //                         </button>
-    //                     </div>
-
-    //                     <iframe
-    //                         id="live-preview-iframe"
-    //                         ref={iframe}
-    //                         src={previewUrl}
-    //                         onLoad={onIframeLoaded}
-    //                     />
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
 };

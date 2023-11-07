@@ -13,6 +13,8 @@ import { PreviewMode } from "../../types/previewMode";
 import { PreviewUrlFn } from "../../types/previewUrl";
 import { IFramePreview, PopupPreview } from "../preview";
 import { usePersistentState } from "./usePersistentState";
+import SideBySide from "../icons/SideBySide";
+import NewWindow from "../icons/NewWindow";
 
 type Options = {
     previewUrl: PreviewUrlFn;
@@ -136,19 +138,21 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
                         />
                     ))
                     .with("none", () => (
-                        <div className="open-preview-container">
-                            <div>{t("livePreview")}</div>
+                        <div className="preview-container sidebar">
+                            {/* <h5>{t('livePreview')}</h5> */}
                             <button
                                 type="button"
-                                className="btn btn--style-secondary btn--size-small"
+                                className="btn"
+                                title={`live preview side by side`}
                                 onClick={() => setPreviewMode("iframe")}>
-                                Side by Side
+                                <SideBySide />
                             </button>
                             <button
                                 type="button"
-                                className="btn btn--style-secondary btn--size-small"
+                                className="btn"
+                                title={`live preview in a new window`}
                                 onClick={() => setPreviewMode("popup")}>
-                                Popup
+                                <NewWindow />
                             </button>
                         </div>
                     ))
