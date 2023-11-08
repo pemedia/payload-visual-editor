@@ -1,8 +1,11 @@
 import { Config } from "payload/config";
-import { createVisualEditorField } from "./fields/visualEditorField";
-import { createAdminSidebarField } from "./fields/adminSidebarField";
-import { CollectionConfig, GlobalConfig, TabsField } from "payload/types";
+import { CollectionConfig, GlobalConfig } from "payload/types";
+import { createVisualEditorView } from "./components/visualEditorView";
+import { PreviewMode } from "./types/previewMode";
 import { PreviewUrlFn } from "./types/previewUrl";
+
+export * from "./types/collectionWithFallbackConfig";
+export * from "./types/globalWithFallbackConfig";
 
 type CollectionOrGlobalConfig = CollectionConfig | GlobalConfig;
 
@@ -12,62 +15,36 @@ interface PluginCollectionOrGlobalConfig {
 
 export interface PluginConfig {
     previewUrl: PreviewUrlFn;
-    showPreview?: boolean;
+    defaultPreviewMode?: PreviewMode;
     collections?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
     globals?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
 }
 
 const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
     previewUrl: PreviewUrlFn,
-    showPreview?: boolean,
+    defaultPreviewMode?: PreviewMode,
     cogConfigs?: T[],
     pluginCogConfigs?: Record<string, PluginCollectionOrGlobalConfig | undefined>,
 ) => cogConfigs?.map(cogConfig => {
     const pluginCogConfig = pluginCogConfigs?.[cogConfig.slug];
 
     if (pluginCogConfig) {
-        const tabsIndex = cogConfig.fields.findIndex(e => e.type === "tabs");
-        const hasTabs = (tabsIndex > -1) ? true : false;
-
-        if (hasTabs) {
-            let fields = cogConfig.fields;
-            let tabsContent = fields[tabsIndex] as TabsField;
-
-            tabsContent.tabs = [
-                ...tabsContent.tabs,
-                {
-                    label: "More",
-                    fields: [
-                        createAdminSidebarField(),
-                    ],
+        cogConfig.admin = {
+            ...cogConfig.admin,
+            components: {
+                ...cogConfig.admin?.components,
+                views: {
+                    ...cogConfig.admin?.components?.views,
+                    Edit: {
+                        ...cogConfig.admin?.components?.views?.Edit,
+                        Default: createVisualEditorView({
+                            previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
+                            defaultPreviewMode: defaultPreviewMode ?? "iframe",
+                        }),
+                    } as any,
                 },
-            ];
-
-            fields[tabsIndex] = tabsContent;
-
-            return {
-                ...cogConfig,
-                fields: [
-                    ...fields,
-                    createVisualEditorField({
-                        previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
-                        showPreview,
-                    }),
-                ],
-            };
-        } else {
-            return {
-                ...cogConfig,
-                fields: [
-                    ...cogConfig.fields,
-                    createAdminSidebarField(),
-                    createVisualEditorField({
-                        previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
-                        showPreview,
-                    }),
-                ],
-            };
-        }
+            },
+        };
     }
 
     return cogConfig
@@ -75,6 +52,6 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
 
 export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Config => ({
     ...config,
-    collections: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.showPreview, config.collections, pluginConfig.collections),
-    globals: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.showPreview, config.globals, pluginConfig.globals),
+    collections: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.defaultPreviewMode, config.collections, pluginConfig.collections),
+    globals: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.defaultPreviewMode, config.globals, pluginConfig.globals),
 });

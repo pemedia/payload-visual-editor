@@ -1,7 +1,9 @@
 # Payload Visual Editor Plugin
 > **Note**
-> This plugin provides a visual live preview, including a nice UI, for **[Payload](https://github.com/payloadcms/payload) versions 1.x.**  
-> For **Payload CMS 2.x** you don't need this plugin, as it offers the live preview as a **core feature**. 🎉
+> This plugin provides a visual live preview, including a nice UI, for **[Payload](https://github.com/payloadcms/payload)**  
+>   
+> Version 0.x.x is compatible with Payload 1.x.x  
+> Version 2.x.x is compatible with Payload 2.x.x  
 
 ## Core features:
 
@@ -10,9 +12,6 @@
   - Handles the live data exchange with your frontend 
 
 ![image](https://github.com/pemedia/payload-visual-live-preview/blob/main/visual-editor-screenshot.png?raw=true)
-
-> **Note**
-> For the collections in which you use the visual editor, fields in the `{admin: {position:'sidebar'}}` area will be rendered below all other fields, in the "main" area or, if you are using tabs, in an extra tab called "More".
 
 ## Installation
 
@@ -28,10 +27,10 @@ In the `plugins` array of your [Payload config](https://payloadcms.com/docs/conf
 
 ```js
 // import plugin
-import { visualEditor } from 'payload-visual-editor';
+import { visualEditor } from "payload-visual-editor";
 
 // import styles
-import 'payload-visual-editor/dist/styles.scss';
+import "payload-visual-editor/dist/styles.scss";
 
 const config = buildConfig({
   collections: [...],
@@ -55,15 +54,15 @@ const config = buildConfig({
 
 ### Options
 
-- `previewUrl` : ({ locale: string; }) => string | mandatory
+- `previewUrl` : `({ locale: string; }) => string | mandatory`
 
   A function returning a string of the URL to your frontend preview route (e.g. `https://localhost:3001/pages/preview`). The `locale` property can be used if needed for [preview localization](#Localization).
 
-- `showPreview` : boolean
+- `defaultPreviewMode` : `"iframe" | "popup" | "none"`
 
-  Show or hide preview while opening an edit page the first time. After toggling, the state will be saved in localStore. Default: true
+  Preferred preview mode while opening an edit page the first time. After toggling, the state will be saved in localStore. Default: "iframe"
 
-- `collections` / `globals` : Record<string, { previewUrl?: ({ locale: string; }) => string; }>
+- `collections` / `globals` : `Record<string, { previewUrl?: ({ locale: string; }) => string; }>`
 
   An object with configs for all collections / globals which should enable the live preview. Use the collection / global slug as the key. If you don't want to override the previewUrl, just pass an empty object.
 
@@ -83,9 +82,41 @@ const config = buildConfig({
 });
 ```
 
+### Relation Fallbacks
+
+When adding blocks or editing relationship / upload fields, you will often encounter the issue that the data is incomplete.
+For instance, because no relation has been selected yet.
+However, when such fields are marked as required and there is no check for undefined values in the frontend, 
+it can lead to unexpected errors in the rendering process.  
+To address this problem, fallbacks can be set up for the collections / globals.
+In cases where a field is required but no value has been selected, the fallback of the respective collection will be returned.
+
+```js
+import { CollectionWithFallbackConfig } from "payload-visual-editor";
+
+export const Tags: CollectionWithFallbackConfig<Tag> = {
+    slug: "tags",
+    fields: [
+        {
+            name: "name",
+            type: "text",
+            required: true,
+        },
+    ],
+    custom: {
+        fallback: {
+            id: "",
+            name: "Fallback Tag",
+            createdAt: "",
+            updatedAt: "",
+        },
+    },
+};
+```
+
 ## Frontend Integration in React / Next.js 
 
-In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it's a collection with he name `page`. 
+In the next.js route which will handle your life preview use this code snippet to get the live post data of your collection directly from payload. In this case it"s a collection with he name `page`. 
 
 ```js
 const [page, setPage] = useState<Page | null>(null);
@@ -96,27 +127,43 @@ useEffect(() => {
             setPage(event.data.cmsLivePreviewData);
         }
     };
+
     window.addEventListener("message", listener, false);
+
     return () => {
         window.removeEventListener("message", listener);
     };
 }, []);
 ```
+
 You can now pass this to your render function and you can use all your payload collection data in there. For example like this:
 
 ```js
 return (
-  <div>
-      <header>
-        <h1>{page.title}</h1>
-      </header>
-      <main>
-        <div>
-          <RenderBlocks blocks={page.content} />
-        </div>
-      </main>
-  </div>
-)
+    <div>
+        <header>
+            <h1>{page.title}</h1>
+        </header>
+        <main>
+            <RenderBlocks blocks={page.content} />
+        </main>
+    </div>
+);
+```
+
+Since the document will only be send to the frontend after a field has been changed the preview page wouldn"t show any data on first render.
+To inform the cms to send the current document state to the frontend, send a `ready` message to the parent window, as soon as the DOM / react app is ready:
+
+```js
+// react
+useEffect(() => {
+    (opener ?? parent).postMessage("ready", "*");
+}, []);
+
+// vanilla js
+window.addEventListener("DOMContentLoaded", () => {
+    (opener ?? parent).postMessage("ready", "*");
+});
 ```
 
 ## Development

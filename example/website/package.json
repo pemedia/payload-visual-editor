@@ -9,9 +9,9 @@
     "dev": "concurrently --kill-others yarn:build-watch yarn:bundle-and-serve"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0",
-    "esbuild": "^0.18.1",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.5",
     "esbuild-plugin-collection": "dkirchhof/esbuild-plugin-collection",
-    "typescript": "^5.1.3"
+    "typescript": "^5.2.2"
   }
 }

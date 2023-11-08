@@ -1,4 +1,4 @@
-import { Post, Tag, Category, Media, KitchenSink } from "./payload-types";
+import { Post, Tag, Category, Medium, KitchenSink } from "./payload-types";
 
 new EventSource("/esbuild").addEventListener("change", () => location.reload())
 
@@ -8,10 +8,6 @@ const isCategory = (doc: any): doc is Category => {
 
 const isTag = (doc: any): doc is Tag => {
     return doc.name !== undefined;
-};
-
-const isMedia = (doc: any): doc is Media => {
-    return doc.filename !== undefined;
 };
 
 const isPost = (doc: any): doc is Post => {
@@ -29,6 +25,12 @@ window.addEventListener("message", event => {
     clearElements();
     if (isPost(data)) return postPreview(data);
     else if (isKitchenSink(data)) return kitchenSinkPreview(data);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        (opener ?? parent).postMessage("ready", "*");
+    }, 100);
 });
 
 const postPreview = (data: Post) => {
@@ -130,34 +132,28 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // relationship (single)
     addElem(`<h3>Relationship 1 (single):</h3>`);
-    if(isTag(data.relationship1)) {
-        addElem(`<ul><li>${data.relationship1.name}</li></ul>`);
-    }
+    addElem(`<ul><li>${(data.relationship1 as Tag).name}</li></ul>`);
     addElem(`<hr />`);
 
     // relationship (multi)
     addElem(`<h3>Relationship 2 (multi):</h3>`);
-    const relationships2 = data.relationship2.map((item, index) => {
-        if(isTag(item)) return `<li>[${index}] = ${item.name}</li>`;
-        return null;
+    const relationships2 = (data.relationship2 as Tag[]).map((item, index) => {
+        return `<li>[${index}] = ${item.name}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<ul>${relationships2}</ul>`);
     addElem(`<hr />`);
 
     // relationship (array)
     addElem(`<h3>Relationship 3 (array):</h3>`);
-    if(data.relationship3.value && isCategory(data.relationship3.value)) {
-        addElem(`<ul><li>${data.relationship3.relationTo}: ${data.relationship3.value.name}</li></ul>`);
-    }
+    addElem(`<ul><li>${data.relationship3.relationTo}: ${(data.relationship3.value as Tag | Category).name}</li></ul>`);
     addElem(`<hr />`);
 
     // relationship (array multi)
     addElem(`<h3>Relationship 4 (array multi):</h3>`);
     const relationships4 = data.relationship4.map((item, index) => {
-        if(isTag(item.value) || isCategory(item.value)) {
-            return `<li>${item.relationTo}: ${item.value.name}</li>`;
-        }
-        return null;
+        const value = item.value as Tag | Category;
+
+        return `<li>${item.relationTo}: ${value.name}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<ul>${relationships4}</ul>`);
     addElem(`<hr />`);
@@ -192,19 +188,24 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // upload
     addElem(`<h3>Upload:</h3>`);
-    if(isMedia(data.upload)) {
-        let mediaElem: string | null = null;
-        if(data.upload.mimeType?.includes("image/")) mediaElem = `<img src="${data.upload.url}" width="50%" />`
-        else if(data.upload.mimeType?.includes("video/")) mediaElem = `<video width="100%" controls><source src="${data.upload.url}" type="${data.upload.mimeType}"></video>`
-        addElem(`<div>
-            <div>${data.upload.filename}</div>
-           ${(mediaElem) ? `<div>${mediaElem}</div>` : '' }
-        </div>`);
+    const upload = data.upload as Medium;
+
+    let mediaElem: string | null = null;
+
+    if(upload.mimeType?.includes("image/")) {
+        mediaElem = `<img src="${upload.url}" width="50%" />`;
+    } else if(upload.mimeType?.includes("video/")) {
+        mediaElem = `<video width="100%" controls><source src="${upload.url}" type="${upload.mimeType}"></video>`;
     }
+
+    addElem(`
+        <div>
+            <div>${upload.filename}</div>
+           ${(mediaElem) ? `<div>${mediaElem}</div>` : '' }
+        </div>
+    `);
     addElem(`<hr />`);
-
 }
-
 
 const addElem = (data: string) => {
     const container = document.getElementById("preview");
