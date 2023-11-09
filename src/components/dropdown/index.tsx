@@ -1,5 +1,5 @@
 import Chevron from "payload/dist/admin/components/icons/Chevron";
-import React, { useId, useRef } from "react";
+import React, { useState } from "react";
 
 interface Props {
     triggerText: string;
@@ -7,35 +7,25 @@ interface Props {
 }
 
 export const Dropdown = (props: Props) => {
-    const selectRef = useRef<HTMLDivElement | null>(null);
-
-    const toggleMenu = () => {
-        if (selectRef.current) {
-            const menuList = selectRef.current.querySelector(".menu");
-
-            if (menuList) {
-                if (selectRef.current.classList.contains("expanded")) {
-                    selectRef.current.classList.remove("expanded");
-                    menuList.setAttribute("style", `height: 0px`);
-                } else {
-                    selectRef.current.classList.add("expanded");
-                    menuList.setAttribute("style", `height: ${menuList.scrollHeight}px`);
-                }
-            }
-        }
-    };
+    const [expanded, setExpanded] = useState(false);
 
     return (
-        <div ref={selectRef} className="selectMenu">
-            <button className="selected" type="button" onClick={() => toggleMenu()}>
+        <div className="selectMenu">
+            {expanded && <div className="backdrop" onClick={() => setExpanded(false)} />}
+
+            <button type="button" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
                 <span>{props.triggerText}</span>
                 <span className="icon"><Chevron /></span>
             </button>
-            <div className="menu">
+
+            <div className="menu" aria-expanded={expanded}>
                 <ul>
                     {props.items.map((item, index) => (
                         <li key={index}>
-                            <button type="button" onClick={() => { item.action(); toggleMenu(); }}>
+                            <button type="button" onClick={() => {
+                                item.action();
+                                setExpanded(false);
+                            }}>
                                 {item.label}
                             </button>
                         </li>
