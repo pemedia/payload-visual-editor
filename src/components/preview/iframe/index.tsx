@@ -1,11 +1,11 @@
-import Chevron from "payload/dist/admin/components/icons/Chevron";
 import CloseMenu from "payload/dist/admin/components/icons/CloseMenu";
-import React, { CSSProperties, RefObject, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { PreviewMode } from "../../../types/previewMode";
 import { PreviewUrlFn } from "../../../types/previewUrl";
 import NewWindow from "../../icons/NewWindow";
 import { usePreview } from "../hooks/usePreview";
 import { useResizeObserver } from "./useResizeObserver";
+import { Dropdown } from "../../dropdown";
 
 interface Props {
     previewUrlFn: PreviewUrlFn;
@@ -78,9 +78,6 @@ export const IFramePreview = (props: Props) => {
     const resizeContainer = useRef<HTMLDivElement>(null);
     const livePreviewContainer = useRef<HTMLDivElement>(null);
 
-    const sizeSelect = useRef<HTMLDivElement | null>(null);
-    const scaleSelect = useRef<HTMLDivElement | null>(null);
-
     const [sizeAndScale, setSizeAndScale] = useState({
         ...SCREEN_SIZES[0],
         scale: 1,
@@ -106,23 +103,7 @@ export const IFramePreview = (props: Props) => {
         }));
     });
 
-    const toggleMenu = (selectMenu: RefObject<HTMLDivElement>) => () => {
-        if (selectMenu.current) {
-            const menuList = selectMenu.current.querySelector(".menu");
-
-            if (menuList) {
-                if (selectMenu.current.classList.contains("expanded")) {
-                    selectMenu.current.classList.remove("expanded");
-                    menuList.setAttribute("style", `height: 0px`);
-                } else {
-                    selectMenu.current.classList.add("expanded");
-                    menuList.setAttribute("style", `height: ${menuList.scrollHeight}px`);
-                }
-            }
-        }
-    };
-
-    const selectIframeSizeMenu = (item: ScreenSize) => () => {
+    const selectSize = (item: ScreenSize) => {
         const availableSize = {
             width: livePreviewContainer.current!.clientWidth,
             height: livePreviewContainer.current!.clientHeight,
@@ -144,12 +125,9 @@ export const IFramePreview = (props: Props) => {
                 scale,
             });
         }
-
-        sizeSelect.current?.classList.remove("expanded");
-        sizeSelect.current?.querySelector(".menu")?.setAttribute("style", `height: 0px`);
     };
 
-    const selectIframeScaleMenu = (preferredScale: number) => () => {
+    const selectScale = (preferredScale: number) =>  {
         const availableSize = {
             width: livePreviewContainer.current!.clientWidth,
             height: livePreviewContainer.current!.clientHeight,
@@ -163,9 +141,6 @@ export const IFramePreview = (props: Props) => {
             ...sizeAndScale,
             scale,
         });
-
-        scaleSelect.current?.classList.remove("expanded");
-        scaleSelect.current?.querySelector(".menu")?.setAttribute("style", `height: 0px`);
     };
 
     const rotatePreview = () => {
@@ -209,33 +184,21 @@ export const IFramePreview = (props: Props) => {
                 style={resizeContainerStyles}
             >
                 <div className="live-preview-settings">
-                    <div ref={sizeSelect} className="selectMenu sizeSelect">
-                        <button className="selected" type="button" onClick={toggleMenu(sizeSelect)}>
-                            <span>{sizeAndScale.label}</span>
-                            <span className="icon"><Chevron /></span>
-                        </button>
-                        <div className="menu">
-                            <ul>
-                                {SCREEN_SIZES.map(item => (
-                                    <li><button type="button" onClick={selectIframeSizeMenu(item)}>{item.label}</button></li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+                    <Dropdown 
+                        triggerText={sizeAndScale.label}
+                        items={SCREEN_SIZES.map(item => (
+                            { label: item.label, action: () => selectSize(item) }
+                        ))} 
+                    />
 
-                    <div ref={scaleSelect} className="selectMenu sizeSelect">
-                        <button className="selected" type="button" onClick={toggleMenu(scaleSelect)}>
-                            <span>{(sizeAndScale.scale * 100).toFixed()}%</span>
-                            <span className="icon"><Chevron /></span>
-                        </button>
-                        <div className="menu">
-                            <ul>
-                                <li><button type="button" onClick={selectIframeScaleMenu(1)}>100%</button></li>
-                                <li><button type="button" onClick={selectIframeScaleMenu(0.75)}>75%</button></li>
-                                <li><button type="button" onClick={selectIframeScaleMenu(0.5)}>50%</button></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <Dropdown 
+                        triggerText={`${(sizeAndScale.scale * 100).toFixed()}%`}
+                        items={[
+                            { label: "100%", action: () => selectScale(1) },
+                            { label: "75%", action: () => selectScale(0.75) },
+                            { label: "50%", action: () => selectScale(0.5) },
+                        ]}
+                    />
 
                     <div className="rotate">
                         <button type="button" onClick={rotatePreview}>
