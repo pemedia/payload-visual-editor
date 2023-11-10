@@ -7,6 +7,7 @@
         >.document-fields {
             width: 30%;
             min-width: 400px;
+            flex-shrink: 0;
 
             .document-fields__edit {
                 padding-right: calc(var(--base) * 1.5);
@@ -42,13 +43,10 @@
         background: var(--theme-elevation-50);
         padding-top: var(--base);
     }
-
-
 }
 
 @media (max-width: $breakpoint-m-width) {
     .visual-editor {
-
         display: block;
 
         >.document-fields {
@@ -58,12 +56,7 @@
         >.preview-container {
             display: none !important;
         }
-
     }
-}
-
-.visual-editor:has(> .document-fields--has-sidebar)>.open-preview-container {
-    padding-left: var(--gutter-h);
 }
 
 .preview-container {
@@ -129,10 +122,7 @@
 
         >.live-preview-settings {
             display: flex;
-            gap: base(.25);
             justify-content: center;
-            padding: 0;
-            border-bottom: 1px solid var(--theme-elevation-100);
             background: var(--theme-elevation-50);
             color: var(--theme-elevation-500);
             height: base(1.5);
@@ -140,7 +130,13 @@
             .selectMenu {
                 position: relative;
 
-                button.selected {
+                >.backdrop {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 1;
+                }
+
+                >button {
                     position: relative;
                     border: none;
                     background: none;
@@ -148,7 +144,7 @@
                     padding: 0;
                     cursor: pointer;
                     height: 100%;
-                    padding: 0 base(.95) 0 0;
+                    padding: 0 base(.95) 0 base(.5);
 
                     .icon {
                         content: "";
@@ -168,57 +164,58 @@
                             }
                         }
                     }
-                }
 
-                &:first-child button {
-                    padding-left: base(.5);
-                }
-
-                &.expanded {
-                    button.selected {
+                    &[aria-expanded="true"] {
                         .icon .icon--chevron {
                             transform: rotate(180deg);
                         }
                     }
                 }
 
-                div.menu {
+                >.menu {
                     position: absolute;
                     z-index: 1;
                     background: var(--theme-elevation-100);
-                    top: 100%;
-                    overflow: hidden;
-                    height: 0;
-                    transition: height .25s ease;
 
-                    ul {
+                    display: grid;
+                    grid-template-rows: 0fr;
+                    transition: grid-template-rows 0.25s ease;
+
+                    &[aria-expanded="true"] {
+                        grid-template-rows: 1fr;
+                    }
+
+                    >ul {
                         list-style: none;
                         padding: 0;
                         margin: 0;
-                    }
+                        overflow: hidden;
 
-                    li {
-                        button {
-                            border: none;
-                            background: none;
-                            appearance: none;
-                            cursor: pointer;
-                            padding: base(0.5) base(1) base(0.5) base(.85);
-                            color: var(--theme-elevation-800);
-                            white-space: nowrap;
+                        >li {
+                            >button {
+                                border: none;
+                                background: none;
+                                appearance: none;
+                                cursor: pointer;
+                                padding: base(0.5);
+                                color: var(--theme-elevation-800);
+                                white-space: nowrap;
 
-                            &:hover {
-                                color: var(--theme-elevation-1000);
-                                text-decoration: underline;
+                                &:hover {
+                                    color: var(--theme-elevation-1000);
+                                    text-decoration: underline;
+                                }
                             }
                         }
-
                     }
                 }
 
+                &.size .menu {
+                    min-width: 7.5rem;
+                }
             }
 
-            .rotate button {
+            >.rotate {
                 border: none;
                 background: none;
                 appearance: none;
@@ -226,81 +223,62 @@
                 font-size: 1.5em;
                 height: 100%;
 
-                svg {
+                >svg {
                     width: base(.5);
                     margin-bottom: 3px;
                     transition: transform .25s ease;
                 }
 
-                &:active svg {
+                &:active>svg {
                     transform: rotate(180deg);
                 }
             }
 
-            .size-display {
+            >.size-display {
                 align-self: center;
                 white-space: nowrap;
                 padding: 0 base(.25);
             }
 
-            .elemsRight {
+            >.elemsRight {
                 margin-left: auto;
                 padding-right: base(.15);
-            }
 
-            .iconButton {
-                border: none;
-                background: none;
-                appearance: none;
-                padding: 0;
-                cursor: pointer;
-                height: 100%;
-                padding: base(.25);
+                >button {
+                    border: none;
+                    background: none;
+                    appearance: none;
+                    padding: 0;
+                    cursor: pointer;
+                    height: 100%;
+                    padding: base(.25);
 
-                svg {
-                    width: base(.85);
-                    height: base(.85);
+                    >svg {
+                        width: base(.85);
+                        height: base(.85);
+                    }
+
+                    &.closeVisualEditor {
+                        >.icon--close-menu>.fill {
+                            fill: var(--theme-elevation-600);
+                        }
+                    }
+
+                    &.openInWindow {
+                        color: var(--theme-elevation-600);
+                    }
                 }
             }
-
-            .closeVisualEditor {
-                .icon--close-menu .fill {
-                    fill: var(--theme-elevation-600);
-                }
-            }
-
-            .openInWindow {
-                color: var(--theme-elevation-600);
-            }
-
         }
 
-        iframe {
+        >iframe {
             width: 100%;
             height: 100%;
-            border: none;
+
             background-color: #fff;
+            border: none;
 
-            &[data-scale="25"] {
-                transform-origin: top left;
-                transform: scale(0.25, 0.25);
-                width: 400%;
-                height: 400%;
-            }
-
-            &[data-scale="50"] {
-                transform-origin: top left;
-                transform: scale(0.5, 0.5);
-                width: 200%;
-                height: 200%;
-            }
-
-            &[data-scale="75"] {
-                transform-origin: top left;
-                transform: scale(0.75, 0.75);
-                width: 150%;
-                height: 150%;
-            }
+            transform-origin: top left;
 
             ::-webkit-scrollbar {
                 width: 10px;
@@ -319,5 +297,4 @@
             }
         }
     }
-
 }

@@ -4,7 +4,9 @@ export const useResizeObserver = (targetRef: RefObject<HTMLElement>, cb: ResizeO
     useEffect(() => {
         const resizeObserver = new ResizeObserver(cb);
 
-        resizeObserver.observe(targetRef.current!);
+        setTimeout(() => {
+            resizeObserver.observe(targetRef.current!);
+        }, 0);
 
         return () => {
             resizeObserver.disconnect();
