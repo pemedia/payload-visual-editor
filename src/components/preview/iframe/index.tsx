@@ -185,6 +185,7 @@ export const IFramePreview = (props: Props) => {
             >
                 <div className="live-preview-settings">
                     <Dropdown
+                        className="size"
                         triggerText={sizeAndScale.label}
                         items={SCREEN_SIZES.map(item => (
                             { label: item.label, action: () => selectSize(item) }
@@ -192,6 +193,7 @@ export const IFramePreview = (props: Props) => {
                     />
 
                     <Dropdown
+                        className="scale"
                         triggerText={`${(sizeAndScale.scale * 100).toFixed()}%`}
                         items={[
                             { label: "100%", action: () => selectScale(1) },

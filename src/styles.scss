@@ -130,13 +130,13 @@
             .selectMenu {
                 position: relative;
 
-                > .backdrop {
+                >.backdrop {
                     position: fixed;
                     inset: 0;
                     z-index: 1;
                 }
 
-                > button {
+                >button {
                     position: relative;
                     border: none;
                     background: none;
@@ -172,7 +172,7 @@
                     }
                 }
 
-                > .menu {
+                >.menu {
                     position: absolute;
                     z-index: 1;
                     background: var(--theme-elevation-100);
@@ -185,19 +185,19 @@
                         grid-template-rows: 1fr;
                     }
 
-                    > ul {
+                    >ul {
                         list-style: none;
                         padding: 0;
                         margin: 0;
                         overflow: hidden;
 
-                        > li {
-                            > button {
+                        >li {
+                            >button {
                                 border: none;
                                 background: none;
                                 appearance: none;
                                 cursor: pointer;
-                                padding: base(0.5) base(1) base(0.5) base(.85);
+                                padding: base(0.5);
                                 color: var(--theme-elevation-800);
                                 white-space: nowrap;
 
@@ -209,9 +209,13 @@
                         }
                     }
                 }
+
+                &.size .menu {
+                    min-width: 7.5rem;
+                }
             }
 
-            > .rotate {
+            >.rotate {
                 border: none;
                 background: none;
                 appearance: none;
@@ -219,28 +223,28 @@
                 font-size: 1.5em;
                 height: 100%;
 
-                > svg {
+                >svg {
                     width: base(.5);
                     margin-bottom: 3px;
                     transition: transform .25s ease;
                 }
 
-                &:active > svg {
+                &:active>svg {
                     transform: rotate(180deg);
                 }
             }
 
-            > .size-display {
+            >.size-display {
                 align-self: center;
                 white-space: nowrap;
                 padding: 0 base(.25);
             }
 
-            > .elemsRight {
+            >.elemsRight {
                 margin-left: auto;
                 padding-right: base(.15);
 
-                > button {
+                >button {
                     border: none;
                     background: none;
                     appearance: none;
@@ -249,13 +253,13 @@
                     height: 100%;
                     padding: base(.25);
 
-                    > svg {
+                    >svg {
                         width: base(.85);
                         height: base(.85);
                     }
 
                     &.closeVisualEditor {
-                        > .icon--close-menu > .fill {
+                        >.icon--close-menu>.fill {
                             fill: var(--theme-elevation-600);
                         }
                     }
@@ -267,7 +271,7 @@
             }
         }
 
-        > iframe {
+        >iframe {
             width: 100%;
             height: 100%;
 

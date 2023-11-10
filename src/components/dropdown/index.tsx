@@ -4,13 +4,14 @@ import React, { useState } from "react";
 interface Props {
     triggerText: string;
     items: { label: string; action: () => void; }[];
+    className?: string;
 }
 
 export const Dropdown = (props: Props) => {
     const [expanded, setExpanded] = useState(false);
 
     return (
-        <div className="selectMenu">
+        <div className={`selectMenu ${props.className ?? ''}`}>
             {expanded && <div className="backdrop" onClick={() => setExpanded(false)} />}
 
             <button type="button" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
