@@ -47,7 +47,7 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
 
     useOnPreviewMessage(previewUrl, message => {
         match(message)
-            .with("ready", () => updatePreview(genDocConfig, fields.current, windowRef))
+            .with({ livePreviewEvent: "ready" }, () => updatePreview(genDocConfig, fields.current, windowRef))
             .exhaustive();
     });
 

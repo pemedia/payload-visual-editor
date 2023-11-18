@@ -1,8 +1,7 @@
 import { useEffect } from "react";
+import { PreviewToPayloadMessage } from "../../../types/message";
 
-type Message = "ready"
-
-export const useOnPreviewMessage = (previewUrl: string, callback: (message: Message) => any) => {
+export const useOnPreviewMessage = (previewUrl: string, callback: (message: PreviewToPayloadMessage) => any) => {
     useEffect(() => {
         const listener = (e: MessageEvent) => {
             const url = new URL(previewUrl);
