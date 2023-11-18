@@ -13,6 +13,8 @@ type PreviewToPayloadMessage =
 
 new EventSource("/esbuild").addEventListener("change", () => location.reload())
 
+const eventHandlers: Array<() => void> = [];
+
 const isCategory = (doc: any): doc is Category => {
     return doc.name !== undefined;
 };
@@ -307,11 +309,15 @@ const addElem = (data: string, fieldName?: string) => {
             };
 
             focusBtn.addEventListener("click", clickHandler);
+
+            eventHandlers.push(() => focusBtn.removeEventListener("click", clickHandler));
         }
     }
 }
 
 const clearElements = () => {
+    eventHandlers.forEach(unregister => unregister());
+
     const container = document.getElementById("preview");
     if (container) container.innerHTML = "";
 }
