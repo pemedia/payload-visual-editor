@@ -5,8 +5,10 @@ import { RefObject } from "react";
 import { match } from "ts-pattern";
 import { PreviewUrlFn } from "../../../types/previewUrl";
 import { GenDocConfig, generateDocument } from "../../../utils/generateDocument";
+import { postMessage } from "../../../utils/postMessage";
 import { useFields } from "./useFields";
 import { useOnFieldChanges } from "./useOnFieldChanges";
+import { useOnInputFocus } from "./useOnInputFocus";
 import { useOnPreviewMessage } from "./useOnPreviewMessage";
 
 const getFieldConfigs = (documentInfo: ContextType) => {
@@ -17,11 +19,7 @@ const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, windowR
     try {
         const doc = await generateDocument(genDocConfig, fields);
 
-        if (windowRef.current instanceof HTMLIFrameElement) {
-            windowRef.current.contentWindow?.postMessage({ cmsLivePreviewData: doc }, "*");
-        } else { 
-            windowRef.current?.postMessage({ cmsLivePreviewData: doc }, "*");
-        }
+        postMessage(windowRef, { livePreviewEvent: "update", doc });
     } catch (e) {
         console.error(e);
     }

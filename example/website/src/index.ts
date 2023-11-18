@@ -19,12 +19,22 @@ const isKitchenSink = (doc: any): doc is KitchenSink => {
 };
 
 window.addEventListener("message", event => {
-    const data: Post | KitchenSink | undefined = event.data.cmsLivePreviewData;
-    console.log(data);
+    switch(event.data.livePreviewEvent) {
+        case "update": {
+            const doc: Post | KitchenSink = event.data.doc;
+            console.log(doc);
 
-    clearElements();
-    if (isPost(data)) return postPreview(data);
-    else if (isKitchenSink(data)) return kitchenSinkPreview(data);
+            clearElements();
+
+            if (isPost(doc)) return postPreview(doc);
+            else if (isKitchenSink(doc)) return kitchenSinkPreview(doc);
+
+            break;
+        }
+        case "focus": {
+            break;
+        }
+    }
 });
 
 window.addEventListener("DOMContentLoaded", () => {
