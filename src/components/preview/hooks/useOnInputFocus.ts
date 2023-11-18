@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { Fields } from "payload/types";
+import { useEffect, useRef } from "react";
 
 const getFieldName = (element: Element): string | null => {
     const name = element.getAttribute?.("name");
@@ -20,9 +21,16 @@ const getFieldName = (element: Element): string | null => {
     return null;
 };
 
-export const useOnInputFocus = (callback: (fieldName: string) => any) => {
+export const useOnInputFocus = (fields: Fields, callback: (fieldName: string) => any) => {
+    const debounce = useRef(false);
+    const unregister = useRef<Array<() => void>>([]);
+
     useEffect(() => {
-        const unregister: Array<() => void> = [];
+        if (debounce.current) {
+            return;
+        }
+
+        debounce.current = true;
 
         setTimeout(() => {
             const inputs = document.querySelectorAll("input, textarea");
@@ -35,13 +43,15 @@ export const useOnInputFocus = (callback: (fieldName: string) => any) => {
 
                     input.addEventListener("focus", handler);
 
-                    unregister.push(() => input.removeEventListener("focus", handler));
+                    unregister.current.push(() => input.removeEventListener("focus", handler));
                 }
             });
-        }, 1000);
+
+            debounce.current = false;
+        }, 100);
 
         return () => {
-            unregister.forEach(fn => fn());
+            unregister.current.forEach(fn => fn());
         };
-    }, []);
+    }, [fields]);
 };
