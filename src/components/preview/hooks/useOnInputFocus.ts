@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 
-const getFieldName = (element: Element) => {
-    const match = element.id.match(/field-(\w+)/);
+const getFieldName = (element: Element): string | null => {
+    const name = element.getAttribute?.("name");
+
+    if (name) {
+        return name;
+    }
+
+    const match = element.id?.match(/field-(\w+)/);
 
     if (match) {
         return match[1];
     }
 
-    const parent = element.closest(".field-type");
-
-    if (parent) {
-        const match = parent.id.match(/field-(\w+)/);
-
-        if (match) {
-            return match[1];
-        }
+    if (element.parentNode) {
+        return getFieldName(element.parentNode as Element);
     }
 
     return null;
@@ -22,20 +22,23 @@ const getFieldName = (element: Element) => {
 
 export const useOnInputFocus = (callback: (fieldName: string) => any) => {
     useEffect(() => {
-        const inputs = document.querySelectorAll("input");
         const unregister: Array<() => void> = [];
 
-        inputs.forEach(input => {
-            const name = getFieldName(input);
+        setTimeout(() => {
+            const inputs = document.querySelectorAll("input, textarea");
 
-            if (name) {
-                const handler = () => callback(name);
+            inputs.forEach(input => {
+                const name = getFieldName(input);
 
-                input.addEventListener("focus", handler);
+                if (name) {
+                    const handler = () => callback(name);
 
-                unregister.push(() => input.removeEventListener("focus", handler));
-            }
-        });
+                    input.addEventListener("focus", handler);
+
+                    unregister.push(() => input.removeEventListener("focus", handler));
+                }
+            });
+        }, 1000);
 
         return () => {
             unregister.forEach(fn => fn());
