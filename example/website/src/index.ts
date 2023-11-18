@@ -40,8 +40,16 @@ window.addEventListener("message", event => {
                 const fieldName = event.data.fieldName;
                 const element = document.querySelector(`[data-payload-field-name="${fieldName}"]`);
 
+                // console.log(fieldName)
+
                 if (element) {
-                    element.scrollIntoView({ block: "center", behavior: "smooth" });
+                    // NOTE: don't use scrollIntoView, because it scrolls the whole page - not only the iframe
+                    // element.scrollIntoView({ block: "center", behavior: "smooth" });
+
+                    const y = element.getBoundingClientRect().top + window.scrollY - 100;
+
+                    window.scrollTo({top: y, behavior: 'smooth'});
+
                     element.classList.add("focus");
 
                     setTimeout(() => {
@@ -125,6 +133,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
                     </li>
                 `;
             case "complexBlock":
+                // NOTE: I don't know, why this block generates __ instead of . in the field name
                 return `
                     <li>
                         Complex Block: 
