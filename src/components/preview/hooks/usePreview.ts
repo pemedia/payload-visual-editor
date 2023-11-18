@@ -7,6 +7,7 @@ import { PreviewUrlFn } from "../../../types/previewUrl";
 import { GenDocConfig, generateDocument } from "../../../utils/generateDocument";
 import { postMessage } from "../../../utils/postMessage";
 import { useFields } from "./useFields";
+import { useInputs } from "./useInputs";
 import { useOnFieldChanges } from "./useOnFieldChanges";
 import { useOnInputFocus } from "./useOnInputFocus";
 import { useOnPreviewMessage } from "./useOnPreviewMessage";
@@ -30,6 +31,8 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
     const documentInfo = useDocumentInfo();
     const fieldConfigs = getFieldConfigs(documentInfo);
     const fields = useFields();
+    const locale = useLocale();
+    const inputs = useInputs(fields.current);
 
     const genDocConfig: GenDocConfig = {
         collections: payloadConfig.collections,
@@ -38,8 +41,6 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
         serverUrl: payloadConfig.serverURL,
         apiPath: payloadConfig.routes.api,
     };
-
-    const locale = useLocale();
 
     const previewUrl = payloadConfig.localization
         ? previewUrlFn({ locale: locale.code })
@@ -60,4 +61,4 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
     });
 
     return previewUrl;
-}
+};

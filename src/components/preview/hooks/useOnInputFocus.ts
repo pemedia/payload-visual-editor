@@ -1,57 +1,19 @@
-import { Fields } from "payload/types";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
-const getFieldName = (element: Element): string | null => {
-    const name = element.getAttribute?.("name");
-
-    if (name) {
-        return name;
-    }
-
-    const match = element.id?.match(/field-(\w+)/);
-
-    if (match) {
-        return match[1];
-    }
-
-    if (element.parentNode) {
-        return getFieldName(element.parentNode as Element);
-    }
-
-    return null;
-};
-
-export const useOnInputFocus = (fields: Fields, callback: (fieldName: string) => any) => {
-    const debounce = useRef(false);
-    const unregister = useRef<Array<() => void>>([]);
-
+export const useOnInputFocus = (inputs: Map<string, HTMLInputElement | HTMLTextAreaElement>, callback: (fieldName: string) => any) => {
     useEffect(() => {
-        if (debounce.current) {
-            return;
-        }
+        const unregister: Array<() => void> = [];
 
-        debounce.current = true;
+        inputs.forEach((input, fieldName) => {
+            const handler = () => callback(fieldName);
 
-        setTimeout(() => {
-            const inputs = document.querySelectorAll("input, textarea");
+            input.addEventListener("focus", handler);
 
-            inputs.forEach(input => {
-                const name = getFieldName(input);
-
-                if (name) {
-                    const handler = () => callback(name);
-
-                    input.addEventListener("focus", handler);
-
-                    unregister.current.push(() => input.removeEventListener("focus", handler));
-                }
-            });
-
-            debounce.current = false;
-        }, 100);
+            unregister.push(() => input.removeEventListener("focus", handler));
+        });
 
         return () => {
-            unregister.current.forEach(fn => fn());
+            unregister.forEach(fn => fn());
         };
-    }, [fields]);
+    }, [inputs]);
 };
