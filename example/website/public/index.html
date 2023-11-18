@@ -18,13 +18,45 @@
                 }
             }
 
-            [data-payload-field-name]:empty {
+            [data-payload-field-name] {
+                position: relative;
                 min-width: 1rem;
                 min-height: 1rem;
+                padding: 1rem;
+
+                display: inline-block;
+
+                border: 1px dashed rgb(0 0 0 / 20%);
             }
 
-            .focus {
+            div[data-payload-field-name],
+            code[data-payload-field-name] {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            [data-payload-field-name]:hover > .focus-btn {
+                display: block;
+            }
+
+            [data-payload-field-name].focus {
                 animation: focus both 1s;
+            }
+
+            .focus-btn {
+                display: none;
+
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 1.5rem;
+                height: 1.5rem;
+
+                background: url("select.svg");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 75%;
+                border: 1px dashed #cccccc;
             }
 
             .media {

@@ -118,7 +118,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
         </li>
     `).filter(Boolean).join("\n");
     addElem(`<h3>Array:</h3>`);
-    addElem(`<ul>${array}</ul>`, "array");
+    addElem(`<ul>${array}</ul>`);
 
     // blocks
     const blocks = data.blocks.map((item, i) => {
@@ -297,9 +297,16 @@ const addElem = (data: string, fieldName?: string) => {
         if (fieldName) {
             htmlNode.dataset.payloadFieldName = fieldName;
 
-            htmlNode.addEventListener("click", () => {
+            const focusBtn = document.createElement("button");
+            focusBtn.className = "focus-btn";
+            
+            htmlNode.appendChild(focusBtn);
+
+            const clickHandler = () => {
                 postMessage({ livePreviewEvent: "focus", fieldName });
-            });
+            };
+
+            focusBtn.addEventListener("click", clickHandler);
         }
     }
 }
