@@ -55,5 +55,9 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
         updatePreview(genDocConfig, fields.current, windowRef);
     });
 
+    useOnInputFocus(fieldName => {
+        postMessage(windowRef, { livePreviewEvent: "focus", fieldName });
+    });
+
     return previewUrl;
 }
