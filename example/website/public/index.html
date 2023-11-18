@@ -5,6 +5,45 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <style>
+            @keyframes focus {
+                0% {
+                    box-shadow: 0 0 0px red;
+                }
+                50% {
+                    box-shadow: 0 0 10px red;
+                }
+                100% {
+                    box-shadow: 0 0 0px red;
+                }
+            }
+
+            [data-payload-field-name]:empty {
+                min-width: 1rem;
+                min-height: 1rem;
+            }
+
+            .focus {
+                animation: focus both 1s;
+            }
+
+            .media {
+                width: 400px;
+                height: 400px;
+
+                background: black;
+                border-radius: 10px;
+
+                overflow: hidden;
+
+                > img, > video {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+            }
+        </style>
+
         <script src="./bundle.js" defer></script>
     </head>
     <body>
