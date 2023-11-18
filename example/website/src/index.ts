@@ -9,6 +9,7 @@ type PayloadToPreviewMessage =
 // these type is defined in the plugin library
 type PreviewToPayloadMessage =
     | { livePreviewEvent: "ready"; }
+    | { livePreviewEvent: "focus"; fieldName: string; }
 
 new EventSource("/esbuild").addEventListener("change", () => location.reload())
 
@@ -50,15 +51,13 @@ window.addEventListener("message", event => {
                 const fieldName = event.data.fieldName;
                 const element = document.querySelector(`[data-payload-field-name="${fieldName}"]`);
 
-                // console.log(fieldName)
-
                 if (element) {
                     // NOTE: don't use scrollIntoView, because it scrolls the whole page - not only the iframe
                     // element.scrollIntoView({ block: "center", behavior: "smooth" });
 
                     const y = element.getBoundingClientRect().top + window.scrollY - 100;
 
-                    window.scrollTo({top: y, behavior: 'smooth'});
+                    window.scrollTo({ top: y, behavior: "smooth" });
 
                     element.classList.add("focus");
 
@@ -284,19 +283,23 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     addElem(`<hr />`);
 }
 
-const addElem = (data: string, name?: string) => {
+const addElem = (data: string, fieldName?: string) => {
     const container = document.getElementById("preview");
     const template = document.createElement("template");
 
     template.innerHTML = data.trim();
 
-    const htmlNode = template.content.firstChild;
+    const htmlNode = template.content.firstChild as HTMLElement | undefined;
 
     if (container && htmlNode) {
         container.appendChild(htmlNode);
 
-        if (name) {
-            (htmlNode as HTMLElement).dataset.payloadFieldName = name;
+        if (fieldName) {
+            htmlNode.dataset.payloadFieldName = fieldName;
+
+            htmlNode.addEventListener("click", () => {
+                postMessage({ livePreviewEvent: "focus", fieldName });
+            });
         }
     }
 }

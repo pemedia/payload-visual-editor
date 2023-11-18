@@ -26,6 +26,21 @@ const updatePreview = async (genDocConfig: GenDocConfig, fields: Fields, windowR
     }
 };
 
+const focusInput = (fieldName: string, inputs: Map<string, HTMLInputElement | HTMLTextAreaElement>) => {
+    const input = inputs.get(fieldName);
+
+    if (!input) {
+        return;
+    }
+
+    input.select?.();
+
+    // NOTE: don't use scrollIntoView, because it would also scroll the preview
+    const y = input.getBoundingClientRect().top + window.scrollY - 300;
+
+    window.scrollTo({ top: y, behavior: "smooth" });
+};
+
 export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTMLIFrameElement | Window>) => {
     const payloadConfig = useConfig();
     const documentInfo = useDocumentInfo();
@@ -49,6 +64,7 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
     useOnPreviewMessage(previewUrl, message => {
         match(message)
             .with({ livePreviewEvent: "ready" }, () => updatePreview(genDocConfig, fields.current, windowRef))
+            .with({ livePreviewEvent: "focus" }, ({ fieldName }) => focusInput(fieldName, inputs.current))
             .exhaustive();
     });
 
@@ -56,7 +72,7 @@ export const usePreview = (previewUrlFn: PreviewUrlFn, windowRef: RefObject<HTML
         updatePreview(genDocConfig, fields.current, windowRef);
     });
 
-    useOnInputFocus(fields.current, fieldName => {
+    useOnInputFocus(inputs.current, fieldName => {
         postMessage(windowRef, { livePreviewEvent: "focus", fieldName });
     });
 

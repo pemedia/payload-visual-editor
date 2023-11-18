@@ -4,3 +4,4 @@ export type PayloadToPreviewMessage =
 
 export type PreviewToPayloadMessage =
     | { livePreviewEvent: "ready"; }
+    | { livePreviewEvent: "focus"; fieldName: string; }
