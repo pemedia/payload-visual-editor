@@ -93,16 +93,49 @@ const postPreview = (data: Post) => {
 const kitchenSinkPreview = (data: KitchenSink) => {
 
     // array
-    const array = data.array.map(item => {
-        return `<li>Number: ${item.text} – Number: ${item.number}</li>`;
-    }).filter(Boolean).join("\n");
+    const array = data.array.map((item, i) => `
+        <li>
+            Text: <span data-payload-field-name="array.${i}.text">${item.text}</span>
+            -
+            Number: <span data-payload-field-name="array.${i}.number">${item.number}</span>
+        </li>
+    `).filter(Boolean).join("\n");
     addElem(`<h3>Array:</h3>`);
     addElem(`<ul>${array}</ul>`, "array");
 
     // blocks
-    const blocks = data.blocks.map(item => {
-        if (item.blockType == 'testBlock1') return `<li>BlockType1:  ${item.text1} - ${item.text2}</li>`;
-        else if (item.blockType == 'testBlock2') return `<li>BlockType2:  ${item.number1} - ${item.number2}</li>`;
+    const blocks = data.blocks.map((item, i) => {
+        switch (item.blockType) {
+            case "testBlock1":
+                return `
+                    <li>
+                        BlockType1: 
+                        <span data-payload-field-name="blocks.${i}.text1">${item.text1}</span> 
+                        -
+                        <span data-payload-field-name="blocks.${i}.text2">${item.text2}</span>
+                    </li>
+                `;
+            case "testBlock2":
+                return `
+                    <li>
+                        BlockType2: 
+                        <span data-payload-field-name="blocks.${i}.number1">${item.number1}</span> 
+                        -
+                        <span data-payload-field-name="blocks.${i}.number2">${item.number2}</span> 
+                    </li>
+                `;
+            case "complexBlock":
+                return `
+                    <li>
+                        Complex Block: 
+                        <span data-payload-field-name="blocks__${i}__textPosition">${item.textPosition}</span> 
+                        -
+                        <span data-payload-field-name="blocks__${i}__medium">${JSON.stringify(item.medium)}</span> 
+                        -
+                        <span data-payload-field-name="blocks__${i}__text">${JSON.stringify(item.text)}</span>
+                    </li>
+                `;
+        }
     }).filter(Boolean).join("\n");
     addElem(`<h3>Blocks:</h3>`);
     addElem(`<ul>${blocks}</ul>`, "blocks");
