@@ -37,6 +37,7 @@ const config = buildConfig({
   plugins: [
     visualEditor({
       previewUrl: () => `http://localhost:3001/pages/preview`,
+      previewWidthInPercentage: 60,
       collections: {
         [COLLECTION_SLUG]: {
           previewUrl: () => `...` // optional individual preview url for each collection
@@ -61,6 +62,10 @@ const config = buildConfig({
 - `defaultPreviewMode` : `"iframe" | "popup" | "none"`
 
   Preferred preview mode while opening an edit page the first time. After toggling, the state will be saved in localStore. Default: "iframe"
+
+- `previewWidthInPercentage` : `number`
+
+  Width of the iframe preview in percentage. Default: 50
 
 - `collections` / `globals` : `Record<string, { previewUrl?: ({ locale: string; }) => string; }>`
 

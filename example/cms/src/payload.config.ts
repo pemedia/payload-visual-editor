@@ -61,6 +61,7 @@ export default buildConfig({
     plugins: [
         visualEditor({
             previewUrl: () => `http://localhost:8080/`,
+            previewWidthInPercentage: 50,
             collections: {
                 [Posts.slug]: {},
             },

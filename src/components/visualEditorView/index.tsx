@@ -19,6 +19,7 @@ import { usePersistentState } from "./usePersistentState";
 type Options = {
     previewUrl: PreviewUrlFn;
     defaultPreviewMode: PreviewMode;
+    previewWidthInPercentage: number;
 }
 
 type Props = (CollectionEditViewProps | GlobalEditViewProps) & { fieldTypes: FieldTypes };
@@ -61,6 +62,10 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
     const [previewMode, setPreviewMode] = usePersistentState<PreviewMode>("visualEditorPreviewState", options.defaultPreviewMode);
 
     const { i18n, t } = useTranslation("general");
+
+    const containerStyle = { 
+        "--preview-width": `${options.previewWidthInPercentage}%`,
+    } as any;
 
     return (
         <Fragment>
@@ -112,7 +117,7 @@ export const createVisualEditorView = (options: Options) => (props_: Props) => {
                 permissions={props.permissions}
             />
 
-            <div className={`visual-editor ${previewMode}`}>
+            <div className={`visual-editor ${previewMode}`} style={containerStyle}>
                 <DocumentFields
                     description={props.description}
                     fieldTypes={props.fieldTypes}

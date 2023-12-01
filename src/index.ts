@@ -16,6 +16,7 @@ interface PluginCollectionOrGlobalConfig {
 export interface PluginConfig {
     previewUrl: PreviewUrlFn;
     defaultPreviewMode?: PreviewMode;
+    previewWidthInPercentage?: number;
     collections?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
     globals?: Record<string, PluginCollectionOrGlobalConfig | undefined>;
 }
@@ -23,6 +24,7 @@ export interface PluginConfig {
 const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
     previewUrl: PreviewUrlFn,
     defaultPreviewMode?: PreviewMode,
+    previewWidthInPercentage?: number,
     cogConfigs?: T[],
     pluginCogConfigs?: Record<string, PluginCollectionOrGlobalConfig | undefined>,
 ) => cogConfigs?.map(cogConfig => {
@@ -40,6 +42,7 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
                         Default: createVisualEditorView({
                             previewUrl: pluginCogConfig.previewUrl ?? previewUrl,
                             defaultPreviewMode: defaultPreviewMode ?? "iframe",
+                            previewWidthInPercentage: previewWidthInPercentage ?? 50,
                         }),
                     } as any,
                 },
@@ -52,6 +55,18 @@ const extendCogConfigs = <T extends CollectionOrGlobalConfig>(
 
 export const visualEditor = (pluginConfig: PluginConfig) => (config: Config): Config => ({
     ...config,
-    collections: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.defaultPreviewMode, config.collections, pluginConfig.collections),
-    globals: extendCogConfigs(pluginConfig.previewUrl, pluginConfig.defaultPreviewMode, config.globals, pluginConfig.globals),
+    collections: extendCogConfigs(
+        pluginConfig.previewUrl,
+        pluginConfig.defaultPreviewMode,
+        pluginConfig.previewWidthInPercentage,
+        config.collections,
+        pluginConfig.collections,
+    ),
+    globals: extendCogConfigs(
+        pluginConfig.previewUrl,
+        pluginConfig.defaultPreviewMode,
+        pluginConfig.previewWidthInPercentage,
+        config.globals,
+        pluginConfig.globals,
+    ),
 });
