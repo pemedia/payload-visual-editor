@@ -14,7 +14,7 @@ import {
     fieldAffectsData,
     fieldHasSubFields,
     fieldIsPresentationalOnly,
-    optionIsObject
+    optionIsObject, FieldWithSubFields
 } from "payload/dist/fields/config/types";
 import { Block, Field, SanitizedCollectionConfig, SanitizedGlobalConfig } from "payload/types";
 import { match } from "ts-pattern";
@@ -122,15 +122,23 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
 
         return Promise.all(
             blockValues.map(async (value: Data) => {
-                const fields = getBlock(field.blocks, value.blockType).fields as FieldAffectingData[];
+                const fields = getBlock(field.blocks, value.blockType).fields as Field[];
 
                 const result: any = {
                     id: value.id,
                     blockType: value.blockType,
                 };
 
-                for (let field of fields) {
-                    result[field.name!] = await getValue(field, value);
+                for (const field of fields) {
+                    if(fieldHasSubFields(field)) {
+                        for (let subField of field.fields) {
+                            if(fieldAffectsData(subField)) {
+                                result[subField.name] = await getValue(subField, value[subField.name])
+                            }
+                        }
+                    } else if(fieldAffectsData(field)) {
+                        result[field.name] = await getValue(field, values);
+                    }
                 }
 
                 return result;
