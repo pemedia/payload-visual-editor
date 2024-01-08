@@ -1,3 +1,8 @@
+## 2.0.4
+
+### Bug Fixes
+- Fixed bundling styles with vite
+
 ## 2.0.3
 
 ### Bug Fixes
