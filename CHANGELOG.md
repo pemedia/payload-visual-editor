@@ -1,3 +1,12 @@
+## 2.0.3
+
+### Bug Fixes
+- Fixed parsing presentational fields in block.
+
+## 2.0.2
+
+## 2.0.1
+
 ## 2.0.0
 
 ### Features
