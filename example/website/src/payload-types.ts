@@ -20,6 +20,10 @@ export interface Config {
     kitchenSink: KitchenSink;
   };
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
 export interface User {
   id: string;
   updatedAt: string;
@@ -33,41 +37,63 @@ export interface User {
   lockUntil?: string | null;
   password: string | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
 export interface Post {
   id: string;
   title: string;
   subtitle: string;
   category?: (string | null) | Category;
   tagsAndCategories?:
-    | (
-        | {
-            relationTo: 'tags';
-            value: string | Tag;
-          }
-        | {
-            relationTo: 'categories';
-            value: string | Category;
-          }
-      )[]
-    | null;
+  | (
+    | {
+      relationTo: 'tags';
+      value: string | Tag;
+    }
+    | {
+      relationTo: 'categories';
+      value: string | Category;
+    }
+  )[]
+  | null;
   status?: ('draft' | 'published') | null;
+  checkParagraph?: boolean | null;
+  paragraph?:
+  | {
+    [k: string]: unknown;
+  }[]
+  | null;
   description?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
 export interface Category {
   id: string;
   name: string;
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
 export interface Tag {
   id: string;
   name: string;
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
 export interface Medium {
   id: string;
   updatedAt: string;
@@ -79,6 +105,10 @@ export interface Medium {
   width?: number | null;
   height?: number | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences".
+ */
 export interface PayloadPreference {
   id: string;
   user: {
@@ -87,17 +117,21 @@ export interface PayloadPreference {
   };
   key?: string | null;
   value?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  | {
+    [k: string]: unknown;
+  }
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations".
+ */
 export interface PayloadMigration {
   id: string;
   name?: string | null;
@@ -105,6 +139,10 @@ export interface PayloadMigration {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kitchenSink".
+ */
 export interface KitchenSink {
   id: string;
   array: {
@@ -114,29 +152,29 @@ export interface KitchenSink {
   }[];
   blocks: (
     | {
-        text1: string;
-        text2: string;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'testBlock1';
-      }
+      text1: string;
+      text2: string;
+      id?: string | null;
+      blockName?: string | null;
+      blockType: 'testBlock1';
+    }
     | {
-        number1?: number | null;
-        number2?: number | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'testBlock2';
-      }
+      number1?: number | null;
+      number2?: number | null;
+      id?: string | null;
+      blockName?: string | null;
+      blockType: 'testBlock2';
+    }
     | {
-        textPosition: 'left' | 'right';
-        text: {
-          [k: string]: unknown;
-        }[];
-        medium: string | Medium;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'complexBlock';
-      }
+      textPosition: 'left' | 'right';
+      text: {
+        [k: string]: unknown;
+      }[];
+      medium: string | Medium;
+      id?: string | null;
+      blockName?: string | null;
+      blockType: 'complexBlock';
+    }
   )[];
   checkbox: boolean;
   code: string;
@@ -147,14 +185,14 @@ export interface KitchenSink {
     number?: number | null;
   };
   json:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  | {
+    [k: string]: unknown;
+  }
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
   number: number;
   /**
    * @minItems 2
@@ -165,23 +203,23 @@ export interface KitchenSink {
   relationship1: string | Tag;
   relationship2: (string | Tag)[];
   relationship3:
-    | {
-        relationTo: 'categories';
-        value: string | Category;
-      }
-    | {
-        relationTo: 'tags';
-        value: string | Tag;
-      };
+  | {
+    relationTo: 'categories';
+    value: string | Category;
+  }
+  | {
+    relationTo: 'tags';
+    value: string | Tag;
+  };
   relationship4: (
     | {
-        relationTo: 'categories';
-        value: string | Category;
-      }
+      relationTo: 'categories';
+      value: string | Category;
+    }
     | {
-        relationTo: 'tags';
-        value: string | Tag;
-      }
+      relationTo: 'tags';
+      value: string | Tag;
+    }
   )[];
   richText: {
     [k: string]: unknown;
@@ -197,5 +235,5 @@ export interface KitchenSink {
 
 
 declare module 'payload' {
-  export interface GeneratedTypes extends Config {}
+  export interface GeneratedTypes extends Config { }
 }
