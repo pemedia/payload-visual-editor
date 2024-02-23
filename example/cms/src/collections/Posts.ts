@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { Categories } from "./Categories";
 import { Tags } from "./Tags";
+import { slateEditor } from "@payloadcms/richtext-slate";
 
 export const Posts: CollectionConfig = {
     slug: "posts",
@@ -53,6 +54,25 @@ export const Posts: CollectionConfig = {
                                 },
                             ],
                             defaultValue: 'draft',
+                        },
+                        {
+                            name: "checkParagraph",
+                            type: "checkbox",
+                            defaultValue: false,
+                        },
+                        {
+                            name: 'paragraph',
+                            type: 'richText',
+                            required: true,
+                            editor: slateEditor({
+                                admin: {
+                                    elements: ['h2', 'h3'],
+                                    leaves: ["italic", "underline", "bold"],
+                                }
+                            }),
+                            admin: {
+                                condition: (data, siblingData, { user }) => siblingData.checkParagraph,
+                            },
                         },
                     ],
                 },

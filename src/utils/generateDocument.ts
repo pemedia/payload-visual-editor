@@ -304,7 +304,7 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
 
         if (field.required && !value) {
             // lexical editor
-            if ((field.editor as any).editorConfig.lexical) {
+            if ((field.editor as any).editorConfig?.lexical) {
                 return ({
                     root: {},
                 });

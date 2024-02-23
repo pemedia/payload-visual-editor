@@ -18,6 +18,7 @@
     "@payloadcms/bundler-webpack": "^1.0.5",
     "@payloadcms/db-mongodb": "^1.0.5",
     "@payloadcms/richtext-lexical": "^0.1.16",
+    "@payloadcms/richtext-slate": "^1.0.0",
     "dotenv": "^16.3.1",
     "express": "^4.17.1"
   },

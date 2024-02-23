@@ -38,7 +38,7 @@ const postPreview = (data: Post) => {
     addElem(`<h2>${data.title}</h2>`);
     addElem(`<h3>${data.subtitle}</h3>`);
 
-    if(data.tagsAndCategories !== undefined) {
+    if (data.tagsAndCategories !== undefined) {
 
         const tagList = data.tagsAndCategories.map(tagOrCategory => {
             if (tagOrCategory.relationTo === "tags" && isTag(tagOrCategory.value)) {
@@ -54,10 +54,16 @@ const postPreview = (data: Post) => {
         }).filter(Boolean).join("\n");
 
         addElem(`<ul>${tagList}</ul>`);
-    } 
+    }
 
     if (data.category !== undefined && isCategory(data.category)) {
         addElem(`<div>${data.category.name}</div>`);
+    }
+
+    if (data.checkParagraph) {
+        addElem(`<h3>Rich text:</h3>`);
+        addElem(`<code>${JSON.stringify([data.paragraph])}</code>`);
+        addElem(`<hr />`);
     }
 
 }
@@ -74,7 +80,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // blocks
     const blocks = data.blocks.map(item => {
-        if(item.blockType == 'testBlock1') return `<li>BlockType1:  ${item.text1} - ${item.text2}</li>`;
+        if (item.blockType == 'testBlock1') return `<li>BlockType1:  ${item.text1} - ${item.text2}</li>`;
         else if (item.blockType == 'testBlock2') return `<li>BlockType2:  ${item.number1} - ${item.number2}</li>`;
     }).filter(Boolean).join("\n");
     addElem(`<h3>Blocks:</h3>`);
@@ -109,7 +115,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // json
     addElem(`<h3>JSON:</h3>`);
-    addElem(`<code>${ JSON.stringify(data.json) }</code>`);
+    addElem(`<code>${JSON.stringify(data.json)}</code>`);
     addElem(`<hr />`);
 
     // number
@@ -160,7 +166,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     // rich text
     addElem(`<h3>Rich text:</h3>`);
-    addElem(`<code>${ JSON.stringify([data.richText]) }</code>`);
+    addElem(`<code>${JSON.stringify([data.richText])}</code>`);
     addElem(`<hr />`);
 
     // select 1
@@ -173,7 +179,7 @@ const kitchenSinkPreview = (data: KitchenSink) => {
     const selects = data.select2.map((item, index) => {
         return `<li>[${index}] = ${item}</li>`;
     }).filter(Boolean).join("\n");
-    addElem(`<ul>${selects}</ul>`);    
+    addElem(`<ul>${selects}</ul>`);
     addElem(`<hr />`);
 
     // text
@@ -192,16 +198,16 @@ const kitchenSinkPreview = (data: KitchenSink) => {
 
     let mediaElem: string | null = null;
 
-    if(upload.mimeType?.includes("image/")) {
+    if (upload.mimeType?.includes("image/")) {
         mediaElem = `<img src="${upload.url}" width="50%" />`;
-    } else if(upload.mimeType?.includes("video/")) {
+    } else if (upload.mimeType?.includes("video/")) {
         mediaElem = `<video width="100%" controls><source src="${upload.url}" type="${upload.mimeType}"></video>`;
     }
 
     addElem(`
         <div>
             <div>${upload.filename}</div>
-           ${(mediaElem) ? `<div>${mediaElem}</div>` : '' }
+           ${(mediaElem) ? `<div>${mediaElem}</div>` : ''}
         </div>
     `);
     addElem(`<hr />`);
@@ -213,10 +219,10 @@ const addElem = (data: string) => {
     data = data.trim();
     template.innerHTML = data;
     const htmlNode = template.content.firstChild;
-    if(container && htmlNode) container.appendChild(htmlNode);
+    if (container && htmlNode) container.appendChild(htmlNode);
 }
 
 const clearElements = () => {
     const container = document.getElementById("preview");
-    if(container) container.innerHTML = "";
+    if (container) container.innerHTML = "";
 }

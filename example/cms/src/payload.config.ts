@@ -1,6 +1,7 @@
 import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { slateEditor } from '@payloadcms/richtext-slate';
 import path from "path";
 import { buildConfig } from "payload/config";
 import { visualEditor } from "../../../src";
@@ -51,7 +52,7 @@ export default buildConfig({
     db: mongooseAdapter({
         url: process.env.MONGODB_URI!,
     }),
-    editor: lexicalEditor({}),
+    editor: slateEditor({}),
     typescript: {
         outputFile: path.resolve(__dirname, "types/payload-types.ts"),
     },
