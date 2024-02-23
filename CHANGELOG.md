@@ -1,3 +1,8 @@
+## 2.0.5
+
+### Bug Fixes
+- Fixed handling of `undefined` richText fields
+
 ## 2.0.4
 
 ### Bug Fixes
