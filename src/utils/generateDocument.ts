@@ -296,6 +296,10 @@ export const generateDocument = async (config: GenDocConfig, fields: Fields) => 
             return getFallback(config, field.relationTo);
         }
 
+        if (!field.required && !id) {
+            return undefined;
+        }
+
         return fetchRelation(field.relationTo, values[field.name]);
     };
 

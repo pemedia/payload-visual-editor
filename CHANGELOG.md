@@ -1,3 +1,8 @@
+## 2.0.6
+
+### Bug Fixes
+- Fixed handling of `undefined` non required upload fields
+
 ## 2.0.5
 
 ### Bug Fixes
